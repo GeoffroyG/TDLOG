@@ -1,0 +1,87 @@
+TO DO list du prof : 
+	- Définition des fonctionnalités macro
+	- Définition des fonctionnalités élémentaires
+	- Définition d'une gestion de projet / orga
+	- Définition des rôles
+	- Décider d'une gestion du temps
+
+
+Macro-fonctions à définir : 
+	- Test de rattachement à une route
+	- Influence faste / néfaste du voisinage
+	- Ressources : 
+		○ Energie
+		○ Nourriture
+		○ Construction
+			§ Séparation matériaux de construction vs équipements ? 
+			§ Séparation entre bois et pierre ?
+		○ Argent
+		○ Nombre d'habitants / nombre d'habitants dispos
+	- Bâtiments : 
+		○ Maison
+		○ Carrières
+		○ Ferme
+		○ Centrale
+		○ Routes
+		○ Usines dans le cas d'équipements
+		○ Recyclage
+		○ Mode dégradé : maison, route, carrière
+
+Caractéristiques du jeu : 
+	- Tour par tour pour commencer, puis diminution du delta_t pour donner l'impression d'instantanéité
+	- Ressources sous la forme de flux ou de stock selon la pertinence (énergie en flux, matériaux en stock)
+
+Calendrier : 
+	- Deadline le 27 janvier, soit dans 8 semaines
+	- Création d'un premier mode dégradé d'ici le 09/12
+	- Définition du reste du calendrier le 09/12 selon les difficultés rencontrées lors de l'établissement du mode dégradé
+
+Fonctions nécessaires pour le livrable mode dégradé : 
+	- Initialisation de la matrice avec route initiale
+	- Initialisation des ressources et autres variables
+	- Ajout de route avec test de raccord avec route initiale
+	- Ajout de maison avec test de raccord route
+	- Ajout d'usine avec test de raccord route
+
+Gameplay du mode dégradé : 
+	1. On crée la route, maison et usine initiales
+	2. l'usine produit des matériaux de construction
+	3. Dès qu'ils sont suffisants, on recrée une route et une maison
+	4. Les habitants augmentent et la capacité de production de l'usine également
+	5. Arrêt du jeu lorsqu'on a collecté N ressources
+
+Classes à coder :
+
+Class batiment : 
+
+	Position(i,j)
+	Type(k)
+	Coût de création (argent, ressources)
+	Coût de destruction (argent, ressources)
+	Consommation (argent, nombre d'habitants, ressources, énergie, débit)
+	Production (argent, ressources, énergie, débit)
+	
+	__init__()
+		Check case occupée
+		Check route
+		Check ressources
+		Prélève ressources
+	
+	
+Class Maison : 
+	__init__()
+		Super.init()
+		Init variables spécifiques à la maison
+	
+	
+On appellera ensuite Maison.init(3,4)
+
+Autres classes nécessaires : 
+	- Class maison
+	- Class route
+	- Class usine
+
+Répartition des rôles pour la phase dégradée : 
+	- Fatma : création des classes, des tests et différentes fonctions associées
+	- Geoffroy : coder le système de jeu en tour par tour faisant évoluer la consommation et la production
+	- Pierre : coder la création et l'implémentation des bâtiments sur la matrice de jeu + manipuler PyGame
