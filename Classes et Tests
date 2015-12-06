@@ -1,0 +1,116 @@
+# 9 designe un vide sur l'interface "batiments"
+# 0 designe une route sur l'interface "batiments"
+# 1 designe une maison sur l'interface "batiments"
+# 2 designe une  usine sur l'interface "batiments"
+
+
+batiments=[[9,9,9,9,9,9,9,9],
+           [9,9,9,9,9,9,9,9],
+           [0,0,0,9,9,9,9,9],
+           [9,9,9,9,9,9,9,9]]
+
+
+taille_hauteur=4  # pour le besoin de l'exercice
+taille_largeur=8  # pour le besoin de l'exercice
+
+stock_bois=0 # evolution avec le temps
+hab_restant=0 # evolution avec le temps
+
+
+
+Class batiment():
+    def __init__(self,i0=0,j0=0):
+        self.i=i0
+        self.j=j0 
+
+    def check_raccord_route(self):
+        result = False
+        for p in range (taille_hauteur):
+            for q in range (taille_largeur):
+                if ( (self.i == p) and ( abs(self.j-q) == 1 ) ) or ( (self.j == q) and ( abs(self.i-p) == 1 ) ):
+                    if batiments [p][q] == 0: # 0 designe une route
+                        result = True
+        return(result)
+
+    def check_emplacement_vide(self):
+        result = True
+        if batiments [self.i][self.j] in [0, 1, 2]:
+            result = False
+        return(result)
+
+    def accept_construction(self):
+        result= False
+        if (self.check_emplacement_vide()) And (self.check_raccord_route()):
+            result= True
+        return(result) 
+
+
+          
+Class maison(batiment):
+    def __init__(self):
+        super().__init__()
+        self.hab_par_maison=5
+        self.materiaux_requis=3
+
+    def check_ressource(self):
+        result = False
+        if stock_bois >= self.materiaux_requis:
+            result = True
+        return(result)
+
+    def creation(self):
+        if self.accept_construction() And self.check_ressource():
+            batiments[self.i][self.j] = 1
+
+    def destruction(self):
+        batiments[self.i][self.j] = 9  # destruction variable selon batiment_autres ressources specifiques (incomplet)
+
+Class usine(batiment):
+    def __init__(self):
+        super().__init__()
+        self.hab_requis = 10
+        self.hab_affectes = 0
+        self.prod_max = 100
+        self.stock_bois = 0
+        self.materiaux_requis = 10
+
+    def check_ressource(self):
+        result= False
+        if (stock_bois >= self.materiaux_requis) And (hab_restant >= 1):
+            result= True
+        return(result)
+
+    def creation(self):
+        if self.accept_construction() And self.check_ressource():
+            batiments[self.i][self.j] = 2
+ 
+    def destruction(self):
+        batiments[self.i][self.j] = 9  # destruction variable selon batiment_autres ressources specifiques (incomplet)      
+
+Class route(batiment):
+    def __init__(self):
+        super().__init__()
+        self.materiaux_requis = 1
+
+    def check_ressource(self):
+        result= False
+        if stock_bois >= self.materiaux_requis:
+            result= True
+        return(result)
+
+    def creation(self):
+        if self.accept_construction() And self.check_ressource():
+            batiments[self.i][self.j] = 0
+
+    def destruction(self):
+        batiments[self.i][self.j] = 9  # destruction variable selon batiment_autres ressources specifiques (incomplet)
+
+
+
+
+
+
+
+     
+                 
+       
