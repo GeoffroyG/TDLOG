@@ -25,16 +25,23 @@ Class batiment():
 
     def check_raccord_route(self):
         result = False
-        for p in range (taille_hauteur):
-            for q in range (taille_largeur):
-                if ( (self.i == p) and ( abs(self.j-q) == 1 ) ) or ( (self.j == q) and ( abs(self.i-p) == 1 ) ):
-                    if batiments [p][q] == 0: # 0 designe une route
-                        result = True
+        if i-1 >= 0:
+            if batiments [i-1][j].type == 0: # 0 designe une route
+                result = True
+        if j-1 >= 0:
+            if batiments [i][j-1].type == 0: # 0 designe une route
+                result = True
+        if i+1 <= taille_hauteur-1:
+            if batiments [i+1][j].type == 0: # 0 designe une route
+                result = True 
+        if j+1 <= taille_largeur-1:
+            if batiments [i][j+1].type == 0: # 0 designe une route
+                result = True
         return(result)
 
     def check_emplacement_vide(self):
         result = True
-        if batiments [self.i][self.j] in [0, 1, 2]:
+        if batiments [self.i][self.j].type in [0, 1, 2]:
             result = False
         return(result)
 
@@ -49,6 +56,7 @@ Class batiment():
 Class maison(batiment):
     def __init__(self):
         super().__init__()
+        self.type = 1
         self.hab_par_maison=5
         self.materiaux_requis=3
 
@@ -60,14 +68,15 @@ Class maison(batiment):
 
     def creation(self):
         if self.accept_construction() And self.check_ressource():
-            batiments[self.i][self.j] = 1
+            batiments[self.i][self.j].type = 1
 
     def destruction(self):
-        batiments[self.i][self.j] = 9  # destruction variable selon batiment_autres ressources specifiques (incomplet)
+        batiments[self.i][self.j].type = 9  # destruction variable selon batiment_autres ressources specifiques (incomplet)
 
 Class usine(batiment):
     def __init__(self):
         super().__init__()
+        self.type = 2
         self.hab_requis = 10
         self.hab_affectes = 0
         self.prod_max = 100
@@ -82,14 +91,15 @@ Class usine(batiment):
 
     def creation(self):
         if self.accept_construction() And self.check_ressource():
-            batiments[self.i][self.j] = 2
+            batiments[self.i][self.j].type = 2
  
     def destruction(self):
-        batiments[self.i][self.j] = 9  # destruction variable selon batiment_autres ressources specifiques (incomplet)      
+        batiments[self.i][self.j].type = 9  # destruction variable selon batiment_autres ressources specifiques (incomplet)      
 
 Class route(batiment):
     def __init__(self):
         super().__init__()
+        self.type = 0
         self.materiaux_requis = 1
 
     def check_ressource(self):
@@ -100,10 +110,10 @@ Class route(batiment):
 
     def creation(self):
         if self.accept_construction() And self.check_ressource():
-            batiments[self.i][self.j] = 0
+            batiments[self.i][self.j].type = 0
 
     def destruction(self):
-        batiments[self.i][self.j] = 9  # destruction variable selon batiment_autres ressources specifiques (incomplet)
+        batiments[self.i][self.j].type = 9  # destruction variable selon batiment_autres ressources specifiques (incomplet)
 
 
 
