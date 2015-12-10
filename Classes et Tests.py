@@ -4,87 +4,45 @@
 # 2 designe une  usine sur l'interface "batiments"
 # 3 designe un batiment en général sur l'interface "batiments"
 
-taille_hauteur=4  # pour le besoin de l'exercice
-taille_largeur=8  # pour le besoin de l'exercice
+height=4  # pour le besoin de l'exercice
+width=8  # pour le besoin de l'exercice
 
-stock_bois=0 # evolution avec le temps
-hab_restant=0 # evolution avec le temps
+wood=0 # evolution avec le temps
+workers_remaining=0 # evolution avec le temps
 
 
-class Batiment():
-    def __init__(self, i, j):
+class Building():
+    def __init__(self):
         self.type = 3
-        self.accept_construction(i, j)
 
-    def check_raccord_route(self, i, j):
-        result = False
-        if i-1 >= 0:
-            if batiments [i-1][j].type == 0: # 0 designe une route
-                result = True
-        if j-1 >= 0:
-            if batiments [i][j-1].type == 0: # 0 designe une route
-                result = True
-        if i+1 <= taille_hauteur-1:
-            if batiments [i+1][j].type == 0: # 0 designe une route
-                result = True 
-        if j+1 <= taille_largeur-1:
-            if batiments [i][j+1].type == 0: # 0 designe une route
-                result = True
-        return(result)
-
-    def check_emplacement_vide(self, i, j):
-        result = True
-        if batiments [i][j].type != 9:
-            result = False
-        return(result)
-
-    def accept_construction(self, i, j):
-        result= False
-        if (self.check_emplacement_vide(i, j)) and (self.check_raccord_route(i, j)):
-            result= True
-        return(result) 
-
-#    def affiche_changement(self)
-
-class Vide(Batiment):
+class Empty(Building):
     def __init__(self):
         self.type = 9
         
-    
-          
-class Maison(Batiment):
-    def __init__(self, i, j):
-        super().__init__(i, j)
+class House(Building):
+    def __init__(self):
         self.type = 1
-        self.hab_par_maison=5
-        self.materiaux_requis=3
-
-    def check_ressource(self):
-        result = False
-        if stock_bois >= self.materiaux_requis:
-            result = True
-        return(result)
-
-    def creation(self):
-        if self.accept_construction() and self.check_ressource():
-            batiments[self.i][self.j].type = 1
-
-    def destruction(self):
-        batiments[self.i][self.j].type = 9  # destruction variable selon batiment_autres ressources specifiques (incomplet)
-
-class Usine(Batiment):
-    def __init__(self, i, j):
-        super().__init__(i, j)
-        self.type = 2
-        self.hab_requis = 10
-        self.hab_affectes = 0
-        self.prod_max = 100
-        self.stock_bois = 0
-        self.materiaux_requis = 10
+        self.capacity=5
+        self.wood_needed=3
 
     def check_ressource(self):
         result= False
-        if (stock_bois >= self.materiaux_requis) and (hab_restant >= 1):
+        if wood >= self.wood_needed:
+            result= True
+        return(result)
+
+class Factory(Building):
+    def __init__(self):
+        super().__init__(i, j)
+        self.type = 2
+        self.hab_required = 10
+        self.hab_used = 0
+        self.prod_max = 10
+        self.wood_needed = 10
+
+    def check_ressource(self):
+        result= False
+        if wood >= self.wood_needed:
             result= True
         return(result)
 
@@ -113,6 +71,45 @@ class Route(Batiment):
 
     def destruction(self):
         batiments[self.i][self.j].type = 9  # destruction variable selon batiment_autres ressources specifiques (incomplet)
+
+
+class Map():
+    def __init__(self, height, width):
+        empty = Empty()
+        line = [empty] * width
+        self.map = line * height
+
+    def check_empty(self, i, j):
+        if self.map[i][j].type != 9:
+            result = False
+        else: 
+            result = True
+        return(result)
+
+    def check_road_junction(self, i, j):
+        result = False
+        if i-1 >= 0:
+            if self.map[i-1][j].type == 0: # 0 designe une route
+                result = True
+        if j-1 >= 0:
+            if self.map[i][j-1].type == 0: # 0 designe une route
+                result = True
+        if i+1 <= taille_hauteur-1:
+            if self.map[i+1][j].type == 0: # 0 designe une route
+                result = True 
+        if j+1 <= taille_largeur-1:
+            if self.map[i][j+1].type == 0: # 0 designe une route
+                result = True
+        return(result)
+
+    def insert(building, i, j):
+        if self.check_empty(i, j) and self.check_road_junction(i, j) and building.check_ressources():
+            self.map[i][j] = building
+        
+    def delete(i, j):
+        empty = Empty()
+        self.map[i][j] = empty
+
 
 
 maison1 = Maison(3,4)
