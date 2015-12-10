@@ -1,0 +1,53 @@
+# -*- coding: utf-8 -*-
+"""
+COMPTE RENDU REUNION DU 09/12
+Created on Thu Dec 10 16:50:12 2015
+
+@author: Geoffroy
+"""
+
+Résultat semaine dernière : 
+	- Fonction de fin de tour
+	- Modèles de classe en cours
+
+TO DO : 
+	- Installer Pygame chez Fatma et Pierre
+	- Comprendre le fonctionnement de Git
+	- Lire le tutoriel Pygame
+
+	- Interfaçage et définition de noms standards
+
+
+Objectif :
+	- Première version fonctionnelle sans interface graphique
+
+
+Gameplay du mode dégradé : 
+	1. On crée une route initiale
+	2. L'utilisateur choisit l'emplacement de routes supplémentaires, maisons et usines avec ses ressources initiales
+	3. L'utilisateur passe des tours successivement et cela lui permet de créer plus de maisons et d'usines : 
+		a. L'usine produit des matériaux de construction
+		b. Dès qu'ils sont suffisants, on recrée une route et une maison
+		c. Les habitants augmentent et la capacité de production de l'usine également
+	4. Arrêt du jeu lorsqu'on a collecté N ressources
+
+Test à valider :
+
+Lancer_jeu()
+Créer_route(2, 3)
+Créer_maison(3,3)
+Créer_usine(1,3)
+Fin_de_tour()
+Fin_de_tour()
+Fin_de_tour()
+Créer_maison(3,2)
+Créer_usine(1,2)
+Fin_de_tour()
+
+#fin du test
+
+Deadline pour valider le test : dimanche soir
+
+Deadline pour que le matériel marche : vendredi soir
+
+Entre dimanche et mercredi : on se répartit les modifications supplémentaires à apporter (démolition de bâtiment, …)
