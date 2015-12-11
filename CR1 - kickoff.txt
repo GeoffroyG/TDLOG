@@ -1,10 +1,9 @@
-TO DO list du prof : 
+﻿TO DO list du prof : 
 	- Définition des fonctionnalités macro
 	- Définition des fonctionnalités élémentaires
 	- Définition d'une gestion de projet / orga
 	- Définition des rôles
 	- Décider d'une gestion du temps
-
 
 Macro-fonctions à définir : 
 	- Test de rattachement à une route
