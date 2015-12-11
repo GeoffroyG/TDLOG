@@ -62,8 +62,14 @@ class Factory(Building):
 class Map():
     def __init__(self, height, width):
         empty = Empty()
-        line = [empty] * width
-        self.map = [line] * height
+        line = []
+        self.map = []
+        for i in range(height):
+            for j in range(width):
+                line.append(empty)
+            self.map.append(line)
+            line = []
+        self.map[2][0] = Road()
 
     def check_empty(self, i, j):
         ''' Checks if there is no building in cell [i][j]. '''
@@ -92,7 +98,7 @@ class Map():
 
     def insert(self, building, i, j):
         ''' Inserts a building in cell [i][j]. '''
-        if self.check_empty(i, j) and self.check_road_junction(i, j) and building.check_ressources():
+        if self.check_empty(i, j) and self.check_road_junction(i, j) and building.check_ressource():
             self.map[i][j] = building
         
     def delete(self, i, j):
@@ -100,13 +106,23 @@ class Map():
         self.map[i][j] = Empty()
 
     def display(self):
-        
-
+        ''' Displays the matrix in text mode. '''
+        types = []
+        for i in range(height):
+            for j in range(width):
+                types.append(self.map[i][j].type)
+            print(types)
+            types = []
+        print("")
 
 mymap = Map(height, width)
+mymap.display()
+
 mymap.insert(Road(), 2, 0)
 mymap.insert(Road(), 2, 1)
 mymap.insert(Road(), 2, 2)
 mymap.insert(House(), 1, 2)
+mymap.insert(Factory(), 3, 2)
 
+mymap.display()
 
