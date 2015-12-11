@@ -1,7 +1,16 @@
-# 9 designe un vide sur l'interface "batiments"
-# 0 designe une route sur l'interface "batiments"
-# 1 designe une maison sur l'interface "batiments"
-# 2 designe une  usine sur l'interface "batiments"
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Dec 09 09:41:27 2015
+Principales classes du jeu et tests de fonctionnement de base.
+@author: Geoffroy Gallier
+"""
+
+""" 
+9 designe un vide sur l'interface "batiments"
+0 designe une route sur l'interface "batiments"
+1 designe une maison sur l'interface "batiments"
+2 designe une  usine sur l'interface "batiments"
+"""
 
 height = 4  # pour le besoin de l'exercice
 width = 8  # pour le besoin de l'exercice
