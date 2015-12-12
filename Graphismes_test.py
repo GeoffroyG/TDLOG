@@ -27,6 +27,7 @@ WINDOWHEIGHT = MENUBARHEIGHT + 2*GAPSIZE # final size of the window in pixels
 n = 3 # number of pictures per column in the menu
 
 Graphism = ["Road.png", "House.png", "Factory.png", "None.png", "None.png", "None.png", "None.png", "None.png", "None.png", "Grass.png"]
+Graphism_Selected = ["Road_Selected.png", "House_Selected.png", "Factory_Selected.png", "None.png", "None.png", "None.png", "None.png", "None.png", "None.png", "Grass_Selected.png"]
 Buildings = [Classes_Tests.Road(), Classes_Tests.House(), Classes_Tests.Factory(), Classes_Tests.Empty(), Classes_Tests.Empty(), Classes_Tests.Empty(), Classes_Tests.Empty(), Classes_Tests.Empty(), Classes_Tests.Empty(), Classes_Tests.Empty()]
 # Graphism and Buildings are to be modified together, one is the buidings list the other the pictures list
 
@@ -36,10 +37,11 @@ MenuCoordinates = [(WINDOWWIDTH-GAPSIZE-MENUBARWIDTH,GAPSIZE),(WINDOWWIDTH-GAPSI
 # Initialisation of many variables that are useful later
 
 def main():
-    global FPSCLOCK, DISPLAYSURF
+    global FPSCLOCK, DISPLAYSURF, Selected
     pygame.init()
     FPSCLOCK = pygame.time.Clock()
     DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
+    Selected = [False, False, False, False, False, False, False, False, False, False]
     # Initialisation of the clock and the window
 
     mousex = 0 # used to store x coordinate of mouse event
@@ -57,19 +59,19 @@ def main():
     Factories = [] # preparation of a list to store the factories for production
 
     while True: # main game loop
-        mouseClicked = False
 
         DISPLAYSURF.fill(BGCOLOR) # drawing the window
-        drawBoard(mainBoard, DISPLAYSURF)
-
-        for event in pygame.event.get(): # event handling loop
-            if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
-                pygame.quit()
-                sys.exit()
-            elif event.type == MOUSEBUTTONUP:
+        drawBoard(mainBoard, DISPLAYSURF, Selected)
+                
+                
+        for event in pygame.event.get(): # event handling loop        
+            if event.type == MOUSEBUTTONUP:
                 mousex, mousey = event.pos
                 mouseClicked = True
-                
+            elif event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
+                pygame.quit()
+                sys.exit()        
+        
         
         if isInGame(mousex, mousey):
             boxx, boxy = getBoxAtPixelGame(mousex, mousey)
@@ -83,15 +85,17 @@ def main():
                     Factories.append(building)
                 buildingSelected = False
                 building = Classes_Tests.Empty()
+                Selected = [False, False, False, False, False, False, False, False, False, False]
         
         if isInMenu(mousex):
             # Step to select a building in the menu
-            if mouseClicked and getBuildingFromMenu(mousex, mousey) != None:
+            if mouseClicked and getBuildingFromMenu(mousex, mousey, Selected) != None:
                 buildingSelected = True
-                building = getBuildingFromMenu(mousex, mousey)
+                building = getBuildingFromMenu(mousex, mousey, Selected)
         
         # Reinitialization of the parameters after
         boxx, boxy = None, None
+        mouseClicked = False
         # Redraw the screen and wait a clock tick.
         pygame.display.update()
         FPSCLOCK.tick(FPS)
@@ -106,7 +110,7 @@ def main():
                 worker_aux -= worker
         # Increase of the timer
         timing += 1
-        
+
 
 def getBoxAtPixelGame(mousex, mousey):
     # Translates the coordinates in the game from pixels to integers
@@ -114,18 +118,19 @@ def getBoxAtPixelGame(mousex, mousey):
     i = (mousey - RESSOURCEBARHEIGHT) / GAMEHEIGHT * BOARDHEIGHT
     return(int(i),int(j))
     
-def getBuildingFromMenu(mousex, mousey):
+def getBuildingFromMenu(mousex, mousey, Selected):
     # Gives the building from the coordinates in the menu (see drawBoard)
     p = (mousex-WINDOWWIDTH+MENUBARWIDTH)//(GAPSIZE+BOXSIZE)
     q = (mousey-RESSOURCEBARHEIGHT-2*GAPSIZE)//(GAPSIZE+BOXSIZE)
     k = int(p)*n+int(q)
     if k>=0 and k<10:
+        Selected[k] = True
         return(Buildings[k])
     else:
         return(None)
     
 
-def drawBoard(Map, DISPLAYSURF):
+def drawBoard(Map, DISPLAYSURF, Selected):
     # First we translate the map matrix into a types matrix
     Matrix = Map.types()
     # Then we display each box with the picture attached to it
@@ -156,8 +161,15 @@ def drawBoard(Map, DISPLAYSURF):
         y = (i%n)*(GAPSIZE+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE
         DISPLAYSURF.blit(dessin,(x,y))
         i+=1
-
-    
+    i=0
+    for k in Selected:
+        if k:
+            graph = Graphism_Selected[i]           
+            dessin = pygame.image.load(graph).convert()
+            x = (i//n)*(GAPSIZE+BOXSIZE)+WINDOWWIDTH-MENUBARWIDTH
+            y = (i%n)*(GAPSIZE+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE
+            DISPLAYSURF.blit(dessin,(x,y))
+        i+=1            
     
 
 def isInMenu(mousex):
