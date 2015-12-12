@@ -12,7 +12,6 @@ Principales classes du jeu et tests de fonctionnement de base.
 2 designe une  usine sur l'interface "batiments"
 """
 
-""" J'ai du le renommer pour pouvoir l'intégrer aux fichiers suivants en fait """
 
 
 # wood = 100 # evolution avec le temps => passé en argument de la map
@@ -31,6 +30,7 @@ class Road(Building):
     def __init__(self):
         self.type = 0
         self.wood_needed = 1
+        self.time = 0
 
     def check_ressource(self, wood):
         result = False
@@ -42,13 +42,23 @@ class House(Building):
     def __init__(self):
         self.type = 1
         self.hab_max = 5
+        self.hab_cond = 5
+        self.hab = 0
         self.wood_needed = 5
+        self.time = 0
+        self.debit = 40
 
     def check_ressource(self, wood):
         result = False
         if wood >= self.wood_needed:
             result = True
         return(result)
+        
+    def moving(self, timing):
+        if self.hab < self.hab_cond and (timing-self.time)%self.debit == 0:
+            self.hab += 1
+        if self.hab > self.hab_cond:
+            self.hab = self.hab_cond
 
 class Factory(Building):
     def __init__(self):
@@ -118,14 +128,29 @@ class Map():
             if self.map[i][j+1].type == 0: # 0 designe une route
                 result = True
         return(result)
+        
+    def check_junction(self, types, i, j):
+        ''' Determines how many buildings of type types near the [i][j] cell. '''
+        result = 0
+        if i-1 >= 0:
+            if self.map[i-1][j].type == types: # 0 designe une route
+                result += 1
+        if j-1 >= 0:
+            if self.map[i][j-1].type == types: # 0 designe une route
+                result += 1
+        if i+1 <= self.height-1:
+            if self.map[i+1][j].type == types: # 0 designe une route
+                result += 1
+        if j+1 <= self.width-1:
+            if self.map[i][j+1].type == types: # 0 designe une route
+                result += 1
+        return(result)
 
     def insert(self, building, i, j):
         ''' Inserts a building in cell [i][j]. '''
         if self.check_empty(i, j) and self.check_road_junction(i, j) and building.check_ressource(self.wood):
             self.map[i][j] = building
             self.wood -= building.wood_needed
-            if building.type == 1:
-                self.habitants += building.hab_max
         
     def delete(self, i, j):
         ''' Deletes the [i][j] building. '''
