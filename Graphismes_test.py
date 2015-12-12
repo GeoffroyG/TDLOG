@@ -37,11 +37,12 @@ MenuCoordinates = [(WINDOWWIDTH-GAPSIZE-MENUBARWIDTH,GAPSIZE),(WINDOWWIDTH-GAPSI
 # Initialisation of many variables that are useful later
 
 def main():
-    global FPSCLOCK, DISPLAYSURF, Selected
+    global FPSCLOCK, DISPLAYSURF, Selected, building
     pygame.init()
     FPSCLOCK = pygame.time.Clock()
     DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
     Selected = [False, False, False, False, False, False, False, False, False, False]
+    building = Classes_Tests.Empty()
     # Initialisation of the clock and the window
 
     mousex = 0 # used to store x coordinate of mouse event
@@ -53,10 +54,16 @@ def main():
     DISPLAYSURF.fill(BGCOLOR)
     
     buildingSelected = False
-    building = Classes_Tests.Empty()  # initialisation of the two selection variables   
+    # initialisation of the selection variables   
     
     timing = 0 # set of a timer to manipulate production
     Factories = [] # preparation of a list to store the factories for production
+    Factories_coords = []    
+    Houses = [] # same for the houses
+    Houses_coords = [] # useful to keep coordinates as hab max depend on the proximity of Factories
+    Roads = [Classes_Tests.Road()]
+    Roads_coords = [[2,0]]
+
 
     while True: # main game loop
 
@@ -78,11 +85,27 @@ def main():
             # If we're in the game, the coordinates represent a box and we have selected a building
             if boxx != None and boxy != None and mouseClicked and buildingSelected:
                 mainBoard.insert(building, boxx, boxy)
+                if building.type == 0:
+                    building = Classes_Tests.Road()
+                    building.time = timing - 1
+                    Roads.append(building)
+                    Roads_coords.append([boxx,boxy])
                 # We create that building and reinitialize the parameters used (the tests are already in insert)
+                if building.type == 1:
+                    building = Classes_Tests.House()
+                    building.time = timing-1
+                    Houses.append(building)
+                    Houses_coords.append([boxx,boxy])
                 if building.type == 2:
-                    # If we are building a factory   
+                    # If we are building a factory
+                    building = Classes_Tests.Factory()
                     building.time = timing-1
                     Factories.append(building)
+                    Factories_coords.append([boxx,boxy])
+                if building.type == 9:
+                    remove([Roads, Roads_coords, Houses, Houses_coords, Factories, Factories_coords], boxx, boxy)
+                    mainBoard.delete(boxx, boxy)
+                    
                 buildingSelected = False
                 building = Classes_Tests.Empty()
                 Selected = [False, False, False, False, False, False, False, False, False, False]
@@ -99,6 +122,15 @@ def main():
         # Redraw the screen and wait a clock tick.
         pygame.display.update()
         FPSCLOCK.tick(FPS)
+        # Increase of the newcomers
+        habitants_aux = 0
+        if Houses != []:
+            for i in range(len(Houses)):
+                p = mainBoard.check_junction(2,Houses_coords[i][0], Houses_coords[i][1])
+                Houses[i].hab_cond = Houses[i].hab_max - p
+                Houses[i].moving(timing)
+                habitants_aux += Houses[i].hab
+        mainBoard.habitants = habitants_aux
         # Use of an auxiliary variable to check on the workers available
         # This is not the most efficient as it focuses more on the first Factories built
         worker_aux = mainBoard.habitants
@@ -128,7 +160,28 @@ def getBuildingFromMenu(mousex, mousey, Selected):
         return(Buildings[k])
     else:
         return(None)
+        
+def getType(Map, boxx, boxy):
+    Matrix = Map.types()
+    return(Matrix[boxx][boxy])
     
+def remove(list_types_coords, boxx, boxy):
+    # The list is organized this way : [Building A, Building Coords A, Building B...]
+    n = len(list_types_coords)
+    n = n//2
+    k_final = 0
+    i_final = 0
+    for k in range(n):
+        coords_list = list_types_coords[2*k+1]
+        p = len(coords_list)
+        print(p)
+        for i in range(p):
+            if [boxx,boxy] == coords_list[i]:
+                k_final = k
+                i_final = i
+    del list_types_coords[2*k_final][i_final]
+    del list_types_coords[2*k_final+1][i_final]
+        
 
 def drawBoard(Map, DISPLAYSURF, Selected):
     # First we translate the map matrix into a types matrix
@@ -189,3 +242,5 @@ def isInGame(mousex, mousey):
     
 if __name__ == '__main__':
     main()
+
+    
