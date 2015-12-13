@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Fri Dec 11 22:13:40 2015
 
-@author: Pierre
-"""
 
 import Classes_Tests, pygame, sys
 from pygame.locals import *
@@ -75,6 +71,8 @@ def main():
             if event.type == MOUSEBUTTONUP:
                 mousex, mousey = event.pos
                 mouseClicked = True
+            elif event.type == MOUSEMOTION:
+                mousex, mousey = event.pos
             elif event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                 pygame.quit()
                 sys.exit()        
@@ -109,7 +107,24 @@ def main():
                 buildingSelected = False
                 building = Classes_Tests.Empty()
                 Selected = [False, False, False, False, False, False, False, False, False, False]
-        
+            if  [boxx,boxy] in  Houses_coords:
+                index= Houses_coords.index([boxx,boxy])
+                text = font.render("Habitants : "+str(Houses[index].hab), 1, (10,10,10))
+                textpos = text.get_rect()
+                DISPLAYSURF.blit(text, textpos)
+            elif [boxx,boxy] in  Factories_coords:
+                index= Factories_coords.index([boxx,boxy])
+                text="EmployÃ©s : "+str(Factories[index].worker)+" \n "+"Production : "+str(int(Factories[index].prod_max * Factories[index].worker / Factories[index].hab_max))
+                height = font.get_height()*1.3
+                x,y = 0,0
+                for line in text.splitlines():
+                    img = font.render(line,1,(10,10,10))
+                    DISPLAYSURF.blit(img,(x,y))
+                    y += height
+                #text = font.render("employÃ©s : "+str(Factories[index].worker)+" \n "+"employÃ©s : "+str(Factories[index].production(timing)), 1, (10,10,10))
+                #textpos = text.get_rect()
+                #DISPLAYSURF.blit(text, textpos)
+    
         if isInMenu(mousex):
             # Step to select a building in the menu
             if mouseClicked and getBuildingFromMenu(mousex, mousey, Selected) != None:
@@ -137,9 +152,10 @@ def main():
         if Factories != []:
             i = 0
             while i < len(Factories) and worker_aux > 0:
-                worker = min(worker_aux,Factories[i].hab_max)
-                mainBoard.wood += Factories[i].production(worker, timing)
-                worker_aux -= worker
+                Factories[i].worker = min(worker_aux,Factories[i].hab_max)
+                mainBoard.wood += Factories[i].production(timing)
+                worker_aux -= Factories[i].worker
+                i+=1 # increment to go through all factories  
         # Increase of the timer
         timing += 1
 
