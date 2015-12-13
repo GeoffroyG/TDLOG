@@ -114,14 +114,14 @@ def main():
                 DISPLAYSURF.blit(text, textpos)
             elif [boxx,boxy] in  Factories_coords:
                 index= Factories_coords.index([boxx,boxy])
-                text="EmployÃ©s : "+str(Factories[index].worker)+" \n "+"Production : "+str(int(Factories[index].prod_max * Factories[index].worker / Factories[index].hab_max))
+                text="Employes : "+str(Factories[index].worker)+" \n "+"Production : "+str(int(Factories[index].prod_max * Factories[index].worker / Factories[index].hab_max))
                 height = font.get_height()*1.3
                 x,y = 0,0
                 for line in text.splitlines():
                     img = font.render(line,1,(10,10,10))
                     DISPLAYSURF.blit(img,(x,y))
                     y += height
-                #text = font.render("employÃ©s : "+str(Factories[index].worker)+" \n "+"employÃ©s : "+str(Factories[index].production(timing)), 1, (10,10,10))
+                #text = font.render("employes : "+str(Factories[index].worker)+" \n "+"production : "+str(int(Factories[index].prod_max * Factories[index].worker / Factories[index].hab_max)), 1, (10,10,10))
                 #textpos = text.get_rect()
                 #DISPLAYSURF.blit(text, textpos)
     
