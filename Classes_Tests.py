@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Dec 09 09:41:27 2015
-Principales classes du jeu et tests de fonctionnement de base.
-@author: Geoffroy Gallier
-"""
 
 """ 
 9 designe un vide sur l'interface "batiments"
@@ -14,7 +9,7 @@ Principales classes du jeu et tests de fonctionnement de base.
 
 
 
-# wood = 100 # evolution avec le temps => passé en argument de la map
+# wood = 100 # evolution avec le temps => passÃ© en argument de la map
 workers_remaining = 0 # evolution avec le temps
 
 
@@ -68,7 +63,7 @@ class Factory(Building):
         self.hab_max = 10
 
         self.prod_max = 10
-        
+        self.worker = 0
         self.debit = 80
         self.time = 0
 
@@ -78,10 +73,10 @@ class Factory(Building):
             result = True
         return(result)
     
-    def production(self, worker, timing): # La petite fonction de prod tranquilou! Simpliste, mais pour le cas dégénéré on est bons
+    def production(self, timing): # La petite fonction de prod tranquilou! Simpliste, mais pour le cas dÃ©gÃ©nÃ©rÃ© on est bons
         wood = 0
         if (timing-self.time)%self.debit == 0:
-            wood = int(self.prod_max * worker / self.hab_max)
+            wood = int(self.prod_max * self.worker / self.hab_max)
         return(wood)
 
 
@@ -97,7 +92,7 @@ class Map():
             line = []
         self.map[2][0] = Road()
 
-        # J'ai rajouté quelques trucs qui seront plus manipulables en tant qu'arguments    
+        # J'ai rajoutÃ© quelques trucs qui seront plus manipulables en tant qu'arguments    
         self.wood = 100
         self.habitants = 0
         self.height = height
@@ -168,7 +163,7 @@ class Map():
     
     def types(self):
         ''' Returns a matrix with all the types '''
-        # on avait dit que c'était pas joli mais sinon c'est vraiment pas pratique
+        # on avait dit que c'Ã©tait pas joli mais sinon c'est vraiment pas pratique
         types = []
         line = []
         for i in range(self.height):
