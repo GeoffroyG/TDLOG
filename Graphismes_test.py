@@ -29,6 +29,8 @@ Buildings = [Classes_Tests.Road(), Classes_Tests.House(), Classes_Tests.Factory(
 
 mainBoard = Classes_Tests.Map(BOARDHEIGHT,BOARDWIDTH)
 font = pygame.font.Font(None, 24)
+font_title = pygame.font.Font(None, 68)
+font_other = pygame.font.Font(None, 40)
 MenuCoordinates = [(WINDOWWIDTH-GAPSIZE-MENUBARWIDTH,GAPSIZE),(WINDOWWIDTH-GAPSIZE-MENUBARWIDTH,WINDOWHEIGHT-GAPSIZE),(WINDOWWIDTH-GAPSIZE,WINDOWHEIGHT-GAPSIZE),(WINDOWWIDTH-GAPSIZE,GAPSIZE)]
 # Initialisation of many variables that are useful later
 
@@ -37,17 +39,64 @@ def main():
     pygame.init()
     FPSCLOCK = pygame.time.Clock()
     DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
-    Selected = [False, False, False, False, False, False, False, False, False, False]
-    building = Classes_Tests.Empty()
     # Initialisation of the clock and the window
 
     mousex = 0 # used to store x coordinate of mouse event
     mousey = 0 # used to store y coordinate of mouse event
     pygame.display.set_caption('Jeu Test') # name of the game
-
-
+    
     BGCOLOR = (255, 255, 255) # white background
     DISPLAYSURF.fill(BGCOLOR)
+    game = False
+    Rules = False
+    posReturn = pygame.Rect(0,0,0,0)
+    
+    while not game:
+        background = pygame.image.load("Backgroundimage.jpg").convert()
+        pygame.transform.scale(background, (WINDOWWIDTH, WINDOWHEIGHT))
+        DISPLAYSURF.blit(background, (0,0))
+        text = font_title.render("Simulation de ville 2D", 1, (255, 0, 0))
+        textposTitle = text.get_rect(centerx = WINDOWWIDTH / 2, centery = 50)
+        DISPLAYSURF.blit(text, textposTitle)
+        if not Rules:
+            text = font_other.render("Nouveau Jeu", 1, (10,10,10), (255,255,255))
+            textposNewGame = text.get_rect(centerx = WINDOWWIDTH / 2, centery = WINDOWHEIGHT / 2)
+            DISPLAYSURF.blit(text, textposNewGame)
+            text = font_other.render("Règles", 1, (10,10,10), (255,255,255))
+            textposRules = text.get_rect(centerx = WINDOWWIDTH / 2, centery = WINDOWHEIGHT / 2 + textposNewGame.height)
+            DISPLAYSURF.blit(text, textposRules)
+        else:
+            text = font_other.render("Ceci sont les règles, ça va être coton à tout taper en faisant les sauts de lignes", 1, (10,10,10), (255,255,255))
+            textpos = text.get_rect(centerx = WINDOWWIDTH / 2, centery = WINDOWHEIGHT / 2)
+            DISPLAYSURF.blit(text, textpos)
+            back = pygame.image.load("Return.png").convert()
+            DISPLAYSURF.blit(back, (0,0))
+            posReturn = pygame.Rect(0, 0, 40, 40)
+            
+            
+        for event in pygame.event.get(): # event handling loop        
+            if event.type == MOUSEBUTTONUP:
+                mousex, mousey = event.pos
+                mouseClicked = True
+            elif event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
+                pygame.quit()
+                sys.exit() 
+        
+        
+        if textposNewGame.collidepoint(mousex, mousey) and not Rules:
+            game = True
+        elif textposRules.collidepoint(mousex, mousey) and not Rules:
+            Rules = True
+        elif posReturn.collidepoint(mousex, mousey) and Rules:
+            Rules = False
+            
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
+
+
+
+    Selected = [False, False, False, False, False, False, False, False, False, False]
+    building = Classes_Tests.Empty()
     
     buildingSelected = False
     mouseClicked = False
@@ -173,6 +222,8 @@ def getBuildingFromMenu(mousex, mousey, Selected):
     q = (mousey-RESSOURCEBARHEIGHT-2*GAPSIZE)//(GAPSIZE+BOXSIZE)
     k = int(p)*n+int(q)
     if k>=0 and k<10:
+        for i in range(len(Selected)):
+            Selected[i] = False
         Selected[k] = True
         return(Buildings[k])
     else:
@@ -214,13 +265,13 @@ def drawBoard(Map, DISPLAYSURF, Selected):
     # Then we display the ressources
     Ressources = "Wood : "+str(Map.wood)+"   Habitants : "+str(Map.habitants)
     text = font.render(Ressources, 1, (10,10,10))
-    textpos = text.get_rect(centerx=RESSOURCEBARWIDTH/2)
+    textpos = text.get_rect(centerx=RESSOURCEBARWIDTH/2,centery=GAPSIZE+RESSOURCEBARHEIGHT/2)
     DISPLAYSURF.blit(text, textpos)
     # We draw the background for the menu (I don't know why we have to do this step everytime but else it erases)
     pygame.draw.polygon(DISPLAYSURF, (139,69,19), MenuCoordinates)
     # And finally all the things that are on said menu
     text = font.render("Menu", 1, (10,10,10))
-    textpos = text.get_rect(centerx=RESSOURCEBARWIDTH+2*GAPSIZE + MENUBARWIDTH/2)
+    textpos = text.get_rect(centerx=RESSOURCEBARWIDTH+2*GAPSIZE + MENUBARWIDTH/2, centery=GAPSIZE+RESSOURCEBARHEIGHT/2)
     DISPLAYSURF.blit(text, textpos)
     # For the pictures of the buildings we can change n to print more buildings in height, I haven't thought of a formula that would depend on the window length
     i=0
