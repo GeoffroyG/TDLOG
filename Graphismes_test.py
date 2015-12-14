@@ -50,6 +50,7 @@ def main():
     DISPLAYSURF.fill(BGCOLOR)
     
     buildingSelected = False
+    mouseClicked = False
     # initialisation of the selection variables   
     
     timing = 0 # set of a timer to manipulate production
