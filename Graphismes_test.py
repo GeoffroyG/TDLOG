@@ -1,38 +1,16 @@
 # -*- coding: utf-8 -*-
 
 
-import Classes_Tests, pygame, sys
+import Classes_Tests
+from Constantes import *
 from pygame.locals import *
-
-pygame.font.init()
-
-FPS = 30 # frames per second, the general speed of the program
-BOXSIZE = 40 # size of box height & width in pixels
-GAPSIZE = 5 # size of gap between boxes in pixels
-BOARDWIDTH = 10 # number of columns of icons
-BOARDHEIGHT = 10 # number of rows of icons
-GAMEWIDTH = BOARDWIDTH * (GAPSIZE + BOXSIZE) + GAPSIZE # size of game's width in pixels
-GAMEHEIGHT = BOARDHEIGHT * (GAPSIZE + BOXSIZE) + GAPSIZE # size of game' height in pixels
-RESSOURCEBARWIDTH = GAMEWIDTH # size of the bar indicating the ressources
-RESSOURCEBARHEIGHT = 60 # size of the bar indicating the ressources
-MENUBARWIDTH = 180 # size of the bar indicating the menu
-MENUBARHEIGHT = RESSOURCEBARHEIGHT + GAPSIZE + GAMEHEIGHT # size of the bar indicating the menu
-WINDOWWIDTH = MENUBARWIDTH + 3*GAPSIZE + GAMEWIDTH  # final size of the window in pixels
-WINDOWHEIGHT = MENUBARHEIGHT + 2*GAPSIZE # final size of the window in pixels
 
 n = 3 # number of pictures per column in the menu
 
-Graphism = ["Road.png", "House.png", "Factory.png", "None.png", "None.png", "None.png", "None.png", "None.png", "None.png", "Grass.png"]
-Graphism_Selected = ["Road_Selected.png", "House_Selected.png", "Factory_Selected.png", "None.png", "None.png", "None.png", "None.png", "None.png", "None.png", "Grass_Selected.png"]
 Buildings = [Classes_Tests.Road(), Classes_Tests.House(), Classes_Tests.Factory(), Classes_Tests.Empty(), Classes_Tests.Empty(), Classes_Tests.Empty(), Classes_Tests.Empty(), Classes_Tests.Empty(), Classes_Tests.Empty(), Classes_Tests.Empty()]
 # Graphism and Buildings are to be modified together, one is the buidings list the other the pictures list
 
 mainBoard = Classes_Tests.Map(BOARDHEIGHT,BOARDWIDTH)
-font = pygame.font.Font(None, 24)
-font_title = pygame.font.Font(None, 68)
-font_other = pygame.font.Font(None, 40)
-MenuCoordinates = [(WINDOWWIDTH-GAPSIZE-MENUBARWIDTH,GAPSIZE),(WINDOWWIDTH-GAPSIZE-MENUBARWIDTH,WINDOWHEIGHT-GAPSIZE),(WINDOWWIDTH-GAPSIZE,WINDOWHEIGHT-GAPSIZE),(WINDOWWIDTH-GAPSIZE,GAPSIZE)]
-# Initialisation of many variables that are useful later
 
 def main():
     global FPSCLOCK, DISPLAYSURF, Selected, building
@@ -52,7 +30,7 @@ def main():
     posReturn = pygame.Rect(0,0,0,0)
     
     while not game:
-        background = pygame.image.load("Backgroundimage.jpg").convert()
+        background = pygame.image.load("2.Images/Backgroundimage.jpg").convert()
         pygame.transform.scale(background, (WINDOWWIDTH, WINDOWHEIGHT))
         DISPLAYSURF.blit(background, (0,0))
         text = font_title.render("Simulation de ville 2D", 1, (255, 0, 0))
@@ -69,7 +47,7 @@ def main():
             text = font_other.render("Ceci sont les règles, ça va être coton à tout taper en faisant les sauts de lignes", 1, (10,10,10), (255,255,255))
             textpos = text.get_rect(centerx = WINDOWWIDTH / 2, centery = WINDOWHEIGHT / 2)
             DISPLAYSURF.blit(text, textpos)
-            back = pygame.image.load("Return.png").convert()
+            back = pygame.image.load("2.Images/Return.png").convert()
             DISPLAYSURF.blit(back, (0,0))
             posReturn = pygame.Rect(0, 0, 40, 40)
             
