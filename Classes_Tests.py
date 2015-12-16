@@ -143,9 +143,11 @@ class Map():
 
     def insert(self, building, i, j):
         ''' Inserts a building in cell [i][j]. '''
-        if self.check_empty(i, j) and self.check_road_junction(i, j) and building.check_ressource(self.wood):
+        if self.check_empty(i, j) and self.check_road_junction(i, j) and building.check_ressource(self.wood):            
             self.map[i][j] = building
             self.wood -= building.wood_needed
+            return(True)
+        return(False)
         
     def delete(self, i, j):
         ''' Deletes the [i][j] building. '''
