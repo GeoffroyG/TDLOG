@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+"""
+Created on Wed Dec 16 15:36:10 2015
+
+@author: Fatma - Geoffroy - Pierre 
+"""
 
 """ 
 9 designe un vide sur l'interface "batiments"
