@@ -102,19 +102,21 @@ def main():
     mouseClicked = False
     # initialisation of the selection variables   
     
-    timing = 0 # set of a timer to manipulate production
+    timer = 0 # set of a timer in frames
+    timing = 0 # set of a timer in seconds to manipulate production
     Factories = [] # preparation of a list to store the factories for production
     Factories_coords = []    
     Houses = [] # same for the houses
     Houses_coords = [] # useful to keep coordinates as hab max depend on the proximity of Factories
     Roads = [Classes_Tests.Road()]
     Roads_coords = [[2,0]]
+    build = False
 
 
     while True: # main game loop
 
         DISPLAYSURF.fill(BGCOLOR) # drawing the window
-        drawBoard(mainBoard, DISPLAYSURF, Selected)
+        drawBoard(mainBoard, DISPLAYSURF, Selected, timing)
                 
                 
         for event in pygame.event.get(): # event handling loop        
@@ -132,27 +134,28 @@ def main():
             boxx, boxy = getBoxAtPixelGame(mousex, mousey)
             # If we're in the game, the coordinates represent a box and we have selected a building
             if boxx != None and boxy != None and mouseClicked and buildingSelected:
-                mainBoard.insert(building, boxx, boxy)
-                if building.type == 0:
-                    building = Classes_Tests.Road()
-                    building.time = timing - 1
-                    Roads.append(building)
-                    Roads_coords.append([boxx,boxy])
-                # We create that building and reinitialize the parameters used (the tests are already in insert)
-                if building.type == 1:
-                    building = Classes_Tests.House()
-                    building.time = timing-1
-                    Houses.append(building)
-                    Houses_coords.append([boxx,boxy])
-                if building.type == 2:
-                    # If we are building a factory
-                    building = Classes_Tests.Factory()
-                    building.time = timing-1
-                    Factories.append(building)
-                    Factories_coords.append([boxx,boxy])
-                if building.type == 9:
-                    remove([Roads, Roads_coords, Houses, Houses_coords, Factories, Factories_coords], boxx, boxy)
-                    mainBoard.delete(boxx, boxy)
+                build = mainBoard.insert(building, boxx, boxy)
+                if build:
+                    if building.type == 0:
+                        building = Classes_Tests.Road()
+                        building.time = timer - 1
+                        Roads.append(building)
+                        Roads_coords.append([boxx,boxy])
+                        # We create that building and reinitialize the parameters used (the tests are already in insert)
+                    if building.type == 1:
+                        building = Classes_Tests.House()
+                        building.time = timer-1
+                        Houses.append(building)
+                        Houses_coords.append([boxx,boxy])
+                    if building.type == 2:
+                        # If we are building a factory
+                        building = Classes_Tests.Factory()
+                        building.time = timer-1
+                        Factories.append(building)
+                        Factories_coords.append([boxx,boxy])
+                    if building.type == 9:
+                        remove([Roads, Roads_coords, Houses, Houses_coords, Factories, Factories_coords], boxx, boxy)
+                        mainBoard.delete(boxx, boxy)
                     
                 buildingSelected = False
                 building = Classes_Tests.Empty()
@@ -193,7 +196,7 @@ def main():
             for i in range(len(Houses)):
                 p = mainBoard.check_junction(2,Houses_coords[i][0], Houses_coords[i][1])
                 Houses[i].hab_cond = Houses[i].hab_max - p
-                Houses[i].moving(timing)
+                Houses[i].moving(timer)
                 habitants_aux += Houses[i].hab
         mainBoard.habitants = habitants_aux
         # Use of an auxiliary variable to check on the workers available
@@ -203,11 +206,12 @@ def main():
             i = 0
             while i < len(Factories) and worker_aux > 0:
                 Factories[i].worker = min(worker_aux,Factories[i].hab_max)
-                mainBoard.wood += Factories[i].production(timing)
+                mainBoard.wood += Factories[i].production(timer)
                 worker_aux -= Factories[i].worker
                 i+=1 # increment to go through all factories  
         # Increase of the timer
-        timing += 1
+        timer += 1
+        timing = timer // FPS
 
 
 def getBoxAtPixelGame(mousex, mousey):
@@ -242,7 +246,6 @@ def remove(list_types_coords, boxx, boxy):
     for k in range(n):
         coords_list = list_types_coords[2*k+1]
         p = len(coords_list)
-        print(p)
         for i in range(p):
             if [boxx,boxy] == coords_list[i]:
                 k_final = k
@@ -251,7 +254,7 @@ def remove(list_types_coords, boxx, boxy):
     del list_types_coords[2*k_final+1][i_final]
         
 
-def drawBoard(Map, DISPLAYSURF, Selected):
+def drawBoard(Map, DISPLAYSURF, Selected, timing):
     # First we translate the map matrix into a types matrix
     Matrix = Map.types()
     # Then we display each box with the picture attached to it
@@ -272,6 +275,9 @@ def drawBoard(Map, DISPLAYSURF, Selected):
     # And finally all the things that are on said menu
     text = font.render("Menu", 1, (10,10,10))
     textpos = text.get_rect(centerx=RESSOURCEBARWIDTH+2*GAPSIZE + MENUBARWIDTH/2, centery=GAPSIZE+RESSOURCEBARHEIGHT/2)
+    DISPLAYSURF.blit(text, textpos)
+    text = font.render("Time : "+str(timing), 1, (10,10,10))
+    textpos = text.get_rect(centerx=RESSOURCEBARWIDTH+2*GAPSIZE + MENUBARWIDTH/2, centery=WINDOWHEIGHT-GAPSIZE-24/2)
     DISPLAYSURF.blit(text, textpos)
     # For the pictures of the buildings we can change n to print more buildings in height, I haven't thought of a formula that would depend on the window length
     i=0
