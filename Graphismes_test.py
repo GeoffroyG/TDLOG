@@ -79,7 +79,6 @@ def main():
         FPSCLOCK.tick(FPS)
 
 
-
     Selected = [False, False, False, False, False, False, False, False, False, False]
     building = Classes_Tests.Empty()
 
@@ -215,8 +214,8 @@ def main():
 
 def getBoxAtPixelGame(mousex, mousey, origin):
     # Translates the coordinates in the game from pixels to integers
-    j = (mousex / GAMEWIDTH * NBCOLUMN_DISP) + origin[1]
-    i = ((mousey - RESSOURCEBARHEIGHT) / GAMEHEIGHT * NBROW_DISP) + origin[0]
+    i = origin[0] + ((mousey - RESSOURCEBARHEIGHT) / GAMEHEIGHT * NBROW_DISP)
+    j = origin[1] + (mousex / GAMEWIDTH * NBCOLUMN_DISP)
     return(int(i),int(j))
 
 def getBuildingFromMenu(mousex, mousey, Selected):
@@ -224,7 +223,7 @@ def getBuildingFromMenu(mousex, mousey, Selected):
     p = (mousex-WINDOWWIDTH+MENUBARWIDTH)//(GAPSIZE+BOXSIZE)
     q = (mousey-RESSOURCEBARHEIGHT-2*GAPSIZE)//(GAPSIZE+BOXSIZE)
     k = int(p)*n+int(q)
-    if k>=0 and k<10:
+    if k >= 0 and k < 10:
         for i in range(len(Selected)):
             Selected[i] = False
         Selected[k] = True

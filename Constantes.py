@@ -29,8 +29,8 @@ MENUBARHEIGHT = RESSOURCEBARHEIGHT + GAPSIZE + GAMEHEIGHT # size of the bar indi
 WINDOWWIDTH  = MENUBARWIDTH + 3*GAPSIZE + GAMEWIDTH  # final size of the window in pixels
 WINDOWHEIGHT = MENUBARHEIGHT + 2*GAPSIZE # final size of the window in pixels
 
-Graphism = ["2.Images/Road.png", "2.Images/House.png", "2.Images/Factory.png", "2.Images/None.png", "2.Images/None.png", "2.Images/None.png", "2.Images/None.png", "2.Images/None.png", "2.Images/None.png", "2.Images/Grass.png"]
-Graphism_Selected = ["2.Images/Road_Selected.png", "2.Images/House_Selected.png", "2.Images/Factory_Selected.png", "2.Images/None.png", "2.Images/None.png", "2.Images/None.png", "2.Images/None.png", "2.Images/None.png", "2.Images/None.png", "2.Images/Grass_Selected.png"]
+Graphism = ["2.Images/Road.png", "2.Images/House.png", "2.Images/Factory.png", "2.Images/Mine.png", "2.Images/None.png", "2.Images/None.png", "2.Images/None.png", "2.Images/None.png", "2.Images/None.png", "2.Images/Grass.png"]
+Graphism_Selected = ["2.Images/Road_Selected.png", "2.Images/House_Selected.png", "2.Images/Factory_Selected.png", "2.Images/Mine_Selected.png", "2.Images/None.png", "2.Images/None.png", "2.Images/None.png", "2.Images/None.png", "2.Images/None.png", "2.Images/Grass_Selected.png"]
 
 pygame.font.init()
 
@@ -40,3 +40,6 @@ font_other = pygame.font.Font(None, 40)
 
 MenuCoordinates = [(WINDOWWIDTH-GAPSIZE-MENUBARWIDTH,GAPSIZE),(WINDOWWIDTH-GAPSIZE-MENUBARWIDTH,WINDOWHEIGHT-GAPSIZE),(WINDOWWIDTH-GAPSIZE,WINDOWHEIGHT-GAPSIZE),(WINDOWWIDTH-GAPSIZE,GAPSIZE)]
 # Initialisation of many variables that are useful later
+
+MINES_DENSITY = 20
+NBMINES = int(NBCOLUMN * NBROW / MINES_DENSITY)
