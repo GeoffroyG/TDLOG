@@ -115,7 +115,7 @@ class Map():
             self.map.append(line)
             line = []
 
-        #self.set_mines()
+        self.set_mines()
         self.map[2][0] = Road()
         # J'ai rajoute quelques trucs qui seront plus manipulables en tant qu'arguments    
         self.wood = 100
@@ -126,7 +126,7 @@ class Map():
 
     def set_mines(self):
         ''' Creates random mines. '''
-        for i in range(NB_MINES):
+        for i in range(NBMINES):
             self.map[int(random.random()*NBCOLUMN)][int(random.random()*NBROW)] = Mine()
 
     def check_empty(self, i, j):
