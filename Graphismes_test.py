@@ -12,7 +12,7 @@ import os
 
 n = 3 # number of pictures per column in the menu
 
-Buildings = [Classes_Tests.Road(), Classes_Tests.House(), Classes_Tests.Factory(), Classes_Tests.Empty(), Classes_Tests.Empty(), Classes_Tests.Empty(), Classes_Tests.Empty(), Classes_Tests.Empty(), Classes_Tests.Empty(), Classes_Tests.Empty()]
+Buildings = [Classes_Tests.Road(), Classes_Tests.House(), Classes_Tests.Factory(), Classes_Tests.Mine(), Classes_Tests.Workshop(), Classes_Tests.Empty(), Classes_Tests.Empty(), Classes_Tests.Empty(), Classes_Tests.Empty(), Classes_Tests.Empty()]
 # Graphism and Buildings are to be modified together, one is the buidings list the other the pictures list
 
 mainBoard = Classes_Tests.Map(NBROW,NBCOLUMN)

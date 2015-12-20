@@ -93,7 +93,7 @@ class Mine(Building):
         self.stock = 1000
 
 class Workshop(Building):
-    def __init__():
+    def __init__(self):
         self.type = 4
         self.wood_needed = 10        
 
@@ -103,6 +103,12 @@ class Workshop(Building):
         self.worker = 0
         self.debit = 80
         self.time = 0
+    
+    def check_ressource(self, wood):
+        result = False
+        if wood >= self.wood_needed:
+            result = True
+        return(result)
 
 class Map():
     def __init__(self, height, width):
