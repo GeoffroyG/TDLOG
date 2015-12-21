@@ -66,9 +66,10 @@ def main():
     rules = False
     posReturn = pygame.Rect(0,0,0,0)
 
+    background = pygame.image.load("2.Images/Backgroundimage.jpg").convert()
+    pygame.transform.scale(background, (WINDOWWIDTH, WINDOWHEIGHT))
+    
     while not game:
-        background = pygame.image.load("2.Images/Backgroundimage.jpg").convert()
-        pygame.transform.scale(background, (WINDOWWIDTH, WINDOWHEIGHT))
         DISPLAYSURF.blit(background, (0,0))
         text = font_title.render("Simulation de ville 2D", 1, (255, 0, 0))
         textposTitle = text.get_rect(centerx = WINDOWWIDTH / 2, centery = 50)
@@ -118,14 +119,11 @@ def main():
 
     timer = 0 # set of a timer in frames
     timing = 0 # set of a timer in seconds to manipulate production
-    factories = [] # preparation of a list to store the factories for production
-    factories_coords = []
-    houses = [] # same for the houses
-    houses_coords = [] # useful to keep coordinates as hab max depend on the proximity of factories
+
     roads = [Classes_Tests.Road()]
     roads_coords = [[2,0]]
+    
     build = False
-
 
     while True: # main game loop
 
@@ -163,39 +161,18 @@ def main():
             # If we're in the game, the coordinates represent a box and we have selected a building
             if boxx != None and boxy != None and mouseClicked and buildingselected:
                 build = mainBoard.insert(building, boxx, boxy)
-                if build:
-                    if building.type == 0:
-                        building = Classes_Tests.Road()
-                        building.time = timer - 1
-                        roads.append(building)
-                        roads_coords.append([boxx,boxy])
-                        # We create that building and reinitialize the parameters used (the tests are already in insert)
-                    if building.type == 1:
-                        building = Classes_Tests.House()
-                        building.time = timer-1
-                        houses.append(building)
-                        houses_coords.append([boxx,boxy])
-                    if building.type == 2:
-                        # If we are building a factory
-                        building = Classes_Tests.Factory()
-                        building.time = timer-1
-                        factories.append(building)
-                        factories_coords.append([boxx,boxy])
-                    if building.type == 9:
-                        remove([roads, roads_coords, houses, houses_coords, factories, factories_coords], boxx, boxy)
-                        mainBoard.delete(boxx, boxy)
 
                 buildingselected = False
                 building = Classes_Tests.Empty()
                 selected = [False, False, False, False, False, False, False, False, False, False]
-            if  [boxx,boxy] in houses_coords:
-                index= houses_coords.index([boxx,boxy])
-                text = font.render("Habitants : "+str(houses[index].hab), 1, (10,10,10))
+
+            if  getType(mainBoard, boxx, boxy) == 1:
+                text = font.render("Habitants : "+str(mainBoard.map[boxx][boxy].hab), 1, (10,10,10))
                 textpos = text.get_rect()
                 DISPLAYSURF.blit(text, textpos)
-            elif [boxx,boxy] in factories_coords:
-                index= factories_coords.index([boxx,boxy])
-                text="Employes : "+str(factories[index].worker)+" \n "+"Production : "+str(int(factories[index].prod_max * factories[index].worker / factories[index].hab_max))
+                
+            elif getType(mainBoard, boxx, boxy) == 2:
+                text="Employes : "+str(mainBoard.map[boxx][boxy].worker)+" \n "+"Production : "+str(int(mainBoard.map[boxx][boxy].prod_max * mainBoard.map[boxx][boxy].worker / mainBoard.map[boxx][boxy].hab_max))
                 height = font.get_height()*1.3
                 x,y = 0,0
                 for line in text.splitlines():
@@ -219,24 +196,24 @@ def main():
         pygame.display.update()
         FPSCLOCK.tick(FPS)
         # Increase of the newcomers
-        habitants_aux = 0
-        if houses != []:
-            for i in range(len(houses)):
-                p = mainBoard.check_junction(2,houses_coords[i][0], houses_coords[i][1])
-                houses[i].hab_cond = houses[i].hab_max - p
-                houses[i].moving(timer)
-                habitants_aux += houses[i].hab
-        mainBoard.habitants = habitants_aux
-        # Use of an auxiliary variable to check on the workers available
+        mainBoard.habitants = 0
+        for i in range(NBROW):
+            for j in range(NBCOLUMN):
+                if  getType(mainBoard, i, j) == 1:
+                    mainBoard.map[i][j].hab_cond = mainBoard.map[i][j].hab_max - mainBoard.check_junction(2,i,j)
+                    mainBoard.map[i][j].moving(timer)
+                    mainBoard.habitants += mainBoard.map[i][j].hab
+
         # This is not the most efficient as it focuses more on the first factories built
         worker_aux = mainBoard.habitants
-        if factories != []:
-            i = 0
-            while i < len(factories) and worker_aux > 0:
-                factories[i].worker = min(worker_aux,factories[i].hab_max)
-                mainBoard.wood += factories[i].production(timer)
-                worker_aux -= factories[i].worker
-                i+=1 # increment to go through all factories
+        for i in range(NBROW):
+            for j in range(NBCOLUMN):
+                if  getType(mainBoard, i, j) == 2:
+                    while worker_aux > 0:
+                        mainBoard.map[i][j].worker = min(worker_aux,mainBoard.map[i][j].hab_max)
+                        worker_aux -= mainBoard.map[i][j].worker
+                        mainBoard.wood += mainBoard.map[i][j].production(timer)
+
         # Increase of the timer
         timer += 1
         timing = timer // FPS

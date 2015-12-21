@@ -161,7 +161,7 @@ class Map():
         return(result)
         
     def check_junction(self, types, i, j):
-        ''' Determines how many buildings of type types near the [i][j] cell. '''
+        ''' Determines how many buildings of type 'types' near the [i][j] cell. '''
         result = 0
         if i-1 >= 0:
             if self.map[i-1][j].type == types: # 0 designe une route
