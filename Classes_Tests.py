@@ -89,12 +89,12 @@ class Factory(Building):
 
 class Mine(Building):
     def __init__(self):
-        self.type = 3
+        self.type = 10
         self.stock = 1000
 
 class Workshop(Building):
     def __init__(self):
-        self.type = 4
+        self.type = 3
         self.wood_needed = 10        
 
         self.hab_max = 10
