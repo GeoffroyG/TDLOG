@@ -9,10 +9,13 @@ Created on Wed Dec 16 15:36:10 2015
 9 designe un vide sur l'interface "batiments"
 0 designe une route sur l'interface "batiments"
 1 designe une maison sur l'interface "batiments"
-2 designe une  usine sur l'interface "batiments"
+2 designe une usine sur l'interface "batiments"
+3 designe une mine sur l'interface "batiments"
+4 designe un atelier sur l'interface "batiments"
 """
 
-
+from Constantes import *
+import random
 
 # wood = 100 # evolution avec le temps => passÃ© en argument de la map
 workers_remaining = 0 # evolution avec le temps
@@ -84,6 +87,28 @@ class Factory(Building):
             wood = int(self.prod_max * self.worker / self.hab_max)
         return(wood)
 
+class Mine(Building):
+    def __init__(self):
+        self.type = 10
+        self.stock = 1000
+
+class Workshop(Building):
+    def __init__(self):
+        self.type = 3
+        self.wood_needed = 10        
+
+        self.hab_max = 10
+
+        self.prod_max = 10
+        self.worker = 0
+        self.debit = 80
+        self.time = 0
+    
+    def check_ressource(self, wood):
+        result = False
+        if wood >= self.wood_needed:
+            result = True
+        return(result)
 
 class Map():
     def __init__(self, height, width):
@@ -95,14 +120,20 @@ class Map():
                 line.append(empty)
             self.map.append(line)
             line = []
-        self.map[2][0] = Road()
 
-        # J'ai rajoutÃ© quelques trucs qui seront plus manipulables en tant qu'arguments    
+        self.set_mines()
+        self.map[2][0] = Road()
+        # J'ai rajoute quelques trucs qui seront plus manipulables en tant qu'arguments    
         self.wood = 100
         self.habitants = 0
         self.height = height
         self.width = width
         self.workers = 0
+
+    def set_mines(self):
+        ''' Creates random mines. '''
+        for i in range(NBMINES):
+            self.map[int(random.random()*NBCOLUMN)][int(random.random()*NBROW)] = Mine()
 
     def check_empty(self, i, j):
         ''' Checks if there is no building in cell [i][j]. '''
@@ -130,7 +161,7 @@ class Map():
         return(result)
         
     def check_junction(self, types, i, j):
-        ''' Determines how many buildings of type types near the [i][j] cell. '''
+        ''' Determines how many buildings of type 'types' near the [i][j] cell. '''
         result = 0
         if i-1 >= 0:
             if self.map[i-1][j].type == types: # 0 designe une route
@@ -170,7 +201,7 @@ class Map():
     
     def types(self):
         ''' Returns a matrix with all the types '''
-        # on avait dit que c'Ã©tait pas joli mais sinon c'est vraiment pas pratique
+        # on avait dit que c'etait pas joli mais sinon c'est vraiment pas pratique
         types = []
         line = []
         for i in range(self.height):

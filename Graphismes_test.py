@@ -12,17 +12,47 @@ import os
 
 n = 3 # number of pictures per column in the menu
 
-Buildings = [Classes_Tests.Road(), Classes_Tests.House(), Classes_Tests.Factory(), Classes_Tests.Empty(), Classes_Tests.Empty(), Classes_Tests.Empty(), Classes_Tests.Empty(), Classes_Tests.Empty(), Classes_Tests.Empty(), Classes_Tests.Empty()]
-# Graphism and Buildings are to be modified together, one is the buidings list the other the pictures list
+buildings = [Classes_Tests.Road(), Classes_Tests.House(), 
+             Classes_Tests.Factory(), Classes_Tests.Workshop(), 
+             Classes_Tests.Empty(), Classes_Tests.Empty(), 
+             Classes_Tests.Empty(), Classes_Tests.Empty(), 
+             Classes_Tests.Empty(),Classes_Tests.Empty(),
+             Classes_Tests.Mine()]
+# graphism and buildings are to be modified together, one is the buidings list the other the pictures list
 
 mainBoard = Classes_Tests.Map(NBROW,NBCOLUMN)
 
 def main():
-    global FPSCLOCK, DISPLAYSURF, Selected, building
+    global FPSCLOCK, DISPLAYSURF, selected, building, graphism, graphism_Selected, toBuild, toBuild_Selected
     pygame.init()
     FPSCLOCK = pygame.time.Clock()
     DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
     # Initialisation of the clock and the window
+
+    toBuild = [pygame.image.load("2.Images/Road.png").convert(),
+               pygame.image.load("2.Images/House.png").convert(),
+               pygame.image.load("2.Images/Factory.png").convert(),
+               pygame.image.load("2.Images/Workshop.png").convert(),
+               pygame.image.load("2.Images/None.png").convert(), 
+               pygame.image.load("2.Images/None.png").convert(), 
+               pygame.image.load("2.Images/None.png").convert(), 
+               pygame.image.load("2.Images/None.png").convert(), 
+               pygame.image.load("2.Images/None.png").convert(), 
+               pygame.image.load("2.Images/Grass.png").convert()]
+            
+    toBuild_Selected = [pygame.image.load("2.Images/Road_Selected.png").convert(), 
+                        pygame.image.load("2.Images/House_Selected.png").convert(), 
+                        pygame.image.load("2.Images/Factory_Selected.png").convert(), 
+                        pygame.image.load("2.Images/Workshop_Selected.png").convert(), 
+                        pygame.image.load("2.Images/None.png").convert(), 
+                        pygame.image.load("2.Images/None.png").convert(), 
+                        pygame.image.load("2.Images/None.png").convert(), 
+                        pygame.image.load("2.Images/None.png").convert(), 
+                        pygame.image.load("2.Images/None.png").convert(), 
+                        pygame.image.load("2.Images/Grass_Selected.png").convert()]
+
+    graphism = toBuild + [pygame.image.load("2.Images/Mine.png").convert()]
+    graphism_Selected = toBuild_Selected + [pygame.image.load("2.Images/Mine_Selected.png").convert()]
 
     mousex = 0 # used to store x coordinate of mouse event
     mousey = 0 # used to store y coordinate of mouse event
@@ -36,9 +66,10 @@ def main():
     rules = False
     posReturn = pygame.Rect(0,0,0,0)
 
+    background = pygame.image.load("2.Images/Backgroundimage.jpg").convert()
+    pygame.transform.scale(background, (WINDOWWIDTH, WINDOWHEIGHT))
+    
     while not game:
-        background = pygame.image.load("2.Images/Backgroundimage.jpg").convert()
-        pygame.transform.scale(background, (WINDOWWIDTH, WINDOWHEIGHT))
         DISPLAYSURF.blit(background, (0,0))
         text = font_title.render("Simulation de ville 2D", 1, (255, 0, 0))
         textposTitle = text.get_rect(centerx = WINDOWWIDTH / 2, centery = 50)
@@ -79,29 +110,25 @@ def main():
         FPSCLOCK.tick(FPS)
 
 
-
-    Selected = [False, False, False, False, False, False, False, False, False, False]
+    selected = [False, False, False, False, False, False, False, False, False, False]
     building = Classes_Tests.Empty()
 
-    buildingSelected = False
+    buildingselected = False
     mouseClicked = False
     # initialisation of the selection variables
 
     timer = 0 # set of a timer in frames
     timing = 0 # set of a timer in seconds to manipulate production
-    Factories = [] # preparation of a list to store the factories for production
-    Factories_coords = []
-    Houses = [] # same for the houses
-    Houses_coords = [] # useful to keep coordinates as hab max depend on the proximity of Factories
-    Roads = [Classes_Tests.Road()]
-    Roads_coords = [[2,0]]
-    build = False
 
+    roads = [Classes_Tests.Road()]
+    roads_coords = [[2,0]]
+    
+    build = False
 
     while True: # main game loop
 
         DISPLAYSURF.fill(BGCOLOR) # drawing the window
-        drawBoard(mainBoard, DISPLAYSURF, Selected, timing, origin)
+        drawBoard(mainBoard, DISPLAYSURF, selected, timing, origin)
 
 
         for event in pygame.event.get(): # event handling loop
@@ -132,56 +159,35 @@ def main():
         if isInGame(mousex, mousey):
             boxx, boxy = getBoxAtPixelGame(mousex, mousey, origin)
             # If we're in the game, the coordinates represent a box and we have selected a building
-            if boxx != None and boxy != None and mouseClicked and buildingSelected:
+            if boxx != None and boxy != None and mouseClicked and buildingselected:
                 build = mainBoard.insert(building, boxx, boxy)
-                if build:
-                    if building.type == 0:
-                        building = Classes_Tests.Road()
-                        building.time = timer - 1
-                        Roads.append(building)
-                        Roads_coords.append([boxx,boxy])
-                        # We create that building and reinitialize the parameters used (the tests are already in insert)
-                    if building.type == 1:
-                        building = Classes_Tests.House()
-                        building.time = timer-1
-                        Houses.append(building)
-                        Houses_coords.append([boxx,boxy])
-                    if building.type == 2:
-                        # If we are building a factory
-                        building = Classes_Tests.Factory()
-                        building.time = timer-1
-                        Factories.append(building)
-                        Factories_coords.append([boxx,boxy])
-                    if building.type == 9:
-                        remove([Roads, Roads_coords, Houses, Houses_coords, Factories, Factories_coords], boxx, boxy)
-                        mainBoard.delete(boxx, boxy)
 
-                buildingSelected = False
+                buildingselected = False
                 building = Classes_Tests.Empty()
-                Selected = [False, False, False, False, False, False, False, False, False, False]
-            if  [boxx,boxy] in  Houses_coords:
-                index= Houses_coords.index([boxx,boxy])
-                text = font.render("Habitants : "+str(Houses[index].hab), 1, (10,10,10))
+                selected = [False, False, False, False, False, False, False, False, False, False]
+
+            if  getType(mainBoard, boxx, boxy) == 1:
+                text = font.render("Habitants : "+str(mainBoard.map[boxx][boxy].hab), 1, (10,10,10))
                 textpos = text.get_rect()
                 DISPLAYSURF.blit(text, textpos)
-            elif [boxx,boxy] in  Factories_coords:
-                index= Factories_coords.index([boxx,boxy])
-                text="Employes : "+str(Factories[index].worker)+" \n "+"Production : "+str(int(Factories[index].prod_max * Factories[index].worker / Factories[index].hab_max))
+                
+            elif getType(mainBoard, boxx, boxy) == 2:
+                text="Employes : "+str(mainBoard.map[boxx][boxy].worker)+" \n "+"Production : "+str(int(mainBoard.map[boxx][boxy].prod_max * mainBoard.map[boxx][boxy].worker / mainBoard.map[boxx][boxy].hab_max))
                 height = font.get_height()*1.3
                 x,y = 0,0
                 for line in text.splitlines():
                     img = font.render(line,1,(10,10,10))
                     DISPLAYSURF.blit(img,(x,y))
                     y += height
-                #text = font.render("employes : "+str(Factories[index].worker)+" \n "+"production : "+str(int(Factories[index].prod_max * Factories[index].worker / Factories[index].hab_max)), 1, (10,10,10))
+                #text = font.render("employes : "+str(factories[index].worker)+" \n "+"production : "+str(int(factories[index].prod_max * factories[index].worker / factories[index].hab_max)), 1, (10,10,10))
                 #textpos = text.get_rect()
                 #DISPLAYSURF.blit(text, textpos)
 
         if isInMenu(mousex):
             # Step to select a building in the menu
-            if mouseClicked and getBuildingFromMenu(mousex, mousey, Selected) != None:
-                buildingSelected = True
-                building = getBuildingFromMenu(mousex, mousey, Selected)
+            if mouseClicked and getBuildingFromMenu(mousex, mousey, selected) != None:
+                buildingselected = True
+                building = getBuildingFromMenu(mousex, mousey, selected)
 
         # Reinitialization of the parameters after
         boxx, boxy = None, None
@@ -190,54 +196,56 @@ def main():
         pygame.display.update()
         FPSCLOCK.tick(FPS)
         # Increase of the newcomers
-        habitants_aux = 0
-        if Houses != []:
-            for i in range(len(Houses)):
-                p = mainBoard.check_junction(2,Houses_coords[i][0], Houses_coords[i][1])
-                Houses[i].hab_cond = Houses[i].hab_max - p
-                Houses[i].moving(timer)
-                habitants_aux += Houses[i].hab
-        mainBoard.habitants = habitants_aux
-        # Use of an auxiliary variable to check on the workers available
-        # This is not the most efficient as it focuses more on the first Factories built
+        mainBoard.habitants = 0
+        for i in range(NBROW):
+            for j in range(NBCOLUMN):
+                if  getType(mainBoard, i, j) == 1:
+                    mainBoard.map[i][j].hab_cond = mainBoard.map[i][j].hab_max - mainBoard.check_junction(2,i,j)
+                    mainBoard.map[i][j].moving(timer)
+                    mainBoard.habitants += mainBoard.map[i][j].hab
+
+        # This is not the most efficient as it focuses more on the first factories built
         worker_aux = mainBoard.habitants
-        if Factories != []:
-            i = 0
-            while i < len(Factories) and worker_aux > 0:
-                Factories[i].worker = min(worker_aux,Factories[i].hab_max)
-                mainBoard.wood += Factories[i].production(timer)
-                worker_aux -= Factories[i].worker
-                i+=1 # increment to go through all factories
+        for i in range(NBROW):
+            for j in range(NBCOLUMN):
+                if  getType(mainBoard, i, j) == 2:
+                    while worker_aux > 0:
+                        mainBoard.map[i][j].worker = min(worker_aux,mainBoard.map[i][j].hab_max)
+                        worker_aux -= mainBoard.map[i][j].worker
+                        mainBoard.wood += mainBoard.map[i][j].production(timer)
+
         # Increase of the timer
         timer += 1
         timing = timer // FPS
 
 
 def getBoxAtPixelGame(mousex, mousey, origin):
-    # Translates the coordinates in the game from pixels to integers
-    j = (mousex / GAMEWIDTH * NBCOLUMN_DISP) + origin[1]
-    i = ((mousey - RESSOURCEBARHEIGHT) / GAMEHEIGHT * NBROW_DISP) + origin[0]
+    ''' Translates the coordinates in the game from pixels to integers. '''
+    i = origin[0] + ((mousey - RESSOURCEBARHEIGHT) / GAMEHEIGHT * NBROW_DISP)
+    j = origin[1] + (mousex / GAMEWIDTH * NBCOLUMN_DISP)
     return(int(i),int(j))
 
-def getBuildingFromMenu(mousex, mousey, Selected):
-    # Gives the building from the coordinates in the menu (see drawBoard)
+def getBuildingFromMenu(mousex, mousey, selected):
+    ''' Gives the building from the coordinates in the menu (see drawBoard). '''
     p = (mousex-WINDOWWIDTH+MENUBARWIDTH)//(GAPSIZE+BOXSIZE)
     q = (mousey-RESSOURCEBARHEIGHT-2*GAPSIZE)//(GAPSIZE+BOXSIZE)
     k = int(p)*n+int(q)
-    if k>=0 and k<10:
-        for i in range(len(Selected)):
-            Selected[i] = False
-        Selected[k] = True
-        return(Buildings[k])
+    if k >= 0 and k < 10:
+        for i in range(len(selected)):
+            selected[i] = False
+        selected[k] = True
+        return(buildings[k])
     else:
         return(None)
 
 def getType(Map, boxx, boxy):
-    Matrix = Map.types()
-    return(Matrix[boxx][boxy])
+    ''' Returns the type of the object in position (x,y). '''
+    matrix = Map.types()
+    return(matrix[boxx][boxy])
 
 def remove(list_types_coords, boxx, boxy):
-    # The list is organized this way : [Building A, Building Coords A, Building B...]
+    ''' Deletes a building from the map. The list is organized this way : 
+    [Building A, Building Coords A, Building B...]. '''
     n = len(list_types_coords)
     n = n//2
     k_final = 0
@@ -253,24 +261,28 @@ def remove(list_types_coords, boxx, boxy):
     del list_types_coords[2*k_final+1][i_final]
 
 
-def drawBoard(Map, DISPLAYSURF, Selected, timing, origin):
+def drawBoard(Map, DISPLAYSURF, selected, timing, origin):
+    ''' Displays the entire board. '''
+    
     # First we translate the map matrix into a types matrix
-    Matrix = Map.types()
+    matrix = Map.types()
     # Then we display each box with the picture attached to it
     # Check how we can manage to win time by only displaying the changes
     for i in range(NBROW_DISP):
         for j in range(NBCOLUMN_DISP):
-            p = Matrix[origin[0]+i][origin[1]+j]
-            file = Graphism[p]
-            dessin = pygame.image.load(file).convert()
+            p = matrix[origin[0]+i][origin[1]+j]
+            dessin = graphism[p]
             DISPLAYSURF.blit(dessin, (GAPSIZE + (BOXSIZE+GAPSIZE)*j, RESSOURCEBARHEIGHT + GAPSIZE + (BOXSIZE+GAPSIZE)*i))
+
     # Then we display the ressources
-    Ressources = "Wood : "+str(Map.wood)+"   Habitants : "+str(Map.habitants)
-    text = font.render(Ressources, 1, (10,10,10))
+    ressources = "Wood : "+str(Map.wood)+"   Habitants : "+str(Map.habitants)
+    text = font.render(ressources, 1, (10,10,10))
     textpos = text.get_rect(centerx=RESSOURCEBARWIDTH/2,centery=GAPSIZE+RESSOURCEBARHEIGHT/2)
     DISPLAYSURF.blit(text, textpos)
+
     # We draw the background for the menu (I don't know why we have to do this step everytime but else it erases)
-    pygame.draw.polygon(DISPLAYSURF, (139,69,19), MenuCoordinates)
+    pygame.draw.polygon(DISPLAYSURF, (139,69,19), menuCoordinates)
+
     # And finally all the things that are on said menu
     text = font.render("Menu", 1, (10,10,10))
     textpos = text.get_rect(centerx=RESSOURCEBARWIDTH+2*GAPSIZE + MENUBARWIDTH/2, centery=GAPSIZE+RESSOURCEBARHEIGHT/2)
@@ -278,20 +290,21 @@ def drawBoard(Map, DISPLAYSURF, Selected, timing, origin):
     text = font.render("Time : "+str(timing), 1, (10,10,10))
     textpos = text.get_rect(centerx=RESSOURCEBARWIDTH+2*GAPSIZE + MENUBARWIDTH/2, centery=WINDOWHEIGHT-GAPSIZE-24/2)
     DISPLAYSURF.blit(text, textpos)
+
     # For the pictures of the buildings we can change n to print more buildings in height, I haven't thought of a formula that would depend on the window length
     i=0
-    for k in Graphism:
-        dessin = pygame.image.load(k).convert()
+    
+    for k in toBuild:
         # The formula is more understandable in this order, but it's the same than in detBuildingFromMenu actually
         x = (i//n)*(GAPSIZE+BOXSIZE)+WINDOWWIDTH-MENUBARWIDTH
         y = (i%n)*(GAPSIZE+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE
-        DISPLAYSURF.blit(dessin,(x,y))
+        DISPLAYSURF.blit(k,(x,y))
         i+=1
     i=0
-    for k in Selected:
+    
+    for k in selected:
         if k:
-            graph = Graphism_Selected[i]
-            dessin = pygame.image.load(graph).convert()
+            dessin = toBuild_Selected[i]
             x = (i//n)*(GAPSIZE+BOXSIZE)+WINDOWWIDTH-MENUBARWIDTH
             y = (i%n)*(GAPSIZE+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE
             DISPLAYSURF.blit(dessin,(x,y))
@@ -299,14 +312,14 @@ def drawBoard(Map, DISPLAYSURF, Selected, timing, origin):
 
 
 def isInMenu(mousex):
-    # returns True if the mouse is in the menu
+    ''' Returns True if the mouse is in the menu. '''
     if mousex > WINDOWWIDTH - MENUBARWIDTH:
         return(True)
     else:
         return(False)
 
 def isInGame(mousex, mousey):
-    # returns True if the mouse is in the game
+    ''' Returns True if the mouse is in the game. '''
     if mousex < GAMEWIDTH + 2*GAPSIZE and mousey > RESSOURCEBARHEIGHT + 2*GAPSIZE:
         return(True)
     else:
