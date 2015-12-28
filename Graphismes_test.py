@@ -56,7 +56,7 @@ def main():
 
     mousex = 0 # used to store x coordinate of mouse event
     mousey = 0 # used to store y coordinate of mouse event
-    pygame.display.set_caption('Jeu Test') # name of the game
+    pygame.display.set_caption('Jeu Sim City') # name of the game
 
     origin = [0,0] # coordinates of the top-left cell displayed
 
@@ -123,14 +123,19 @@ def main():
     roads = [Classes_Tests.Road()]
     roads_coords = [[2,0]]
     
+    changes = []
+    change_all = False
+    
     build = False
 
+    DISPLAYSURF.fill(BGCOLOR) # drawing the window
+    drawBoard(mainBoard, DISPLAYSURF, selected, timing, origin)
+    drawHeader(Map, DISPLAYSURF)
+    drawMenu(Map, DISPLAYSURF, selected)
+
+
     while True: # main game loop
-
-        DISPLAYSURF.fill(BGCOLOR) # drawing the window
-        drawBoard(mainBoard, DISPLAYSURF, selected, timing, origin)
-
-
+    
         for event in pygame.event.get(): # event handling loop
             if event.type == MOUSEBUTTONUP:
                 mousex, mousey = event.pos
@@ -145,32 +150,40 @@ def main():
             if event.type == KEYUP and event.key == K_LEFT:
                 if origin[1] > 0:
                     origin[1] -= 1
+                    change_all = True
             if event.type == KEYUP and event.key == K_RIGHT:
                 if origin[1] < NBCOLUMN - NBCOLUMN_DISP:
                     origin[1] += 1
+                    change_all = True
             if event.type == KEYUP and event.key == K_UP:
                 if origin[0] > 0:
                     origin[0] -= 1
+                    change_all = True
             if event.type == KEYUP and event.key == K_DOWN:
                 if origin[0] < NBROW - NBROW_DISP:
                     origin[0] += 1
-
+                    change_all = True
 
         if isInGame(mousex, mousey):
             boxx, boxy = getBoxAtPixelGame(mousex, mousey, origin)
-            # If we're in the game, the coordinates represent a box and we have selected a building
+
+            # Build a new building            
             if boxx != None and boxy != None and mouseClicked and buildingselected:
                 build = mainBoard.insert(building, boxx, boxy)
 
                 buildingselected = False
                 building = Classes_Tests.Empty()
                 selected = [False, False, False, False, False, False, False, False, False, False]
+                
+                changes.append([boxx, boxy])
 
-            if  getType(mainBoard, boxx, boxy) == 1:
+            # Display House data
+            if getType(mainBoard, boxx, boxy) == 1:
                 text = font.render("Habitants : "+str(mainBoard.map[boxx][boxy].hab), 1, (10,10,10))
                 textpos = text.get_rect()
                 DISPLAYSURF.blit(text, textpos)
                 
+            # Display Factory data
             elif getType(mainBoard, boxx, boxy) == 2:
                 text="Employes : "+str(mainBoard.map[boxx][boxy].worker)+" \n "+"Production : "+str(int(mainBoard.map[boxx][boxy].prod_max * mainBoard.map[boxx][boxy].worker / mainBoard.map[boxx][boxy].hab_max))
                 height = font.get_height()*1.3
@@ -184,7 +197,7 @@ def main():
                 #DISPLAYSURF.blit(text, textpos)
 
         if isInMenu(mousex):
-            # Step to select a building in the menu
+            # Select a building in the menu
             if mouseClicked and getBuildingFromMenu(mousex, mousey, selected) != None:
                 buildingselected = True
                 building = getBuildingFromMenu(mousex, mousey, selected)
@@ -217,6 +230,10 @@ def main():
         # Increase of the timer
         timer += 1
         timing = timer // FPS
+
+        drawBoard_changes(mainBoard, DISPLAYSURF, selected, timing, origin, changes, change_all)
+        drawHeader(Map, DISPLAYSURF)
+        drawMenu(Map, DISPLAYSURF, selected)
 
 
 def getBoxAtPixelGame(mousex, mousey, origin):
@@ -263,23 +280,38 @@ def remove(list_types_coords, boxx, boxy):
 
 def drawBoard(Map, DISPLAYSURF, selected, timing, origin):
     ''' Displays the entire board. '''
-    
-    # First we translate the map matrix into a types matrix
-    matrix = Map.types()
-    # Then we display each box with the picture attached to it
-    # Check how we can manage to win time by only displaying the changes
+
+    # We display each box with the picture attached to it
     for i in range(NBROW_DISP):
         for j in range(NBCOLUMN_DISP):
-            p = matrix[origin[0]+i][origin[1]+j]
+            p = Map.map[origin[0]+i][origin[1]+j].type
             dessin = graphism[p]
             DISPLAYSURF.blit(dessin, (GAPSIZE + (BOXSIZE+GAPSIZE)*j, RESSOURCEBARHEIGHT + GAPSIZE + (BOXSIZE+GAPSIZE)*i))
 
+
+def drawBoard_changes(Map, DISPLAYSURF, selected, timing, origin, changes, change_all):
+    ''' Displays the entire board. '''
+ 
+    if change_all == True:
+        drawBoard(Map, DISPLAYSURF, selected, timing, origin)
+    
+    else:
+        if len(changes) != 0:
+            for k in range(len(changes)):
+                if changes[k][0] >= origin[0] and changes[k][0] < origin[0] + NBROW_DISP and changes[k][1] >= origin[1] and changes[k][1] < origin[1] + NBCOLUMN_DISP:
+                    p = Map.map[origin[0]+changes[k][0]][origin[1]+changes[k][1]].type
+                    dessin = graphism[p]
+                    DISPLAYSURF.blit(dessin, (GAPSIZE + (BOXSIZE+GAPSIZE)*j, RESSOURCEBARHEIGHT + GAPSIZE + (BOXSIZE+GAPSIZE)*i))
+
+
+def drawHeader(Map, DISPLAYSURF):
     # Then we display the ressources
     ressources = "Wood : "+str(Map.wood)+"   Habitants : "+str(Map.habitants)
     text = font.render(ressources, 1, (10,10,10))
     textpos = text.get_rect(centerx=RESSOURCEBARWIDTH/2,centery=GAPSIZE+RESSOURCEBARHEIGHT/2)
     DISPLAYSURF.blit(text, textpos)
 
+def drawMenu(Map, DISPLAYSURF, selected):
     # We draw the background for the menu (I don't know why we have to do this step everytime but else it erases)
     pygame.draw.polygon(DISPLAYSURF, (139,69,19), menuCoordinates)
 
