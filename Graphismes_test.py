@@ -78,11 +78,11 @@ def main():
             text = font_other.render("Nouveau Jeu", 1, (10,10,10), (255,255,255))
             textposNewGame = text.get_rect(centerx = WINDOWWIDTH / 2, centery = WINDOWHEIGHT / 2)
             DISPLAYSURF.blit(text, textposNewGame)
-            text = font_other.render("Règles", 1, (10,10,10), (255,255,255))
+            text = font_other.render("RÃ¨gles", 1, (10,10,10), (255,255,255))
             textposRules = text.get_rect(centerx = WINDOWWIDTH / 2, centery = WINDOWHEIGHT / 2 + textposNewGame.height)
             DISPLAYSURF.blit(text, textposRules)
         else:
-            text = font_other.render("Ceci sont les règles, ça va être coton à tout taper en faisant les sauts de lignes", 1, (10,10,10), (255,255,255))
+            text = font_other.render("Ceci sont les rÃ¨gles, Ã§a va Ãªtre coton Ã  tout taper en faisant les sauts de lignes", 1, (10,10,10), (255,255,255))
             textpos = text.get_rect(centerx = WINDOWWIDTH / 2, centery = WINDOWHEIGHT / 2)
             DISPLAYSURF.blit(text, textpos)
             back = pygame.image.load("2.Images/Return.png").convert()
@@ -94,6 +94,8 @@ def main():
             if event.type == MOUSEBUTTONUP:
                 mousex, mousey = event.pos
                 mouseClicked = True
+            elif event.type == MOUSEMOTION:
+                mousex, mousey = event.pos
             elif event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                 pygame.quit()
                 os.sys.exit()
@@ -201,7 +203,28 @@ def main():
             # Select a building in the menu
             if mouseClicked and getBuildingFromMenu(mousex, mousey, selected) != None:
                 buildingselected = True
-                building = getBuildingFromMenu(mousex, mousey, selected)
+                building = getBuildingFromMenu(mousex, mousey, selected)                                                       
+            p = (mousex-WINDOWWIDTH+MENUBARWIDTH)//(GAPSIZE+BOXSIZE)
+            q = (mousey-RESSOURCEBARHEIGHT-2*GAPSIZE)//(GAPSIZE+BOXSIZE)
+            k = int(p)*n+int(q)
+            # Display House data
+            if  k == 0:
+                text = font_bubble.render("Bois requis : "+str(Classes_Tests.Road().wood_needed), 1, (10,10,10),(255,255,255))
+                textpos = text.get_rect(centerx=WINDOWWIDTH-MENUBARWIDTH+35, centery=RESSOURCEBARHEIGHT+2*GAPSIZE+5)
+                DISPLAYSURF.blit(text, textpos)
+            elif k == 1:
+                text = font_bubble.render("Bois requis : "+str(Classes_Tests.House().wood_needed), 1, (10,10,10),(255,255,255))
+                textpos = text.get_rect(centerx=(1//n)*(GAPSIZE+BOXSIZE)+WINDOWWIDTH-MENUBARWIDTH+35, centery=(1%n)*(GAPSIZE+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE+5)
+                DISPLAYSURF.blit(text, textpos)
+            elif k == 2:
+                text = font_bubble.render("Bois requis : "+str(Classes_Tests.Factory().wood_needed), 1, (10,10,10),(255,255,255))
+                textpos = text.get_rect(centerx=(2//n)*(GAPSIZE+BOXSIZE)+WINDOWWIDTH-MENUBARWIDTH+35, centery=(2%n)*(GAPSIZE+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE+5)
+                DISPLAYSURF.blit(text, textpos)  
+            elif k == 3:
+                text = font_bubble.render("Bois requis : "+str(Classes_Tests.Workshop().wood_needed), 1, (10,10,10),(255,255,255))
+                textpos = text.get_rect(centerx=(3//n)*(GAPSIZE+BOXSIZE)+WINDOWWIDTH-MENUBARWIDTH+35, centery=(3%n)*(GAPSIZE+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE+5)
+                DISPLAYSURF.blit(text, textpos)    
+
 
         # Reinitialization of the parameters after
         boxx, boxy = None, None
