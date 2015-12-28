@@ -130,8 +130,8 @@ def main():
 
     DISPLAYSURF.fill(BGCOLOR) # drawing the window
     drawBoard(mainBoard, DISPLAYSURF, selected, timing, origin)
-    drawHeader(Map, DISPLAYSURF)
-    drawMenu(Map, DISPLAYSURF, selected)
+    drawHeader(mainBoard, DISPLAYSURF)
+    drawMenu(mainBoard, DISPLAYSURF, selected, timing)
 
 
     while True: # main game loop
@@ -232,8 +232,8 @@ def main():
         timing = timer // FPS
 
         drawBoard_changes(mainBoard, DISPLAYSURF, selected, timing, origin, changes, change_all)
-        drawHeader(Map, DISPLAYSURF)
-        drawMenu(Map, DISPLAYSURF, selected)
+        drawHeader(mainBoard, DISPLAYSURF)
+        drawMenu(mainBoard, DISPLAYSURF, selected, timing)
 
 
 def getBoxAtPixelGame(mousex, mousey, origin):
@@ -299,6 +299,8 @@ def drawBoard_changes(Map, DISPLAYSURF, selected, timing, origin, changes, chang
         if len(changes) != 0:
             for k in range(len(changes)):
                 if changes[k][0] >= origin[0] and changes[k][0] < origin[0] + NBROW_DISP and changes[k][1] >= origin[1] and changes[k][1] < origin[1] + NBCOLUMN_DISP:
+                    i = changes[k][0] - origin[0]
+                    j = changes[k][1] - origin[1]                    
                     p = Map.map[origin[0]+changes[k][0]][origin[1]+changes[k][1]].type
                     dessin = graphism[p]
                     DISPLAYSURF.blit(dessin, (GAPSIZE + (BOXSIZE+GAPSIZE)*j, RESSOURCEBARHEIGHT + GAPSIZE + (BOXSIZE+GAPSIZE)*i))
@@ -311,7 +313,7 @@ def drawHeader(Map, DISPLAYSURF):
     textpos = text.get_rect(centerx=RESSOURCEBARWIDTH/2,centery=GAPSIZE+RESSOURCEBARHEIGHT/2)
     DISPLAYSURF.blit(text, textpos)
 
-def drawMenu(Map, DISPLAYSURF, selected):
+def drawMenu(Map, DISPLAYSURF, selected, timing):
     # We draw the background for the menu (I don't know why we have to do this step everytime but else it erases)
     pygame.draw.polygon(DISPLAYSURF, (139,69,19), menuCoordinates)
 
