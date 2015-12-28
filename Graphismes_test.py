@@ -178,14 +178,14 @@ def main():
                 changes.append([boxx, boxy])
 
             # Display House data
-             if  getType(mainBoard, boxx, boxy) == 1:
+            if  getType(mainBoard, boxx, boxy) == 1:
                 text = font_bubble.render("Habitants : "+str(mainBoard.map[boxx][boxy].hab), 1, (10,10,10),(255,255,255))
                 textpos = text.get_rect(centerx=GAPSIZE + (BOXSIZE+GAPSIZE)*boxy+30, centery=RESSOURCEBARHEIGHT + GAPSIZE + (BOXSIZE+GAPSIZE)*boxx)
                 DISPLAYSURF.blit(text, textpos)
 
                 
             # Display Factory data
-           elif getType(mainBoard, boxx, boxy) == 2:
+            elif getType(mainBoard, boxx, boxy) == 2:
                 text="Employes : "+str(mainBoard.map[boxx][boxy].worker)+" \n "+"Production : "+str(int(mainBoard.map[boxx][boxy].prod_max * mainBoard.map[boxx][boxy].worker / mainBoard.map[boxx][boxy].hab_max))
                 height = font_bubble.get_height()*1
                 gap=0
