@@ -94,6 +94,8 @@ def main():
             if event.type == MOUSEBUTTONUP:
                 mousex, mousey = event.pos
                 mouseClicked = True
+            elif event.type == MOUSEMOTION:
+                mousex, mousey = event.pos
             elif event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                 pygame.quit()
                 os.sys.exit()
