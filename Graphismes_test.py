@@ -178,23 +178,24 @@ def main():
                 changes.append([boxx, boxy])
 
             # Display House data
-            if getType(mainBoard, boxx, boxy) == 1:
-                text = font.render("Habitants : "+str(mainBoard.map[boxx][boxy].hab), 1, (10,10,10))
-                textpos = text.get_rect()
+            if  getType(mainBoard, boxx, boxy) == 1:
+                text = font_bubble.render("Habitants : "+str(mainBoard.map[boxx][boxy].hab), 1, (10,10,10),(255,255,255))
+                textpos = text.get_rect(centerx=GAPSIZE + (BOXSIZE+GAPSIZE)*boxy+30, centery=RESSOURCEBARHEIGHT + GAPSIZE + (BOXSIZE+GAPSIZE)*boxx)
                 DISPLAYSURF.blit(text, textpos)
+
                 
             # Display Factory data
             elif getType(mainBoard, boxx, boxy) == 2:
                 text="Employes : "+str(mainBoard.map[boxx][boxy].worker)+" \n "+"Production : "+str(int(mainBoard.map[boxx][boxy].prod_max * mainBoard.map[boxx][boxy].worker / mainBoard.map[boxx][boxy].hab_max))
-                height = font.get_height()*1.3
-                x,y = 0,0
+                height = font_bubble.get_height()*1
+                gap=0
                 for line in text.splitlines():
-                    img = font.render(line,1,(10,10,10))
-                    DISPLAYSURF.blit(img,(x,y))
-                    y += height
-                #text = font.render("employes : "+str(factories[index].worker)+" \n "+"production : "+str(int(factories[index].prod_max * factories[index].worker / factories[index].hab_max)), 1, (10,10,10))
-                #textpos = text.get_rect()
-                #DISPLAYSURF.blit(text, textpos)
+                    img = font_bubble.render(line,1,(10,10,10),(255,255,255))
+                    textpos = img.get_rect(centerx=GAPSIZE + (BOXSIZE+GAPSIZE)*boxy+30, centery=RESSOURCEBARHEIGHT + GAPSIZE + (BOXSIZE+GAPSIZE)*boxx+gap)
+                    DISPLAYSURF.blit(img,textpos)
+                    gap += height
+            
+
 
         if isInMenu(mousex):
             # Select a building in the menu
