@@ -32,6 +32,7 @@ WINDOWHEIGHT = MENUBARHEIGHT + 2*GAPSIZE # final size of the window in pixels
 
 pygame.font.init()
 
+font_bubble = pygame.font.Font(None, 14)
 font = pygame.font.Font(None, 24)
 font_title = pygame.font.Font(None, 68)
 font_other = pygame.font.Font(None, 40)
