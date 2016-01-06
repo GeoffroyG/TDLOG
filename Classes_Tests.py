@@ -24,10 +24,14 @@ workers_remaining = 0 # evolution avec le temps
 class Building():
     def __init__(self):
         self.type = 9
+        self.broken_rate = 0
+        self.isBroken = False
+        self.wood_needed = 0
 
 class Empty(Building):
     def __init__(self):
         self.type = 9
+        self.wood_needed = 0
 
 class Road(Building):
     def __init__(self):
@@ -91,6 +95,7 @@ class Mine(Building):
     def __init__(self):
         self.type = 10
         self.stock = 1000
+        self.wood_needed = 0
 
 class Workshop(Building):
     def __init__(self):
