@@ -9,63 +9,17 @@ import Classes_Tests
 from Constantes import *
 from pygame.locals import *
 import os
+import math
 
-n = 3 # number of pictures per column in the menu
+(font_width, font_height) = font.size("A")
+n = (WINDOWHEIGHT-2*GAPSIZE-2*font_height) // (GAPSIZE + BOXSIZE) - 1 # number of pictures per column in the menu
 
-buildings = [Classes_Tests.Road(), Classes_Tests.House(), 
-             Classes_Tests.Factory(), Classes_Tests.Workshop(), 
-             Classes_Tests.Empty(), Classes_Tests.Empty(), 
-             Classes_Tests.Empty(), Classes_Tests.Empty(), 
-             Classes_Tests.Empty(),Classes_Tests.Empty(),
-             Classes_Tests.Mine()]
-# graphism and buildings are to be modified together, one is the buidings list the other the pictures list
-
-mainBoard = Classes_Tests.Map(NBROW,NBCOLUMN)
-
-def main():
-    global FPSCLOCK, DISPLAYSURF, selected, building, graphism, graphism_Selected, toBuild, toBuild_Selected
-    pygame.init()
-    FPSCLOCK = pygame.time.Clock()
-    DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
-    # Initialisation of the clock and the window
-
-    toBuild = [pygame.image.load("2.Images/Road.png").convert(),
-               pygame.image.load("2.Images/House.png").convert(),
-               pygame.image.load("2.Images/Factory.png").convert(),
-               pygame.image.load("2.Images/Workshop.png").convert(),
-               pygame.image.load("2.Images/None.png").convert(), 
-               pygame.image.load("2.Images/None.png").convert(), 
-               pygame.image.load("2.Images/None.png").convert(), 
-               pygame.image.load("2.Images/None.png").convert(), 
-               pygame.image.load("2.Images/None.png").convert(), 
-               pygame.image.load("2.Images/Grass.png").convert()]
-            
-    toBuild_Selected = [pygame.image.load("2.Images/Road_Selected.png").convert(), 
-                        pygame.image.load("2.Images/House_Selected.png").convert(), 
-                        pygame.image.load("2.Images/Factory_Selected.png").convert(), 
-                        pygame.image.load("2.Images/Workshop_Selected.png").convert(), 
-                        pygame.image.load("2.Images/None.png").convert(), 
-                        pygame.image.load("2.Images/None.png").convert(), 
-                        pygame.image.load("2.Images/None.png").convert(), 
-                        pygame.image.load("2.Images/None.png").convert(), 
-                        pygame.image.load("2.Images/None.png").convert(), 
-                        pygame.image.load("2.Images/Grass_Selected.png").convert()]
-
-    graphism = toBuild + [pygame.image.load("2.Images/Mine.png").convert()]
-    graphism_Selected = toBuild_Selected + [pygame.image.load("2.Images/Mine_Selected.png").convert()]
-
-    mousex = 0 # used to store x coordinate of mouse event
-    mousey = 0 # used to store y coordinate of mouse event
-    pygame.display.set_caption('Jeu Sim City') # name of the game
-
-    origin = [0,0] # coordinates of the top-left cell displayed
-
-    BGCOLOR = (255, 255, 255) # white background
-    DISPLAYSURF.fill(BGCOLOR)
+def displayBeginningMenu(DISPLAYSURF, FPSCLOCK, font_title):
     game = False
     rules = False
+    mousex = 0
+    mousey = 0
     posReturn = pygame.Rect(0,0,0,0)
-
     background = pygame.image.load("2.Images/Backgroundimage.jpg").convert()
     pygame.transform.scale(background, (WINDOWWIDTH, WINDOWHEIGHT))
     
@@ -78,11 +32,11 @@ def main():
             text = font_other.render("Nouveau Jeu", 1, (10,10,10), (255,255,255))
             textposNewGame = text.get_rect(centerx = WINDOWWIDTH / 2, centery = WINDOWHEIGHT / 2)
             DISPLAYSURF.blit(text, textposNewGame)
-            text = font_other.render("RÃ¨gles", 1, (10,10,10), (255,255,255))
+            text = font_other.render("Règles", 1, (10,10,10), (255,255,255))
             textposRules = text.get_rect(centerx = WINDOWWIDTH / 2, centery = WINDOWHEIGHT / 2 + textposNewGame.height)
             DISPLAYSURF.blit(text, textposRules)
         else:
-            text = font_other.render("Ceci sont les rÃ¨gles, Ã§a va Ãªtre coton Ã  tout taper en faisant les sauts de lignes", 1, (10,10,10), (255,255,255))
+            text = font_other.render("Ceci sont les règles, ça va être coton à tout taper en faisant les sauts de lignes", 1, (10,10,10), (255,255,255))
             textpos = text.get_rect(centerx = WINDOWWIDTH / 2, centery = WINDOWHEIGHT / 2)
             DISPLAYSURF.blit(text, textpos)
             back = pygame.image.load("2.Images/Return.png").convert()
@@ -94,171 +48,21 @@ def main():
             if event.type == MOUSEBUTTONUP:
                 mousex, mousey = event.pos
                 mouseClicked = True
-            elif event.type == MOUSEMOTION:
-                mousex, mousey = event.pos
             elif event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                 pygame.quit()
                 os.sys.exit()
 
 
-        if textposNewGame.collidepoint(mousex, mousey) and not rules:
+        if textposNewGame.collidepoint(mousex, mousey) and not rules and mouseClicked:
             game = True
-        elif textposRules.collidepoint(mousex, mousey) and not rules:
+        elif textposRules.collidepoint(mousex, mousey) and not rules and mouseClicked:
             rules = True
-        elif posReturn.collidepoint(mousex, mousey) and rules:
+        elif posReturn.collidepoint(mousex, mousey) and rules and mouseClicked:
             rules = False
 
         pygame.display.update()
         FPSCLOCK.tick(FPS)
-
-
-    selected = [False, False, False, False, False, False, False, False, False, False]
-    building = Classes_Tests.Empty()
-
-    buildingselected = False
-    mouseClicked = False
-    # initialisation of the selection variables
-
-    timer = 0 # set of a timer in frames
-    timing = 0 # set of a timer in seconds to manipulate production
-
-    roads = [Classes_Tests.Road()]
-    roads_coords = [[2,0]]
-    
-    changes = []
-    change_all = False
-    
-    build = False
-
-    DISPLAYSURF.fill(BGCOLOR) # drawing the window
-    drawBoard(mainBoard, DISPLAYSURF, selected, timing, origin)
-    drawHeader(mainBoard, DISPLAYSURF)
-    drawMenu(mainBoard, DISPLAYSURF, selected, timing)
-
-
-    while True: # main game loop
-    
-        for event in pygame.event.get(): # event handling loop
-            if event.type == MOUSEBUTTONUP:
-                mousex, mousey = event.pos
-                mouseClicked = True
-            elif event.type == MOUSEMOTION:
-                mousex, mousey = event.pos
-            elif event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
-                pygame.quit()
-                sys.exit()
-            
-            # Shifts on the map
-            if event.type == KEYUP and event.key == K_LEFT:
-                if origin[1] > 0:
-                    origin[1] -= 1
-                    change_all = True
-            if event.type == KEYUP and event.key == K_RIGHT:
-                if origin[1] < NBCOLUMN - NBCOLUMN_DISP:
-                    origin[1] += 1
-                    change_all = True
-            if event.type == KEYUP and event.key == K_UP:
-                if origin[0] > 0:
-                    origin[0] -= 1
-                    change_all = True
-            if event.type == KEYUP and event.key == K_DOWN:
-                if origin[0] < NBROW - NBROW_DISP:
-                    origin[0] += 1
-                    change_all = True
-
-        if isInGame(mousex, mousey):
-            boxx, boxy = getBoxAtPixelGame(mousex, mousey, origin)
-
-            # Build a new building            
-            if boxx != None and boxy != None and mouseClicked and buildingselected:
-                build = mainBoard.insert(building, boxx, boxy)
-
-                buildingselected = False
-                building = Classes_Tests.Empty()
-                selected = [False, False, False, False, False, False, False, False, False, False]
-                
-                changes.append([boxx, boxy])
-
-            # Display House data
-            if  getType(mainBoard, boxx, boxy) == 1:
-                text = font_bubble.render("Habitants : "+str(mainBoard.map[boxx][boxy].hab), 1, (10,10,10),(255,255,255))
-                textpos = text.get_rect(centerx=GAPSIZE + (BOXSIZE+GAPSIZE)*boxy+30, centery=RESSOURCEBARHEIGHT + GAPSIZE + (BOXSIZE+GAPSIZE)*boxx)
-                DISPLAYSURF.blit(text, textpos)
-
-                
-            # Display Factory data
-            elif getType(mainBoard, boxx, boxy) == 2:
-                text="Employes : "+str(mainBoard.map[boxx][boxy].worker)+" \n "+"Production : "+str(int(mainBoard.map[boxx][boxy].prod_max * mainBoard.map[boxx][boxy].worker / mainBoard.map[boxx][boxy].hab_max))
-                height = font_bubble.get_height()*1
-                gap=0
-                for line in text.splitlines():
-                    img = font_bubble.render(line,1,(10,10,10),(255,255,255))
-                    textpos = img.get_rect(centerx=GAPSIZE + (BOXSIZE+GAPSIZE)*boxy+30, centery=RESSOURCEBARHEIGHT + GAPSIZE + (BOXSIZE+GAPSIZE)*boxx+gap)
-                    DISPLAYSURF.blit(img,textpos)
-                    gap += height
-            
-
-
-        if isInMenu(mousex):
-            # Select a building in the menu
-            if mouseClicked and getBuildingFromMenu(mousex, mousey, selected) != None:
-                buildingselected = True
-                building = getBuildingFromMenu(mousex, mousey, selected)                                                       
-            p = (mousex-WINDOWWIDTH+MENUBARWIDTH)//(GAPSIZE+BOXSIZE)
-            q = (mousey-RESSOURCEBARHEIGHT-2*GAPSIZE)//(GAPSIZE+BOXSIZE)
-            k = int(p)*n+int(q)
-            # Display House data
-            if  k == 0:
-                text = font_bubble.render("Bois requis : "+str(Classes_Tests.Road().wood_needed), 1, (10,10,10),(255,255,255))
-                textpos = text.get_rect(centerx=WINDOWWIDTH-MENUBARWIDTH+35, centery=RESSOURCEBARHEIGHT+2*GAPSIZE+5)
-                DISPLAYSURF.blit(text, textpos)
-            elif k == 1:
-                text = font_bubble.render("Bois requis : "+str(Classes_Tests.House().wood_needed), 1, (10,10,10),(255,255,255))
-                textpos = text.get_rect(centerx=(1//n)*(GAPSIZE+BOXSIZE)+WINDOWWIDTH-MENUBARWIDTH+35, centery=(1%n)*(GAPSIZE+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE+5)
-                DISPLAYSURF.blit(text, textpos)
-            elif k == 2:
-                text = font_bubble.render("Bois requis : "+str(Classes_Tests.Factory().wood_needed), 1, (10,10,10),(255,255,255))
-                textpos = text.get_rect(centerx=(2//n)*(GAPSIZE+BOXSIZE)+WINDOWWIDTH-MENUBARWIDTH+35, centery=(2%n)*(GAPSIZE+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE+5)
-                DISPLAYSURF.blit(text, textpos)  
-            elif k == 3:
-                text = font_bubble.render("Bois requis : "+str(Classes_Tests.Workshop().wood_needed), 1, (10,10,10),(255,255,255))
-                textpos = text.get_rect(centerx=(3//n)*(GAPSIZE+BOXSIZE)+WINDOWWIDTH-MENUBARWIDTH+35, centery=(3%n)*(GAPSIZE+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE+5)
-                DISPLAYSURF.blit(text, textpos)    
-
-
-        # Reinitialization of the parameters after
-        boxx, boxy = None, None
         mouseClicked = False
-        # Redraw the screen and wait a clock tick.
-        pygame.display.update()
-        FPSCLOCK.tick(FPS)
-        # Increase of the newcomers
-        mainBoard.habitants = 0
-        for i in range(NBROW):
-            for j in range(NBCOLUMN):
-                if  getType(mainBoard, i, j) == 1:
-                    mainBoard.map[i][j].hab_cond = mainBoard.map[i][j].hab_max - mainBoard.check_junction(2,i,j)
-                    mainBoard.map[i][j].moving(timer)
-                    mainBoard.habitants += mainBoard.map[i][j].hab
-
-        # This is not the most efficient as it focuses more on the first factories built
-        worker_aux = mainBoard.habitants
-        for i in range(NBROW):
-            for j in range(NBCOLUMN):
-                if  getType(mainBoard, i, j) == 2:
-                    while worker_aux > 0:
-                        mainBoard.map[i][j].worker = min(worker_aux,mainBoard.map[i][j].hab_max)
-                        worker_aux -= mainBoard.map[i][j].worker
-                        mainBoard.wood += mainBoard.map[i][j].production(timer)
-
-        # Increase of the timer
-        timer += 1
-        timing = timer // FPS
-
-        drawBoard_changes(mainBoard, DISPLAYSURF, selected, timing, origin, changes, change_all)
-        drawHeader(mainBoard, DISPLAYSURF)
-        drawMenu(mainBoard, DISPLAYSURF, selected, timing)
-
 
 def getBoxAtPixelGame(mousex, mousey, origin):
     ''' Translates the coordinates in the game from pixels to integers. '''
@@ -266,7 +70,7 @@ def getBoxAtPixelGame(mousex, mousey, origin):
     j = origin[1] + (mousex / GAMEWIDTH * NBCOLUMN_DISP)
     return(int(i),int(j))
 
-def getBuildingFromMenu(mousex, mousey, selected):
+def getBuildingFromMenu(mousex, mousey, selected, buildings):
     ''' Gives the building from the coordinates in the menu (see drawBoard). '''
     p = (mousex-WINDOWWIDTH+MENUBARWIDTH)//(GAPSIZE+BOXSIZE)
     q = (mousey-RESSOURCEBARHEIGHT-2*GAPSIZE)//(GAPSIZE+BOXSIZE)
@@ -302,9 +106,10 @@ def remove(list_types_coords, boxx, boxy):
     del list_types_coords[2*k_final+1][i_final]
 
 
-def drawBoard(Map, DISPLAYSURF, selected, timing, origin):
+def drawBoard(Map, DISPLAYSURF, selected, timing, origin, graphism):
     ''' Displays the entire board. '''
-
+    # First we display the background
+    pygame.draw.polygon(DISPLAYSURF, BGCOLOR, boardCoordinates)
     # We display each box with the picture attached to it
     for i in range(NBROW_DISP):
         for j in range(NBCOLUMN_DISP):
@@ -313,11 +118,11 @@ def drawBoard(Map, DISPLAYSURF, selected, timing, origin):
             DISPLAYSURF.blit(dessin, (GAPSIZE + (BOXSIZE+GAPSIZE)*j, RESSOURCEBARHEIGHT + GAPSIZE + (BOXSIZE+GAPSIZE)*i))
 
 
-def drawBoard_changes(Map, DISPLAYSURF, selected, timing, origin, changes, change_all):
+def drawBoard_changes(Map, DISPLAYSURF, selected, timing, origin, graphism, changes, change_all):
     ''' Displays the entire board. '''
  
     if change_all == True:
-        drawBoard(Map, DISPLAYSURF, selected, timing, origin)
+        drawBoard(Map, DISPLAYSURF, selected, timing, origin, graphism)
     
     else:
         if len(changes) != 0:
@@ -327,17 +132,20 @@ def drawBoard_changes(Map, DISPLAYSURF, selected, timing, origin, changes, chang
                     j = changes[k][1] - origin[1]                    
                     p = Map.map[origin[0]+changes[k][0]][origin[1]+changes[k][1]].type
                     dessin = graphism[p]
+                    coordinates = [(j*(BOXSIZE+GAPSIZE),RESSOURCEBARHEIGHT+i*(BOXSIZE+GAPSIZE)),(j*(BOXSIZE+GAPSIZE),RESSOURCEBARHEIGHT+i*(BOXSIZE+GAPSIZE)+BOXSIZE+2*GAPSIZE),(j*(BOXSIZE+GAPSIZE)+BOXSIZE+2*GAPSIZE,RESSOURCEBARHEIGHT+i*(BOXSIZE+GAPSIZE)+BOXSIZE+2*GAPSIZE),(j*(BOXSIZE+GAPSIZE)+BOXSIZE+2*GAPSIZE,RESSOURCEBARHEIGHT+i*(BOXSIZE+GAPSIZE))]
+                    pygame.draw.polygon(DISPLAYSURF, (255,255,255), coordinates)
                     DISPLAYSURF.blit(dessin, (GAPSIZE + (BOXSIZE+GAPSIZE)*j, RESSOURCEBARHEIGHT + GAPSIZE + (BOXSIZE+GAPSIZE)*i))
 
 
 def drawHeader(Map, DISPLAYSURF):
     # Then we display the ressources
+    pygame.draw.polygon(DISPLAYSURF, (255,255,255), headerCoordinates)
     ressources = "Wood : "+str(Map.wood)+"   Habitants : "+str(Map.habitants)
     text = font.render(ressources, 1, (10,10,10))
     textpos = text.get_rect(centerx=RESSOURCEBARWIDTH/2,centery=GAPSIZE+RESSOURCEBARHEIGHT/2)
     DISPLAYSURF.blit(text, textpos)
 
-def drawMenu(Map, DISPLAYSURF, selected, timing):
+def drawMenu(Map, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected):
     # We draw the background for the menu (I don't know why we have to do this step everytime but else it erases)
     pygame.draw.polygon(DISPLAYSURF, (139,69,19), menuCoordinates)
 
@@ -382,4 +190,55 @@ def isInGame(mousex, mousey):
         return(True)
     else:
         return(False)
-
+        
+def drawHappiness(DISPLAYSURF, happiness, topleftx, toplefty, size):
+    '''Draws the happiness level'''
+    color = (int(255*(1-happiness)),int(255*happiness),0)
+    center = (topleftx+size//2,toplefty+size//2)
+    pygame.draw.circle(DISPLAYSURF,(0,0,0),center,size//2+1)
+    pygame.draw.circle(DISPLAYSURF,color,center,size//2)
+    x = size//6
+    y = size//4
+    length = size//4
+    pygame.draw.line(DISPLAYSURF,(0,0,0),(topleftx+size//2-x,toplefty+size//2-y),(topleftx+size//2-x,toplefty+size//2-y+length))
+    pygame.draw.line(DISPLAYSURF,(0,0,0),(topleftx+size//2+x,toplefty+size//2-y),(topleftx+size//2+x,toplefty+size//2-y+length))
+    height_max = size // 5    
+    if happiness > 0.5:    
+        topleftRect = [topleftx+size//2-size//4, toplefty+size//2+size//8-int(height_max*happiness)]  
+        smileRect = pygame.Rect(topleftRect[0],topleftRect[1],size//2,int(height_max*happiness))    
+        pygame.draw.arc(DISPLAYSURF,(0,0,0),smileRect,math.pi,2*math.pi)
+    if happiness == 0.5:
+        pygame.draw.line(DISPLAYSURF,(0,0,0),(topleftx+size//2-size//5, toplefty+size//2+size//8),(topleftx+size//2+size//5, toplefty+size//2+size//8))
+    if happiness < 0.5:
+        topleftRect = [topleftx+size//2-size//4, toplefty+size//2+size//8] 
+        smileRect = pygame.Rect(topleftRect[0],topleftRect[1],size//2,int(height_max*happiness))    
+        pygame.draw.arc(DISPLAYSURF,(0,0,0),smileRect,0,math.pi)
+        
+def drawInfoMenu(DISPLAYSURF, mousex, mousey, buildings):
+    p = (mousex-WINDOWWIDTH+MENUBARWIDTH)//(GAPSIZE+BOXSIZE)
+    q = (mousey-RESSOURCEBARHEIGHT-2*GAPSIZE)//(GAPSIZE+BOXSIZE)
+    k = int(p)*n+int(q) 
+    print(k)
+    if k < len(buildings) and k >= 0 and buildings[k].wood_needed != 0:
+        text = font_bubble.render("Bois requis : "+str(buildings[k].wood_needed), 1, (10,10,10),(255,255,255))
+        textpos = text.get_rect(centerx=(k//n)*(GAPSIZE+BOXSIZE)+WINDOWWIDTH-MENUBARWIDTH+35, centery=(k%n)*(GAPSIZE+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE+5)
+        DISPLAYSURF.blit(text, textpos)  
+        print(str(buildings[k].wood_needed))
+    
+def drawInfoBoard(DISPLAYSURF, boxx, boxy, mainBoard):
+    # Display House data
+    if  getType(mainBoard, boxx, boxy) == 1:
+        text = font_bubble.render("Habs : "+str(mainBoard.map[boxx][boxy].hab), 1, (10,10,10),(255,255,255))
+        textpos = text.get_rect(centerx=GAPSIZE + (BOXSIZE+GAPSIZE)*boxy+15, centery=RESSOURCEBARHEIGHT + GAPSIZE + (BOXSIZE+GAPSIZE)*boxx)
+        DISPLAYSURF.blit(text, textpos)
+                
+    # Display Factory data
+    elif getType(mainBoard, boxx, boxy) == 2:
+        text="Empl : "+str(mainBoard.map[boxx][boxy].worker)+" \n "+"Prod : "+str(int(mainBoard.map[boxx][boxy].prod_max * mainBoard.map[boxx][boxy].worker / mainBoard.map[boxx][boxy].hab_max))
+        height = font_bubble.get_height()*1
+        gap=0
+        for line in text.splitlines():
+            img = font_bubble.render(line,1,(10,10,10),(255,255,255))
+            textpos = img.get_rect(centerx=GAPSIZE + (BOXSIZE+GAPSIZE)*boxy+15, centery=RESSOURCEBARHEIGHT + GAPSIZE + (BOXSIZE+GAPSIZE)*boxx+gap)
+            DISPLAYSURF.blit(img,textpos)
+            gap += height
