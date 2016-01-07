@@ -22,7 +22,7 @@ def displayBeginningMenu(DISPLAYSURF, FPSCLOCK, font_title):
     posReturn = pygame.Rect(0,0,0,0)
     background = pygame.image.load("2.Images/Backgroundimage.jpg").convert()
     pygame.transform.scale(background, (WINDOWWIDTH, WINDOWHEIGHT))
-    
+
     while not game:
         DISPLAYSURF.blit(background, (0,0))
         text = font_title.render("Simulation de ville 2D", 1, (255, 0, 0))
@@ -89,7 +89,7 @@ def getType(Map, boxx, boxy):
     return(matrix[boxx][boxy])
 
 def remove(list_types_coords, boxx, boxy):
-    ''' Deletes a building from the map. The list is organized this way : 
+    ''' Deletes a building from the map. The list is organized this way :
     [Building A, Building Coords A, Building B...]. '''
     n = len(list_types_coords)
     n = n//2
@@ -120,16 +120,16 @@ def drawBoard(Map, DISPLAYSURF, selected, timing, origin, graphism):
 
 def drawBoard_changes(Map, DISPLAYSURF, selected, timing, origin, graphism, changes, change_all):
     ''' Displays the entire board. '''
- 
+
     if change_all == True:
         drawBoard(Map, DISPLAYSURF, selected, timing, origin, graphism)
-    
+
     else:
         if len(changes) != 0:
             for k in range(len(changes)):
                 if changes[k][0] >= origin[0] and changes[k][0] < origin[0] + NBROW_DISP and changes[k][1] >= origin[1] and changes[k][1] < origin[1] + NBCOLUMN_DISP:
                     i = changes[k][0] - origin[0]
-                    j = changes[k][1] - origin[1]                    
+                    j = changes[k][1] - origin[1]
                     p = Map.map[origin[0]+changes[k][0]][origin[1]+changes[k][1]].type
                     dessin = graphism[p]
                     coordinates = [(j*(BOXSIZE+GAPSIZE),RESSOURCEBARHEIGHT+i*(BOXSIZE+GAPSIZE)),(j*(BOXSIZE+GAPSIZE),RESSOURCEBARHEIGHT+i*(BOXSIZE+GAPSIZE)+BOXSIZE+2*GAPSIZE),(j*(BOXSIZE+GAPSIZE)+BOXSIZE+2*GAPSIZE,RESSOURCEBARHEIGHT+i*(BOXSIZE+GAPSIZE)+BOXSIZE+2*GAPSIZE),(j*(BOXSIZE+GAPSIZE)+BOXSIZE+2*GAPSIZE,RESSOURCEBARHEIGHT+i*(BOXSIZE+GAPSIZE))]
@@ -159,7 +159,7 @@ def drawMenu(Map, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected):
 
     # For the pictures of the buildings we can change n to print more buildings in height, I haven't thought of a formula that would depend on the window length
     i=0
-    
+
     for k in toBuild:
         # The formula is more understandable in this order, but it's the same than in detBuildingFromMenu actually
         x = (i//n)*(GAPSIZE+BOXSIZE)+WINDOWWIDTH-MENUBARWIDTH
@@ -167,7 +167,7 @@ def drawMenu(Map, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected):
         DISPLAYSURF.blit(k,(x,y))
         i+=1
     i=0
-    
+
     for k in selected:
         if k:
             dessin = toBuild_Selected[i]
@@ -190,7 +190,7 @@ def isInGame(mousex, mousey):
         return(True)
     else:
         return(False)
-        
+
 def drawHappiness(DISPLAYSURF, happiness, topleftx, toplefty, size):
     '''Draws the happiness level'''
     color = (int(255*(1-happiness)),int(255*happiness),0)
@@ -202,29 +202,29 @@ def drawHappiness(DISPLAYSURF, happiness, topleftx, toplefty, size):
     length = size//4
     pygame.draw.line(DISPLAYSURF,(0,0,0),(topleftx+size//2-x,toplefty+size//2-y),(topleftx+size//2-x,toplefty+size//2-y+length))
     pygame.draw.line(DISPLAYSURF,(0,0,0),(topleftx+size//2+x,toplefty+size//2-y),(topleftx+size//2+x,toplefty+size//2-y+length))
-    height_max = size // 5    
-    if happiness > 0.5:    
-        topleftRect = [topleftx+size//2-size//4, toplefty+size//2+size//8-int(height_max*happiness)]  
-        smileRect = pygame.Rect(topleftRect[0],topleftRect[1],size//2,int(height_max*happiness))    
+    height_max = size // 5
+    if happiness > 0.5:
+        topleftRect = [topleftx+size//2-size//4, toplefty+size//2+size//8-int(height_max*happiness)]
+        smileRect = pygame.Rect(topleftRect[0],topleftRect[1],size//2,int(height_max*happiness))
         pygame.draw.arc(DISPLAYSURF,(0,0,0),smileRect,math.pi,2*math.pi)
     if happiness == 0.5:
         pygame.draw.line(DISPLAYSURF,(0,0,0),(topleftx+size//2-size//5, toplefty+size//2+size//8),(topleftx+size//2+size//5, toplefty+size//2+size//8))
     if happiness < 0.5:
-        topleftRect = [topleftx+size//2-size//4, toplefty+size//2+size//8] 
-        smileRect = pygame.Rect(topleftRect[0],topleftRect[1],size//2,int(height_max*happiness))    
+        topleftRect = [topleftx+size//2-size//4, toplefty+size//2+size//8]
+        smileRect = pygame.Rect(topleftRect[0],topleftRect[1],size//2,int(height_max*happiness))
         pygame.draw.arc(DISPLAYSURF,(0,0,0),smileRect,0,math.pi)
-        
+
 def drawInfoMenu(DISPLAYSURF, mousex, mousey, buildings):
     p = (mousex-WINDOWWIDTH+MENUBARWIDTH)//(GAPSIZE+BOXSIZE)
     q = (mousey-RESSOURCEBARHEIGHT-2*GAPSIZE)//(GAPSIZE+BOXSIZE)
-    k = int(p)*n+int(q) 
+    k = int(p)*n+int(q)
     print(k)
     if k < len(buildings) and k >= 0 and buildings[k].wood_needed != 0:
         text = font_bubble.render("Bois requis : "+str(buildings[k].wood_needed), 1, (10,10,10),(255,255,255))
         textpos = text.get_rect(centerx=(k//n)*(GAPSIZE+BOXSIZE)+WINDOWWIDTH-MENUBARWIDTH+35, centery=(k%n)*(GAPSIZE+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE+5)
-        DISPLAYSURF.blit(text, textpos)  
+        DISPLAYSURF.blit(text, textpos)
         print(str(buildings[k].wood_needed))
-    
+
 def drawInfoBoard(DISPLAYSURF, boxx, boxy, mainBoard):
     # Display House data
     if  getType(mainBoard, boxx, boxy) == 1:
@@ -236,10 +236,10 @@ def drawInfoBoard(DISPLAYSURF, boxx, boxy, mainBoard):
             textpos = img.get_rect(centerx=GAPSIZE + (BOXSIZE+GAPSIZE)*boxy+15, centery=RESSOURCEBARHEIGHT + GAPSIZE + (BOXSIZE+GAPSIZE)*boxx+gap)
             DISPLAYSURF.blit(img,textpos)
             gap += height
-        
+
 #        textpos = text.get_rect(centerx=GAPSIZE + (BOXSIZE+GAPSIZE)*boxy+15, centery=RESSOURCEBARHEIGHT + GAPSIZE + (BOXSIZE+GAPSIZE)*boxx)
 #        DISPLAYSURF.blit(text, textpos)
-                
+
     # Display Factory data
     elif getType(mainBoard, boxx, boxy) == 2:
         text="Empl : "+str(mainBoard.map[boxx][boxy].worker)+" \n "+"Prod : "+str(int(mainBoard.map[boxx][boxy].prod_max * mainBoard.map[boxx][boxy].worker / mainBoard.map[boxx][boxy].hab_max))+" \n "+"NRJ : "+str(mainBoard.map[boxx][boxy].elec_needed)

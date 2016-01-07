@@ -2,10 +2,10 @@
 """
 Created on Wed Dec 16 15:36:10 2015
 
-@author: Fatma - Geoffroy - Pierre 
+@author: Fatma - Geoffroy - Pierre
 """
 
-""" 
+"""
 9 designe un vide sur l'interface "batiments"
 0 designe une route sur l'interface "batiments"
 1 designe une maison sur l'interface "batiments"
@@ -45,15 +45,15 @@ class Empty(Building):
     def __init__(self):
         Building.__init__(self)
         self.type = 9
-        
+
 class Road(Building):
     def __init__(self):
         Building.__init__(self)
         self.type = 0
-        self.stone_needed = 1        
+        self.stone_needed = 1
         self.time = 0
         self.cost= 100
-        
+
 class House(Building):
     def __init__(self):
         Building.__init__(self)
@@ -67,14 +67,14 @@ class House(Building):
         self.debit = 40
         self.cost= 200
         self.elec_needed = 5 # in MW
-        
-        
+
+
     def moving(self, timing):
         if self.hab < self.hab_cond and (timing-self.time)%self.debit == 0:
             self.hab += 1
         if self.hab > self.hab_cond:
             self.hab = self.hab_cond
-            
+
 
 class Factory(Building):
     def __init__(self):
@@ -90,13 +90,13 @@ class Factory(Building):
         self.debit = 80
         self.time = 0
         self.elec_needed = 10 # in MW
-    
+
     def production(self, timing): # La petite fonction de prod tranquilou! Simpliste, mais pour le cas dÃƒÂ©gÃƒÂ©nÃƒÂ©rÃƒÂ© on est bons
         wood = 0
         if (timing-self.time)%self.debit == 0:
             wood = int(self.prod_max * self.worker / self.hab_max)
         return(wood)
-        
+
 
 class Mine(Building):
     def __init__(self):
@@ -105,14 +105,14 @@ class Mine(Building):
         self.stock = 1000
         self.wood_needed = 0
         self.stone_needed = 0
-        
-        
+
+
 class Workshop(Building):
     def __init__(self):
         Building.__init__(self)
         self.type = 3
-        self.wood_needed = 10 
-        self.stone_needed = 10       
+        self.wood_needed = 10
+        self.stone_needed = 10
         self.hab_max = 10
         self.cost= 200
         self.prod_max = 10
@@ -120,7 +120,7 @@ class Workshop(Building):
         self.debit = 80
         self.time = 0
         self.elec_needed = 5
-        
+
 
 class Wind_power_plant(Building):
     def __init__(self):
@@ -132,40 +132,40 @@ class Wind_power_plant(Building):
         self.stone_needed = 10
         self.time = 0
         self.elec_needed = 0
-        
-        
+
+
 class Coal_power_plant(Building):
     def __init__(self):
         Building.__init__(self)
         self.type = 5
-        self.cost= 17000 
+        self.cost= 17000
         self.wood_needed = 15
-        self.stone_needed = 15        
+        self.stone_needed = 15
         self.time = 0
         self.elec_needed = -70
 
-        
+
 class Nuclear_power_plant(Building):
     def __init__(self):
         Building.__init__(self)
         self.type = 6
         self.cost= 145000
         self.wood_needed = 15
-        self.stone_needed = 15          
+        self.stone_needed = 15
         self.time = 0
         self.elec_needed = -300
 
-        
+
 class  Hydraulic_power_plant(Building):
     def __init__(self):
         Building.__init__(self)
         self.type = 7
         self.cost= 27500
         self.wood_needed = 15
-        self.stone_needed = 15          
+        self.stone_needed = 15
         self.time = 0
         self.elec_needed = -150
-        
+
 
 class Map():
     def __init__(self, height, width):
@@ -180,19 +180,19 @@ class Map():
 
         self.set_mines()
         self.map[2][0] = Road()
-        # J'ai rajoute quelques trucs qui seront plus manipulables en tant qu'arguments    
+        # J'ai rajoute quelques trucs qui seront plus manipulables en tant qu'arguments
         self.wood = 100
         self.stone = 100
         self.money = 30000
         self.elec = 0
-        
+
         self.habitants = 0
         self.workers = 0
-        
+
         self.height = height
         self.width = width
 
-        
+
     def set_mines(self):
         ''' Creates random mines. '''
         for i in range(NBMINES):
@@ -202,7 +202,7 @@ class Map():
         ''' Checks if there is no building in cell [i][j]. '''
         if self.map[i][j].type != 9:
             result = False
-        else: 
+        else:
             result = True
         return(result)
 
@@ -217,12 +217,12 @@ class Map():
                 result = True
         if i+1 <= self.height-1:
             if self.map[i+1][j].type == 0: # 0 designe une route
-                result = True 
+                result = True
         if j+1 <= self.width-1:
             if self.map[i][j+1].type == 0: # 0 designe une route
                 result = True
         return(result)
-        
+
     def check_junction(self, types, i, j):
         ''' Determines how many buildings of type 'types' near the [i][j] cell. '''
         result = 0
@@ -242,7 +242,7 @@ class Map():
 
     def insert(self, building, i, j):
         ''' Inserts a building in cell [i][j]. '''
-        if self.check_empty(i, j) and self.check_road_junction(i, j) and (building.check_ressource(self.wood,self.stone,self.money,self.elec)):            
+        if self.check_empty(i, j) and self.check_road_junction(i, j) and (building.check_ressource(self.wood,self.stone,self.money,self.elec)):
             self.map[i][j] = building
             self.wood -= building.wood_needed
             self.stone -= building.stone_needed
@@ -250,7 +250,7 @@ class Map():
             self.elec -= building.elec_needed
             return(True)
         return(False)
-        
+
     def delete(self, i, j):
         ''' Deletes the [i][j] building. '''
         self.map[i][j] = Empty()
@@ -264,7 +264,7 @@ class Map():
             print(types)
             types = []
         print("")
-    
+
     def types(self):
         ''' Returns a matrix with all the types '''
         # on avait dit que c'etait pas joli mais sinon c'est vraiment pas pratique
@@ -276,4 +276,4 @@ class Map():
             types.append(line)
             line = []
         return(types)
-      
+

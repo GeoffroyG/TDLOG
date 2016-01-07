@@ -8,10 +8,10 @@ Created on Sun Jan  3 21:18:54 2016
 from Graphismes_test import *
 
 
-buildings = [Classes_Tests.Road(), Classes_Tests.House(), 
-             Classes_Tests.Factory(), Classes_Tests.Workshop(), 
-             Classes_Tests.Wind_power_plant(), Classes_Tests.Coal_power_plant(), 
-             Classes_Tests.Nuclear_power_plant(), Classes_Tests.Hydraulic_power_plant(), 
+buildings = [Classes_Tests.Road(), Classes_Tests.House(),
+             Classes_Tests.Factory(), Classes_Tests.Workshop(),
+             Classes_Tests.Wind_power_plant(), Classes_Tests.Coal_power_plant(),
+             Classes_Tests.Nuclear_power_plant(), Classes_Tests.Hydraulic_power_plant(),
              Classes_Tests.Empty(),Classes_Tests.Empty(),
              Classes_Tests.Mine()]
 # graphism and buildings are to be modified together, one is the buidings list the other the pictures list
@@ -30,22 +30,22 @@ def main():
                pygame.image.load("2.Images/House.png").convert(),
                pygame.image.load("2.Images/Factory.png").convert(),
                pygame.image.load("2.Images/Workshop.png").convert(),
-               pygame.image.load("2.Images/Wind.png").convert(), 
-               pygame.image.load("2.Images/Coal.png").convert(), 
-               pygame.image.load("2.Images/Nuclear.png").convert(), 
-               pygame.image.load("2.Images/Hydraulic.png").convert(), 
-               pygame.image.load("2.Images/None.png").convert(), 
+               pygame.image.load("2.Images/Wind.png").convert(),
+               pygame.image.load("2.Images/Coal.png").convert(),
+               pygame.image.load("2.Images/Nuclear.png").convert(),
+               pygame.image.load("2.Images/Hydraulic.png").convert(),
+               pygame.image.load("2.Images/None.png").convert(),
                pygame.image.load("2.Images/Grass.png").convert()]
-            
-    toBuild_Selected = [pygame.image.load("2.Images/Road_Selected.png").convert(), 
-                        pygame.image.load("2.Images/House_Selected.png").convert(), 
-                        pygame.image.load("2.Images/Factory_Selected.png").convert(), 
-                        pygame.image.load("2.Images/Workshop_Selected.png").convert(), 
-                        pygame.image.load("2.Images/Wind_Selected.png").convert(), 
-                        pygame.image.load("2.Images/Coal_Selected.png").convert(), 
-                        pygame.image.load("2.Images/Nuclear_Selected.png").convert(), 
-                        pygame.image.load("2.Images/Hydraulic_Selected.png").convert(), 
-                        pygame.image.load("2.Images/None.png").convert(), 
+
+    toBuild_Selected = [pygame.image.load("2.Images/Road_Selected.png").convert(),
+                        pygame.image.load("2.Images/House_Selected.png").convert(),
+                        pygame.image.load("2.Images/Factory_Selected.png").convert(),
+                        pygame.image.load("2.Images/Workshop_Selected.png").convert(),
+                        pygame.image.load("2.Images/Wind_Selected.png").convert(),
+                        pygame.image.load("2.Images/Coal_Selected.png").convert(),
+                        pygame.image.load("2.Images/Nuclear_Selected.png").convert(),
+                        pygame.image.load("2.Images/Hydraulic_Selected.png").convert(),
+                        pygame.image.load("2.Images/None.png").convert(),
                         pygame.image.load("2.Images/Grass_Selected.png").convert()]
 
 
@@ -56,7 +56,7 @@ def main():
 
     DISPLAYSURF.fill(BGCOLOR)
 
-    
+
     displayBeginningMenu(DISPLAYSURF, FPSCLOCK, font_title)
 
 
@@ -66,10 +66,10 @@ def main():
     buildingselected = False
     mouseClicked = False
     # initialisation of the selection variables
-        
+
     changes = []
     change_all = False
-    
+
     build = False
 
     timer = 0 # set of a timer in frames
@@ -78,7 +78,7 @@ def main():
     origin = [0,0] # coordinates of the top-left cell displayed
     mousex = 0 # used to store x coordinate of mouse event
     mousey = 0 # used to store y coordinate of mouse event
-    
+
 
     DISPLAYSURF.fill(BGCOLOR) # drawing the window
     drawBoard(mainBoard, DISPLAYSURF, selected, timing, origin, graphism)
@@ -96,7 +96,7 @@ def main():
             elif event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                 pygame.quit()
                 sys.exit()
-            
+
             # Shifts on the map
             if event.type == KEYUP and event.key == K_LEFT:
                 if origin[1] > 0:
@@ -118,7 +118,7 @@ def main():
         if isInGame(mousex, mousey):
             boxx, boxy = getBoxAtPixelGame(mousex, mousey, origin)
 
-            # Build a new building            
+            # Build a new building
             if boxx != None and boxy != None and mouseClicked and buildingselected:
                 build = mainBoard.insert(building, boxx, boxy)
                 buildingselected = False
@@ -126,18 +126,18 @@ def main():
                 selected = [False, False, False, False, False, False, False, False, False, False]
                 if build:
                     changes.append([boxx, boxy])
-                
+
             drawInfoBoard(DISPLAYSURF, boxx, boxy, mainBoard)
-            
+
 
 
         if isInMenu(mousex):
-            
+
             # Select a building in the menu
             if mouseClicked and getBuildingFromMenu(mousex, mousey, selected, buildings) != None:
                 buildingselected = True
-                building = getBuildingFromMenu(mousex, mousey, selected, buildings)                                                       
-            
+                building = getBuildingFromMenu(mousex, mousey, selected, buildings)
+
             drawInfoMenu(DISPLAYSURF, mousex, mousey, buildings)
 
 
@@ -162,7 +162,7 @@ def main():
 #                        mainBoard.map[i][j].worker = min(worker_aux,mainBoard.map[i][j].hab_max)
 #                        worker_aux -= mainBoard.map[i][j].worker
 #                        mainBoard.wood += mainBoard.map[i][j].production(timer)
-#                        mainBoard.money += mainBoard.map[i][j].production(timer) * mainBoard.map[i][j].VA / mainBoard.map[i][j].prod_max                   
+#                        mainBoard.money += mainBoard.map[i][j].production(timer) * mainBoard.map[i][j].VA / mainBoard.map[i][j].prod_max
 
 
         # Redraw the screen and wait a clock tick.
@@ -172,11 +172,11 @@ def main():
         timer += 1
         timing = timer // FPS
 
-        
+
         #drawBoard(mainBoard, DISPLAYSURF, selected, timing, origin, graphism)
         drawBoard_changes(mainBoard, DISPLAYSURF, selected, timing, origin, graphism, changes, change_all)
         drawHeader(mainBoard, DISPLAYSURF)
         drawMenu(mainBoard, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected)
         #drawHappiness(DISPLAYSURF,happiness,0,0,BOXSIZE)
         #happiness -= 0.01
-        
+

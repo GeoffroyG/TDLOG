@@ -2,7 +2,7 @@
 """
 Created on Wed Dec 16 15:36:10 2015
 
-@author: Fatma - Geoffroy - Pierre 
+@author: Fatma - Geoffroy - Pierre
 """
 
 import pygame
