@@ -192,6 +192,7 @@ class Map():
         self.height = height
         self.width = width
 
+        self.built = []
 
     def set_mines(self):
         ''' Creates random mines. '''
