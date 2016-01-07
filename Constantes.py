@@ -8,7 +8,7 @@ Created on Wed Dec 16 15:36:10 2015
 import pygame
 pygame.init()
 
-FPS           = 30 # frames per second, the general speed of the program
+FPS           = 10 # frames per second, the general speed of the program
 
 BOXSIZE       = 40 # size of box height & width in pixels
 GAPSIZE       = 5 # size of gap between boxes in pixels

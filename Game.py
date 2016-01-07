@@ -87,7 +87,6 @@ def main():
 
 
     while True: # main game loop
-    
         for event in pygame.event.get(): # event handling loop
             if event.type == MOUSEBUTTONUP:
                 mousex, mousey = event.pos
@@ -166,23 +165,6 @@ def main():
 #                        mainBoard.money += mainBoard.map[i][j].production(timer) * mainBoard.map[i][j].VA / mainBoard.map[i][j].prod_max                   
 
 
-        mainBoard.capacity_electricity = 0
-        mainBoard.global_demand_elec = 0
-        for i in range(NBROW):
-            for j in range(NBCOLUMN):
-                if  getType(mainBoard, i, j) in [4,5,6,7]:
-                    mainBoard.capacity_electricity += mainBoard.map[i][j].capacity
-                    
-        mainBoard.available_electricity = mainBoard.capacity_electricity
-        for i in range(NBROW):
-            for j in range(NBCOLUMN):
-                if  getType(mainBoard, i, j) in [1,2,3]:
-                    mainBoard.global_demand_elec += mainBoard.map[i][j].elec_consumption
-                    if mainBoard.map[i][j].elec_consumption <= mainBoard.available_electricity:
-                        mainBoard.available_electricity -= mainBoard.map[i][j].elec_consumption
-                        mainBoard.map[i][j].real_consumption = mainBoard.map[i][j].elec_consumption
-                    
-                    
         # Redraw the screen and wait a clock tick.
         pygame.display.update()
         FPSCLOCK.tick(FPS)

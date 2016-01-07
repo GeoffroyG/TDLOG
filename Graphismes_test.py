@@ -140,7 +140,7 @@ def drawBoard_changes(Map, DISPLAYSURF, selected, timing, origin, graphism, chan
 def drawHeader(Map, DISPLAYSURF):
     # Then we display the ressources
     pygame.draw.polygon(DISPLAYSURF, (255,255,255), headerCoordinates)
-    ressources = "Money : "+str(Map.money)+"   Wood : "+str(Map.wood)+"   Stone : "+str(Map.stone)+"   Habitants : "+str(Map.habitants)+"   NRJ capa : "+str(Map.capacity_electricity)+"   NRJ dispo : "+str(Map.global_demand_elec)
+    ressources = "Money : "+str(Map.money)+"   Wood : "+str(Map.wood)+"   Stone : "+str(Map.stone)+"   Habitants : "+str(Map.habitants)+"   NRJ : "+str(Map.elec)
     text = font.render(ressources, 1, (10,10,10))
     textpos = text.get_rect(centerx=RESSOURCEBARWIDTH/2,centery=GAPSIZE+RESSOURCEBARHEIGHT/2)
     DISPLAYSURF.blit(text, textpos)
@@ -228,7 +228,7 @@ def drawInfoMenu(DISPLAYSURF, mousex, mousey, buildings):
 def drawInfoBoard(DISPLAYSURF, boxx, boxy, mainBoard):
     # Display House data
     if  getType(mainBoard, boxx, boxy) == 1:
-        text = "Habs : "+str(mainBoard.map[boxx][boxy].hab)+" \n "+"NRJ : "+str(mainBoard.map[boxx][boxy].real_consumption)
+        text = "Habs : "+str(mainBoard.map[boxx][boxy].hab)+" \n "+"NRJ : "+str(mainBoard.map[boxx][boxy].elec_needed)
         height = font_bubble.get_height()*1
         gap=0
         for line in text.splitlines():
@@ -242,7 +242,7 @@ def drawInfoBoard(DISPLAYSURF, boxx, boxy, mainBoard):
                 
     # Display Factory data
     elif getType(mainBoard, boxx, boxy) == 2:
-        text="Empl : "+str(mainBoard.map[boxx][boxy].worker)+" \n "+"Prod : "+str(int(mainBoard.map[boxx][boxy].prod_max * mainBoard.map[boxx][boxy].worker / mainBoard.map[boxx][boxy].hab_max))+" \n "+"NRJ : "+str(mainBoard.map[boxx][boxy].real_consumption)
+        text="Empl : "+str(mainBoard.map[boxx][boxy].worker)+" \n "+"Prod : "+str(int(mainBoard.map[boxx][boxy].prod_max * mainBoard.map[boxx][boxy].worker / mainBoard.map[boxx][boxy].hab_max))+" \n "+"NRJ : "+str(mainBoard.map[boxx][boxy].elec_needed)
         height = font_bubble.get_height()*1
         gap=0
         for line in text.splitlines():
