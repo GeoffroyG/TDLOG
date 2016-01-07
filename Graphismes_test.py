@@ -32,11 +32,11 @@ def displayBeginningMenu(DISPLAYSURF, FPSCLOCK, font_title):
             text = font_other.render("Nouveau Jeu", 1, (10,10,10), (255,255,255))
             textposNewGame = text.get_rect(centerx = WINDOWWIDTH / 2, centery = WINDOWHEIGHT / 2)
             DISPLAYSURF.blit(text, textposNewGame)
-            text = font_other.render("Règles", 1, (10,10,10), (255,255,255))
+            text = font_other.render("RÃ¨gles", 1, (10,10,10), (255,255,255))
             textposRules = text.get_rect(centerx = WINDOWWIDTH / 2, centery = WINDOWHEIGHT / 2 + textposNewGame.height)
             DISPLAYSURF.blit(text, textposRules)
         else:
-            text = font_other.render("Ceci sont les règles, ça va être coton à tout taper en faisant les sauts de lignes", 1, (10,10,10), (255,255,255))
+            text = font_other.render("Ceci sont les rÃ¨gles, Ã§a va Ãªtre coton Ã  tout taper en faisant les sauts de lignes", 1, (10,10,10), (255,255,255))
             textpos = text.get_rect(centerx = WINDOWWIDTH / 2, centery = WINDOWHEIGHT / 2)
             DISPLAYSURF.blit(text, textpos)
             back = pygame.image.load("2.Images/Return.png").convert()
@@ -140,7 +140,7 @@ def drawBoard_changes(Map, DISPLAYSURF, selected, timing, origin, graphism, chan
 def drawHeader(Map, DISPLAYSURF):
     # Then we display the ressources
     pygame.draw.polygon(DISPLAYSURF, (255,255,255), headerCoordinates)
-    ressources = "Wood : "+str(Map.wood)+"   Habitants : "+str(Map.habitants)
+    ressources = "Money : "+str(Map.money)+"   Wood : "+str(Map.wood)+"   Stone : "+str(Map.stone)+"   Habitants : "+str(Map.habitants)+"   NRJ capa : "+str(Map.capacity_electricity)+"   NRJ dispo : "+str(Map.global_demand_elec)
     text = font.render(ressources, 1, (10,10,10))
     textpos = text.get_rect(centerx=RESSOURCEBARWIDTH/2,centery=GAPSIZE+RESSOURCEBARHEIGHT/2)
     DISPLAYSURF.blit(text, textpos)
@@ -228,13 +228,21 @@ def drawInfoMenu(DISPLAYSURF, mousex, mousey, buildings):
 def drawInfoBoard(DISPLAYSURF, boxx, boxy, mainBoard):
     # Display House data
     if  getType(mainBoard, boxx, boxy) == 1:
-        text = font_bubble.render("Habs : "+str(mainBoard.map[boxx][boxy].hab), 1, (10,10,10),(255,255,255))
-        textpos = text.get_rect(centerx=GAPSIZE + (BOXSIZE+GAPSIZE)*boxy+15, centery=RESSOURCEBARHEIGHT + GAPSIZE + (BOXSIZE+GAPSIZE)*boxx)
-        DISPLAYSURF.blit(text, textpos)
+        text = "Habs : "+str(mainBoard.map[boxx][boxy].hab)+" \n "+"NRJ : "+str(mainBoard.map[boxx][boxy].real_consumption)
+        height = font_bubble.get_height()*1
+        gap=0
+        for line in text.splitlines():
+            img = font_bubble.render(line,1,(10,10,10),(255,255,255))
+            textpos = img.get_rect(centerx=GAPSIZE + (BOXSIZE+GAPSIZE)*boxy+15, centery=RESSOURCEBARHEIGHT + GAPSIZE + (BOXSIZE+GAPSIZE)*boxx+gap)
+            DISPLAYSURF.blit(img,textpos)
+            gap += height
+        
+#        textpos = text.get_rect(centerx=GAPSIZE + (BOXSIZE+GAPSIZE)*boxy+15, centery=RESSOURCEBARHEIGHT + GAPSIZE + (BOXSIZE+GAPSIZE)*boxx)
+#        DISPLAYSURF.blit(text, textpos)
                 
     # Display Factory data
     elif getType(mainBoard, boxx, boxy) == 2:
-        text="Empl : "+str(mainBoard.map[boxx][boxy].worker)+" \n "+"Prod : "+str(int(mainBoard.map[boxx][boxy].prod_max * mainBoard.map[boxx][boxy].worker / mainBoard.map[boxx][boxy].hab_max))
+        text="Empl : "+str(mainBoard.map[boxx][boxy].worker)+" \n "+"Prod : "+str(int(mainBoard.map[boxx][boxy].prod_max * mainBoard.map[boxx][boxy].worker / mainBoard.map[boxx][boxy].hab_max))+" \n "+"NRJ : "+str(mainBoard.map[boxx][boxy].real_consumption)
         height = font_bubble.get_height()*1
         gap=0
         for line in text.splitlines():

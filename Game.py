@@ -10,8 +10,8 @@ from Graphismes_test import *
 
 buildings = [Classes_Tests.Road(), Classes_Tests.House(), 
              Classes_Tests.Factory(), Classes_Tests.Workshop(), 
-             Classes_Tests.Empty(), Classes_Tests.Empty(), 
-             Classes_Tests.Empty(), Classes_Tests.Empty(), 
+             Classes_Tests.Wind_power_plant(), Classes_Tests.Coal_power_plant(), 
+             Classes_Tests.Nuclear_power_plant(), Classes_Tests.Hydraulic_power_plant(), 
              Classes_Tests.Empty(),Classes_Tests.Empty(),
              Classes_Tests.Mine()]
 # graphism and buildings are to be modified together, one is the buidings list the other the pictures list
@@ -30,10 +30,10 @@ def main():
                pygame.image.load("2.Images/House.png").convert(),
                pygame.image.load("2.Images/Factory.png").convert(),
                pygame.image.load("2.Images/Workshop.png").convert(),
-               pygame.image.load("2.Images/None.png").convert(), 
-               pygame.image.load("2.Images/None.png").convert(), 
-               pygame.image.load("2.Images/None.png").convert(), 
-               pygame.image.load("2.Images/None.png").convert(), 
+               pygame.image.load("2.Images/Wind.png").convert(), 
+               pygame.image.load("2.Images/Coal.png").convert(), 
+               pygame.image.load("2.Images/Nuclear.png").convert(), 
+               pygame.image.load("2.Images/Hydraulic.png").convert(), 
                pygame.image.load("2.Images/None.png").convert(), 
                pygame.image.load("2.Images/Grass.png").convert()]
             
@@ -41,12 +41,13 @@ def main():
                         pygame.image.load("2.Images/House_Selected.png").convert(), 
                         pygame.image.load("2.Images/Factory_Selected.png").convert(), 
                         pygame.image.load("2.Images/Workshop_Selected.png").convert(), 
-                        pygame.image.load("2.Images/None.png").convert(), 
-                        pygame.image.load("2.Images/None.png").convert(), 
-                        pygame.image.load("2.Images/None.png").convert(), 
-                        pygame.image.load("2.Images/None.png").convert(), 
+                        pygame.image.load("2.Images/Wind_Selected.png").convert(), 
+                        pygame.image.load("2.Images/Coal_Selected.png").convert(), 
+                        pygame.image.load("2.Images/Nuclear_Selected.png").convert(), 
+                        pygame.image.load("2.Images/Hydraulic_Selected.png").convert(), 
                         pygame.image.load("2.Images/None.png").convert(), 
                         pygame.image.load("2.Images/Grass_Selected.png").convert()]
+
 
     graphism = toBuild + [pygame.image.load("2.Images/Mine.png").convert()]
     graphism_Selected = toBuild_Selected + [pygame.image.load("2.Images/Mine_Selected.png").convert()]
@@ -162,7 +163,26 @@ def main():
 #                        mainBoard.map[i][j].worker = min(worker_aux,mainBoard.map[i][j].hab_max)
 #                        worker_aux -= mainBoard.map[i][j].worker
 #                        mainBoard.wood += mainBoard.map[i][j].production(timer)
-        
+#                        mainBoard.money += mainBoard.map[i][j].production(timer) * mainBoard.map[i][j].VA / mainBoard.map[i][j].prod_max                   
+
+
+        mainBoard.capacity_electricity = 0
+        mainBoard.global_demand_elec = 0
+        for i in range(NBROW):
+            for j in range(NBCOLUMN):
+                if  getType(mainBoard, i, j) in [4,5,6,7]:
+                    mainBoard.capacity_electricity += mainBoard.map[i][j].capacity
+                    
+        mainBoard.available_electricity = mainBoard.capacity_electricity
+        for i in range(NBROW):
+            for j in range(NBCOLUMN):
+                if  getType(mainBoard, i, j) in [1,2,3]:
+                    mainBoard.global_demand_elec += mainBoard.map[i][j].elec_consumption
+                    if mainBoard.map[i][j].elec_consumption <= mainBoard.available_electricity:
+                        mainBoard.available_electricity -= mainBoard.map[i][j].elec_consumption
+                        mainBoard.map[i][j].real_consumption = mainBoard.map[i][j].elec_consumption
+                    
+                    
         # Redraw the screen and wait a clock tick.
         pygame.display.update()
         FPSCLOCK.tick(FPS)
