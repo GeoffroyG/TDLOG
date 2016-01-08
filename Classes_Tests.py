@@ -259,12 +259,17 @@ class Map():
             self.stone -= building.stone_needed
             self.money -= building.cost
             self.elec -= building.elec_needed
-            self.built.append([i,j])
+
             self.time = timer
+
             
             # If a factory is built, its impact on nearby houses is calculated
             if building.type == 2:
                 self.factory_impact(i, j)
+                
+            if building.type != 0:                
+                self.built.append([i,j])
+                print(self.built)
 
             return(True)
         return(False)
@@ -284,9 +289,9 @@ class Map():
         for i in range(self.height):
             for j in range(self.width):
                 types.append(self.map[i][j].type)
-            print(types)
+        #    print(types)
             types = []
-        print("")
+        #print("")
 
     def types(self):
         ''' Returns a matrix with all the types '''

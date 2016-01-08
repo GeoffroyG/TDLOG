@@ -218,7 +218,7 @@ def drawInfoMenu(DISPLAYSURF, mousex, mousey, buildings):
     p = (mousex-WINDOWWIDTH+MENUBARWIDTH)//(GAPSIZE+BOXSIZE)
     q = (mousey-RESSOURCEBARHEIGHT-2*GAPSIZE)//(GAPSIZE+BOXSIZE)
     k = int(p)*n+int(q)
-    print(k)
+    #print(k)
     if k < len(buildings) and k >= 0 and buildings[k].wood_needed != 0:
         text = font_bubble.render("Bois requis : "+str(buildings[k].wood_needed), 1, (10,10,10),(255,255,255))
         textpos = text.get_rect(centerx=(k//n)*(GAPSIZE+BOXSIZE)+WINDOWWIDTH-MENUBARWIDTH+35, centery=(k%n)*(GAPSIZE+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE+5)

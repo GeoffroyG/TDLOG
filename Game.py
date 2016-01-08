@@ -150,7 +150,7 @@ def main():
                 i, j = k[0], k[1]
                 if  getType(mainBoard, i, j) == 1:
                     mainBoard.habitants += mainBoard.map[i][j].moving(timer)
-#
+
 #        # This is not the most efficient as it focuses more on the first factories built
 #        worker_aux = mainBoard.habitants
 #        for i in range(NBROW):
