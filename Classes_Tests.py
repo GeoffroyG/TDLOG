@@ -64,7 +64,7 @@ class House(Building):
         self.hab = 0
         self.wood_needed = 5
         self.stone_needed = 5
-        self.debit = 90
+        self.debit = 40
         self.cost= 200
         self.elec_needed = 5 # in MW
 
@@ -74,12 +74,12 @@ class House(Building):
             diff = self.hab_max - self.factories - self.hab
 
         # The number of habs is correct but its time to host a new citizen
-        elif (timer-self.time)%self.debit == 0:
-            diff = 1
-            
         else:
-            diff= 0
-            
+            if (timer-self.time)%self.debit == 0:
+                diff = 1
+            else:
+                diff= 0
+
         self.hab += diff
         return diff
 
@@ -248,7 +248,20 @@ class Map():
                 result += 1
         return(result)
 
-    def factory_impact(i, j, delete = 0):
+    def factory_impact(i, j, delete = 1):
+        if i-1 >= 0:
+            if self.map[i-1][j].type == 1: # 0 designe une route
+                self.map[i-1][j].factories += 1 * delete
+        if j-1 >= 0:
+            if self.map[i][j-1].type == 1: # 0 designe une route
+                self.map[i][j-1].factories += 1 * delete
+        if i+1 <= self.height-1:
+            if self.map[i+1][j].type == 1: # 0 designe une route
+                self.map[i+1][j].factories += 1 * delete
+        if j+1 <= self.width-1:
+            if self.map[i][j+1].type == 1: # 0 designe une route
+                self.map[i][j+1].factories += 1 * delete
+
         return 0
 
     def insert(self, building, i, j, timer):
@@ -278,7 +291,7 @@ class Map():
         ''' Deletes the [i][j] building. '''
         # If a factory is destroyed, its impact on nearby houses is calculated
         if self.map[i][j].type == 2:
-            self.factory_impact(i, j, 1)
+            self.factory_impact(i, j, -1)
 
         self.map[i][j] = Empty()
         # add a function to remove the building from the self.built list
