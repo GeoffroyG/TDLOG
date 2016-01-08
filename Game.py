@@ -19,7 +19,7 @@ buildings = [Classes_Tests.Road(), Classes_Tests.House(),
 mainBoard = Classes_Tests.Map(NBROW,NBCOLUMN)
 
 def main():
-    global FPSCLOCK, DISPLAYSURF, selected, building, graphism, graphism_Selected, toBuild, toBuild_Selected
+    global FPSCLOCK, DISPLAYSURF, selected, building, graphism, graphism_Selected, toBuild, toBuild_Selected, timer
     pygame.init()
     FPSCLOCK = pygame.time.Clock()
     DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
@@ -120,7 +120,7 @@ def main():
 
             # Build a new building
             if boxx != None and boxy != None and mouseClicked and buildingselected:
-                build = mainBoard.insert(building, boxx, boxy)
+                build = mainBoard.insert(building, boxx, boxy, timer)
                 buildingselected = False
                 building = Classes_Tests.Empty()
                 selected = [False, False, False, False, False, False, False, False, False, False]
@@ -145,13 +145,11 @@ def main():
         boxx, boxy = None, None
         mouseClicked = False
         # Increase of the newcomers
-#        mainBoard.habitants = 0
-#        for i in range(NBROW):
-#            for j in range(NBCOLUMN):
-#                if  getType(mainBoard, i, j) == 1:
-#                    mainBoard.map[i][j].hab_cond = mainBoard.map[i][j].hab_max - mainBoard.check_junction(2,i,j)
-#                    mainBoard.map[i][j].moving(timer)
-#                    mainBoard.habitants += mainBoard.map[i][j].hab
+        for k in mainBoard.built:
+            if len(k) > 0:
+                i, j = k[0], k[1]
+                if  getType(mainBoard, i, j) == 1:
+                    mainBoard.habitants += mainBoard.map[i][j].moving(timer)
 #
 #        # This is not the most efficient as it focuses more on the first factories built
 #        worker_aux = mainBoard.habitants
@@ -163,7 +161,7 @@ def main():
 #                        worker_aux -= mainBoard.map[i][j].worker
 #                        mainBoard.wood += mainBoard.map[i][j].production(timer)
 #                        mainBoard.money += mainBoard.map[i][j].production(timer) * mainBoard.map[i][j].VA / mainBoard.map[i][j].prod_max
-
+#
 
         # Redraw the screen and wait a clock tick.
         pygame.display.update()

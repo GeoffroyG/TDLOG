@@ -34,6 +34,7 @@ class Building():
         self.stone_needed = 0
         self.elec_needed = 0
         self.cost = 0
+        self.time = 0
 
     def check_ressource(self, wood, stone, money, elec):
         result = False
@@ -59,22 +60,28 @@ class House(Building):
         Building.__init__(self)
         self.type = 1
         self.hab_max = 5
-        self.hab_cond = 5
+        self.factories = 0
         self.hab = 0
         self.wood_needed = 5
         self.stone_needed = 5
-        self.time = 0
-        self.debit = 40
+        self.debit = 90
         self.cost= 200
         self.elec_needed = 5 # in MW
 
+    def moving(self, timer):
+        # The amount of habs is superior to the number allowed
+        if self.hab > self.hab_max - self.factories:
+            diff = self.hab_max - self.factories - self.hab
 
-    def moving(self, timing):
-        if self.hab < self.hab_cond and (timing-self.time)%self.debit == 0:
-            self.hab += 1
-        if self.hab > self.hab_cond:
-            self.hab = self.hab_cond
-
+        # The number of habs is correct but its time to host a new citizen
+        elif (timer-self.time)%self.debit == 0:
+            diff = 1
+            
+        else:
+            diff= 0
+            
+        self.hab += diff
+        return diff
 
 class Factory(Building):
     def __init__(self):
@@ -241,7 +248,10 @@ class Map():
                 result += 1
         return(result)
 
-    def insert(self, building, i, j):
+    def factory_impact(i, j, delete = 0):
+        return 0
+
+    def insert(self, building, i, j, timer):
         ''' Inserts a building in cell [i][j]. '''
         if self.check_empty(i, j) and self.check_road_junction(i, j) and (building.check_ressource(self.wood,self.stone,self.money,self.elec)):
             self.map[i][j] = building
@@ -249,12 +259,24 @@ class Map():
             self.stone -= building.stone_needed
             self.money -= building.cost
             self.elec -= building.elec_needed
+            self.built.append([i,j])
+            self.time = timer
+            
+            # If a factory is built, its impact on nearby houses is calculated
+            if building.type == 2:
+                self.factory_impact(i, j)
+
             return(True)
         return(False)
 
     def delete(self, i, j):
         ''' Deletes the [i][j] building. '''
+        # If a factory is destroyed, its impact on nearby houses is calculated
+        if self.map[i][j].type == 2:
+            self.factory_impact(i, j, 1)
+
         self.map[i][j] = Empty()
+        # add a function to remove the building from the self.built list
 
     def display(self):
         ''' Displays the matrix in text mode. '''
