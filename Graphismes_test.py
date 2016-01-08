@@ -32,11 +32,11 @@ def displayBeginningMenu(DISPLAYSURF, FPSCLOCK, font_title):
             text = font_other.render("Nouveau Jeu", 1, (10,10,10), (255,255,255))
             textposNewGame = text.get_rect(centerx = WINDOWWIDTH / 2, centery = WINDOWHEIGHT / 2)
             DISPLAYSURF.blit(text, textposNewGame)
-            text = font_other.render("RÃƒÂ¨gles", 1, (10,10,10), (255,255,255))
+            text = font_other.render("RÃ¨gles", 1, (10,10,10), (255,255,255))
             textposRules = text.get_rect(centerx = WINDOWWIDTH / 2, centery = WINDOWHEIGHT / 2 + textposNewGame.height)
             DISPLAYSURF.blit(text, textposRules)
         else:
-            text = font_other.render("Ceci sont les rÃƒÂ¨gles, ÃƒÂ§a va ÃƒÂªtre coton ÃƒÂ  tout taper en faisant les sauts de lignes", 1, (10,10,10), (255,255,255))
+            text = font_other.render("Ceci sont les rÃ¨gles, Ã§a va Ãªtre coton Ã  tout taper en faisant les sauts de lignes", 1, (10,10,10), (255,255,255))
             textpos = text.get_rect(centerx = WINDOWWIDTH / 2, centery = WINDOWHEIGHT / 2)
             DISPLAYSURF.blit(text, textpos)
             back = pygame.image.load("2.Images/Return.png").convert()
@@ -219,8 +219,15 @@ def drawInfoMenu(DISPLAYSURF, mousex, mousey, buildings):
     q = (mousey-RESSOURCEBARHEIGHT-2*GAPSIZE)//(GAPSIZE+BOXSIZE)
     k = int(p)*n+int(q)
     #print(k)
-    if k < len(buildings) and k >= 0 and buildings[k].wood_needed != 0 and buildings[k].stone_needed != 0 and buildings[k].cost != 0 and buildings[k].elec_needed != 0:
-        text = "Bois requis : "+str(buildings[k].wood_needed)+" \n "+"Pierre requis : "+str(buildings[k].stone_needed)+" \n "+"Cout : "+str(buildings[k].cost)+" \n "+"NRJ : "+str(buildings[k].elec_needed)
+    if k < len(buildings)-2 and k >= 0 :
+        if buildings[k].wood_needed != 0 and buildings[k].stone_needed != 0 and buildings[k].cost != 0 and buildings[k].elec_needed != 0:
+            text = "Bois requis : "+str(buildings[k].wood_needed)+" \n "+"Pierre requis : "+str(buildings[k].stone_needed)+" \n "+"Cout : "+str(buildings[k].cost)+" \n "+"NRJ : "+str(buildings[k].elec_needed)
+        elif buildings[k].wood_needed == 0 and buildings[k].stone_needed != 0 and buildings[k].cost != 0 and buildings[k].elec_needed != 0:
+            text = "Pierre requis : "+str(buildings[k].stone_needed)+" \n "+"Cout : "+str(buildings[k].cost)+" \n "+"NRJ : "+str(buildings[k].elec_needed)    
+        elif buildings[k].wood_needed == 0 and buildings[k].stone_needed != 0 and buildings[k].cost != 0 and buildings[k].elec_needed == 0:
+            text = "Pierre requis : "+str(buildings[k].stone_needed)+" \n "+"Cout : "+str(buildings[k].cost)   
+        elif buildings[k].type == 9 :
+            text =""
         height = font_bubble.get_height()*1
         gap=0
         for line in text.splitlines():
@@ -229,24 +236,6 @@ def drawInfoMenu(DISPLAYSURF, mousex, mousey, buildings):
             DISPLAYSURF.blit(img,textpos)
             gap += height
         
-    elif k < len(buildings) and k >= 0 and buildings[k].wood_needed == 0 and buildings[k].stone_needed != 0 and buildings[k].cost != 0 and buildings[k].elec_needed != 0:
-        text = "Pierre requis : "+str(buildings[k].stone_needed)+" \n "+"Cout : "+str(buildings[k].cost)+" \n "+"NRJ : "+str(buildings[k].elec_needed)    
-        height = font_bubble.get_height()*1
-        gap=0
-        for line in text.splitlines():
-            img = font_bubble.render(line,1,(10,10,10),(255,255,255))
-            textpos = img.get_rect(centerx=(k//n)*(GAPSIZE+BOXSIZE)+WINDOWWIDTH-MENUBARWIDTH+35, centery=(k%n)*(GAPSIZE+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE+5+gap)
-            DISPLAYSURF.blit(img,textpos)
-            gap += height        
-    elif k < len(buildings) and k >= 0 and buildings[k].wood_needed == 0 and buildings[k].stone_needed != 0 and buildings[k].cost != 0 and buildings[k].elec_needed == 0:
-        text = "Pierre requis : "+str(buildings[k].stone_needed)+" \n "+"Cout : "+str(buildings[k].cost)  
-        height = font_bubble.get_height()*1
-        gap=0
-        for line in text.splitlines():
-            img = font_bubble.render(line,1,(10,10,10),(255,255,255))
-            textpos = img.get_rect(centerx=(k//n)*(GAPSIZE+BOXSIZE)+WINDOWWIDTH-MENUBARWIDTH+35, centery=(k%n)*(GAPSIZE+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE+5+gap)
-            DISPLAYSURF.blit(img,textpos)
-            gap += height 
 
 def drawInfoBoard(DISPLAYSURF, boxx, boxy, mainBoard):
     # Display House data
