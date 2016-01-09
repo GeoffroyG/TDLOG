@@ -219,11 +219,23 @@ def drawInfoMenu(DISPLAYSURF, mousex, mousey, buildings):
     q = (mousey-RESSOURCEBARHEIGHT-2*GAPSIZE)//(GAPSIZE+BOXSIZE)
     k = int(p)*n+int(q)
     #print(k)
-    if k < len(buildings) and k >= 0 and buildings[k].wood_needed != 0:
-        text = font_bubble.render("Bois requis : "+str(buildings[k].wood_needed), 1, (10,10,10),(255,255,255))
-        textpos = text.get_rect(centerx=(k//n)*(GAPSIZE+BOXSIZE)+WINDOWWIDTH-MENUBARWIDTH+35, centery=(k%n)*(GAPSIZE+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE+5)
-        DISPLAYSURF.blit(text, textpos)
-        print(str(buildings[k].wood_needed))
+    if k < len(buildings)-2 and k >= 0 :
+        if buildings[k].wood_needed != 0 and buildings[k].stone_needed != 0 and buildings[k].cost != 0 and buildings[k].elec_needed != 0:
+            text = "Bois requis : "+str(buildings[k].wood_needed)+" \n "+"Pierre requis : "+str(buildings[k].stone_needed)+" \n "+"Cout : "+str(buildings[k].cost)+" \n "+"NRJ : "+str(buildings[k].elec_needed)
+        elif buildings[k].wood_needed == 0 and buildings[k].stone_needed != 0 and buildings[k].cost != 0 and buildings[k].elec_needed != 0:
+            text = "Pierre requis : "+str(buildings[k].stone_needed)+" \n "+"Cout : "+str(buildings[k].cost)+" \n "+"NRJ : "+str(buildings[k].elec_needed)    
+        elif buildings[k].wood_needed == 0 and buildings[k].stone_needed != 0 and buildings[k].cost != 0 and buildings[k].elec_needed == 0:
+            text = "Pierre requis : "+str(buildings[k].stone_needed)+" \n "+"Cout : "+str(buildings[k].cost)   
+        elif buildings[k].type == 9 :
+            text =""
+        height = font_bubble.get_height()*1
+        gap=0
+        for line in text.splitlines():
+            img = font_bubble.render(line,1,(10,10,10),(255,255,255))
+            textpos = img.get_rect(centerx=(k//n)*(GAPSIZE+BOXSIZE)+WINDOWWIDTH-MENUBARWIDTH+35, centery=(k%n)*(GAPSIZE+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE+5+gap)
+            DISPLAYSURF.blit(img,textpos)
+            gap += height
+        
 
 def drawInfoBoard(DISPLAYSURF, boxx, boxy, mainBoard):
     # Display House data
@@ -240,8 +252,8 @@ def drawInfoBoard(DISPLAYSURF, boxx, boxy, mainBoard):
 #        textpos = text.get_rect(centerx=GAPSIZE + (BOXSIZE+GAPSIZE)*boxy+15, centery=RESSOURCEBARHEIGHT + GAPSIZE + (BOXSIZE+GAPSIZE)*boxx)
 #        DISPLAYSURF.blit(text, textpos)
 
-    # Display Factory data
-    elif getType(mainBoard, boxx, boxy) == 2:
+    # Display Factory or workshop data
+    elif getType(mainBoard, boxx, boxy) in [2,3]:
         text="Empl : "+str(mainBoard.map[boxx][boxy].worker)+" \n "+"Prod : "+str(int(mainBoard.map[boxx][boxy].prod_max * mainBoard.map[boxx][boxy].worker / mainBoard.map[boxx][boxy].hab_max))+" \n "+"NRJ : "+str(mainBoard.map[boxx][boxy].elec_needed)
         height = font_bubble.get_height()*1
         gap=0
@@ -250,3 +262,10 @@ def drawInfoBoard(DISPLAYSURF, boxx, boxy, mainBoard):
             textpos = img.get_rect(centerx=GAPSIZE + (BOXSIZE+GAPSIZE)*boxy+15, centery=RESSOURCEBARHEIGHT + GAPSIZE + (BOXSIZE+GAPSIZE)*boxx+gap)
             DISPLAYSURF.blit(img,textpos)
             gap += height
+
+    # Display NRJ data
+    if  getType(mainBoard, boxx, boxy) in [4,5,6,7]:
+        text = font_bubble.render("NRJ : "+str(mainBoard.map[boxx][boxy].elec_needed),1,(10,10,10),(255,255,255))
+        textpos = text.get_rect(centerx=GAPSIZE + (BOXSIZE+GAPSIZE)*boxy+15, centery=RESSOURCEBARHEIGHT + GAPSIZE + (BOXSIZE+GAPSIZE)*boxx)
+        DISPLAYSURF.blit(text,textpos)
+        

@@ -12,7 +12,7 @@ Created on Wed Dec 16 15:36:10 2015
 2 designe une usine sur l'interface "batiments"
 3 designe un atelier sur l'interface "batiments"
 4 designe une eolienne sur l'interface "batiments"
-5 designe une centrale Ã  charbon sur l'interface "batiments"
+5 designe une centrale ÃƒÂ  charbon sur l'interface "batiments"
 6 designe une centrale nucleaire sur l'interface "batiments"
 7 designe une centrale hydraulique sur l'interface "batiments"
 10 designe une mine sur l'interface "batiments"
@@ -21,7 +21,7 @@ Created on Wed Dec 16 15:36:10 2015
 from Constantes import *
 import random
 
-# wood = 100 # evolution avec le temps => passÃƒÂ© en argument de la map
+# wood = 100 # evolution avec le temps => passÃƒÆ’Ã‚Â© en argument de la map
 workers_remaining = 0 # evolution avec le temps
 
 
@@ -98,7 +98,7 @@ class Factory(Building):
         self.time = 0
         self.elec_needed = 10 # in MW
 
-    def production(self, timing): # La petite fonction de prod tranquilou! Simpliste, mais pour le cas dÃƒÂ©gÃƒÂ©nÃƒÂ©rÃƒÂ© on est bons
+    def production(self, timing): # La petite fonction de prod tranquilou! Simpliste, mais pour le cas dÃƒÆ’Ã‚Â©gÃƒÆ’Ã‚Â©nÃƒÆ’Ã‚Â©rÃƒÆ’Ã‚Â© on est bons
         wood = 0
         if (timing-self.time)%self.debit == 0:
             wood = int(self.prod_max * self.worker / self.hab_max)
@@ -133,12 +133,11 @@ class Wind_power_plant(Building):
     def __init__(self):
         Building.__init__(self)
         self.type = 4
-        self.capacity = 20 # 20MW in 10 mph winds, assuming wind constant
         self.cost= 8000
         self.wood_needed = 10
         self.stone_needed = 10
         self.time = 0
-        self.elec_needed = 0
+        self.elec_needed = -20 # 20MW in 10 mph winds, assuming wind constant
 
 
 class Coal_power_plant(Building):
