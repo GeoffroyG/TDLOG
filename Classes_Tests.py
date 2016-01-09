@@ -274,7 +274,6 @@ class Map():
 
             self.time = timer
 
-            
             # If a factory is built, its impact on nearby houses is calculated
             if building.type == 2:
                 self.factory_impact(i, j)
