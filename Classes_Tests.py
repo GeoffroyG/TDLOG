@@ -247,7 +247,7 @@ class Map():
                 result += 1
         return(result)
 
-    def factory_impact(i, j, delete = 1):
+    def factory_impact(self, i, j, delete = 1):
         if i-1 >= 0:
             if self.map[i-1][j].type == 1: # 0 designe une route
                 self.map[i-1][j].factories += 1 * delete
