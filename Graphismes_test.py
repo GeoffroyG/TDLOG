@@ -32,11 +32,11 @@ def displayBeginningMenu(DISPLAYSURF, FPSCLOCK, font_title):
             text = font_other.render("Nouveau Jeu", 1, (10,10,10), (255,255,255))
             textposNewGame = text.get_rect(centerx = WINDOWWIDTH / 2, centery = WINDOWHEIGHT / 2)
             DISPLAYSURF.blit(text, textposNewGame)
-            text = font_other.render("RÃ¨gles", 1, (10,10,10), (255,255,255))
+            text = font_other.render("Regles", 1, (10,10,10), (255,255,255))
             textposRules = text.get_rect(centerx = WINDOWWIDTH / 2, centery = WINDOWHEIGHT / 2 + textposNewGame.height)
             DISPLAYSURF.blit(text, textposRules)
         else:
-            text = font_other.render("Ceci sont les rÃ¨gles, Ã§a va Ãªtre coton Ã  tout taper en faisant les sauts de lignes", 1, (10,10,10), (255,255,255))
+            text = font_other.render("Ceci sont les regles, ca va etre coton a  tout taper en faisant les sauts de lignes", 1, (10,10,10), (255,255,255))
             textpos = text.get_rect(centerx = WINDOWWIDTH / 2, centery = WINDOWHEIGHT / 2)
             DISPLAYSURF.blit(text, textpos)
             back = pygame.image.load("2.Images/Return.png").convert()

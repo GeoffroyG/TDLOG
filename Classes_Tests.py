@@ -6,20 +6,24 @@ Created on Wed Dec 16 15:36:10 2015
 """
 
 """
-9 designe un vide sur l'interface "batiments"
-0 designe une route sur l'interface "batiments"
-1 designe une maison sur l'interface "batiments"
-2 designe une usine sur l'interface "batiments"
-3 designe un atelier sur l'interface "batiments"
-4 designe une eolienne sur l'interface "batiments"
-5 designe une centrale ÃƒÂ  charbon sur l'interface "batiments"
-6 designe une centrale nucleaire sur l'interface "batiments"
-7 designe une centrale hydraulique sur l'interface "batiments"
-10 designe une mine sur l'interface "batiments"
+0 = Road
+1 = House
+2 = Factory
+3 = Quarry
+4 = Wind power plant
+5 = Coal power plant
+6 = Nuclear power plant
+7 = Hydraulic power plant
+8 = Sawmill
+
+9 = Empty
+10 = Mine
+11 = Forest
 """
 
 from Constantes import *
 import random
+import math
 
 # wood = 100 # evolution avec le temps => passÃƒÆ’Ã‚Â© en argument de la map
 workers_remaining = 0 # evolution avec le temps
@@ -109,9 +113,12 @@ class Mine(Building):
     def __init__(self):
         Building.__init__(self)
         self.type = 10
-        self.stock = 1000
-        self.wood_needed = 0
-        self.stone_needed = 0
+
+
+class Forest(Building):
+    def __init__(self):
+        Building.__init__(self)
+        self.type = 11
 
 
 class Quarry(Building):
@@ -123,12 +130,29 @@ class Quarry(Building):
         self.hab_max = 10
         self.money_needed= 200
         self.prod_max = 10
+        self.coeff = 0
         self.worker = 0
         self.debit = 80
         self.time = 0
         self.elec_needed = 5
 
 
+class Sawmill(Building):
+    def __init__(self):
+        Building.__init__(self)
+        self.type = 8
+        self.wood_needed = 10
+        self.stone_needed = 10
+        self.hab_max = 10
+        self.money_needed= 200
+        self.prod_max = 10
+        self.coeff = 0
+        self.worker = 0
+        self.debit = 80
+        self.time = 0
+        self.elec_needed = 5
+        
+        
 class Wind_power_plant(Building):
     def __init__(self):
         Building.__init__(self)
@@ -185,6 +209,7 @@ class Map():
             line = []
 
         self.set_mines()
+        self.set_forests()
         self.map[2][0] = Road()
         # J'ai rajoute quelques trucs qui seront plus manipulables en tant qu'arguments
         self.wood = 100
@@ -204,6 +229,19 @@ class Map():
         ''' Creates random mines. '''
         for i in range(NBMINES):
             self.map[int(random.random()*NBCOLUMN)][int(random.random()*NBROW)] = Mine()
+
+    def set_forests(self):
+        ''' Creates random mines. '''
+        for i in range(NBFORESTS):
+            self.map[int(random.random()*NBCOLUMN)][int(random.random()*NBROW)] = Forest()
+
+    def distance_ressource(self, i, j, building_type):
+        coeff = 0
+        for p in range(self.height):
+            for q in range(self.width):
+                if self.map[i][j].type == building_type:
+                    coeff += 1/(1+math.fabs(p-i) + math.fabs(q-j))
+        self.map[i][j].coeff = coeff
 
     def check_empty(self, i, j):
         ''' Checks if there is no building in cell [i][j]. '''
@@ -281,6 +319,9 @@ class Map():
             if building.type != 0:                
                 self.built.append([i,j])
                 print(self.built)
+                
+            if building.type == 3 or building.type == 8:
+                self.distance_ressource(i, j, building.type)
 
             return(True)
         return(False)

@@ -9,11 +9,11 @@ from Graphismes_test import *
 
 
 buildings = [Classes_Tests.Road(), Classes_Tests.House(),
-             Classes_Tests.Factory(), Classes_Tests.Workshop(),
+             Classes_Tests.Factory(), Classes_Tests.Quarry(),
              Classes_Tests.Wind_power_plant(), Classes_Tests.Coal_power_plant(),
              Classes_Tests.Nuclear_power_plant(), Classes_Tests.Hydraulic_power_plant(),
-             Classes_Tests.Empty(),Classes_Tests.Empty(),
-             Classes_Tests.Mine()]
+             Classes_Tests.Sawmill(),Classes_Tests.Empty(),
+             Classes_Tests.Mine(), Classes_Tests.Forest()]
 # graphism and buildings are to be modified together, one is the buidings list the other the pictures list
 
 mainBoard = Classes_Tests.Map(NBROW,NBCOLUMN)
@@ -29,28 +29,28 @@ def main():
     toBuild = [pygame.image.load("2.Images/Road.png").convert(),
                pygame.image.load("2.Images/House.png").convert(),
                pygame.image.load("2.Images/Factory.png").convert(),
-               pygame.image.load("2.Images/Workshop.png").convert(),
+               pygame.image.load("2.Images/Quarry.png").convert(),
                pygame.image.load("2.Images/Wind.png").convert(),
                pygame.image.load("2.Images/Coal.png").convert(),
                pygame.image.load("2.Images/Nuclear.png").convert(),
                pygame.image.load("2.Images/Hydraulic.png").convert(),
-               pygame.image.load("2.Images/None.png").convert(),
+               pygame.image.load("2.Images/Sawmill.png").convert(),
                pygame.image.load("2.Images/Grass.png").convert()]
 
     toBuild_Selected = [pygame.image.load("2.Images/Road_Selected.png").convert(),
                         pygame.image.load("2.Images/House_Selected.png").convert(),
                         pygame.image.load("2.Images/Factory_Selected.png").convert(),
-                        pygame.image.load("2.Images/Workshop_Selected.png").convert(),
+                        pygame.image.load("2.Images/Quarry_Selected.png").convert(),
                         pygame.image.load("2.Images/Wind_Selected.png").convert(),
                         pygame.image.load("2.Images/Coal_Selected.png").convert(),
                         pygame.image.load("2.Images/Nuclear_Selected.png").convert(),
                         pygame.image.load("2.Images/Hydraulic_Selected.png").convert(),
-                        pygame.image.load("2.Images/None.png").convert(),
+                        pygame.image.load("2.Images/Sawmill_Selected.png").convert(),
                         pygame.image.load("2.Images/Grass_Selected.png").convert()]
 
 
-    graphism = toBuild + [pygame.image.load("2.Images/Mine.png").convert()]
-    graphism_Selected = toBuild_Selected + [pygame.image.load("2.Images/Mine_Selected.png").convert()]
+    graphism = toBuild + [pygame.image.load("2.Images/Mine.png").convert()] + [pygame.image.load("2.Images/Forest.png").convert()]
+    graphism_Selected = toBuild_Selected + [pygame.image.load("2.Images/Mine_Selected.png").convert()] + [pygame.image.load("2.Images/Forest_Selected.png").convert()]
 
     pygame.display.set_caption('Jeu Sim City') # name of the game
 
