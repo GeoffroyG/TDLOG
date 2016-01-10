@@ -33,12 +33,12 @@ class Building():
         self.wood_needed = 0
         self.stone_needed = 0
         self.elec_needed = 0
-        self.cost = 0
+        self.money_needed = 0
         self.time = 0
 
     def check_ressource(self, wood, stone, money, elec):
         result = False
-        if wood >= self.wood_needed and stone >= self.stone_needed and money >= self.cost and elec >= self.elec_needed :
+        if wood >= self.wood_needed and stone >= self.stone_needed and money >= self.money_needed and elec >= self.elec_needed :
             result = True
         return(result)
 
@@ -53,7 +53,7 @@ class Road(Building):
         self.type = 0
         self.stone_needed = 1
         self.time = 0
-        self.cost= 100
+        self.money_needed= 100
 
 class House(Building):
     def __init__(self):
@@ -65,7 +65,7 @@ class House(Building):
         self.wood_needed = 5
         self.stone_needed = 5
         self.debit = 40
-        self.cost= 200
+        self.money_needed= 200
         self.elec_needed = 5 # in MW
 
     def moving(self, timer):
@@ -89,7 +89,7 @@ class Factory(Building):
         self.type = 2
         self.wood_needed = 0
         self.stone_needed = 10
-        self.cost= 300
+        self.money_needed= 300
         self.hab_max = 10
         self.VA = 100 # money +++
         self.prod_max = 10
@@ -114,14 +114,14 @@ class Mine(Building):
         self.stone_needed = 0
 
 
-class Workshop(Building):
+class Quarry(Building):
     def __init__(self):
         Building.__init__(self)
         self.type = 3
         self.wood_needed = 10
         self.stone_needed = 10
         self.hab_max = 10
-        self.cost= 200
+        self.money_needed= 200
         self.prod_max = 10
         self.worker = 0
         self.debit = 80
@@ -133,7 +133,7 @@ class Wind_power_plant(Building):
     def __init__(self):
         Building.__init__(self)
         self.type = 4
-        self.cost= 8000
+        self.money_needed= 8000
         self.wood_needed = 10
         self.stone_needed = 10
         self.time = 0
@@ -144,7 +144,7 @@ class Coal_power_plant(Building):
     def __init__(self):
         Building.__init__(self)
         self.type = 5
-        self.cost= 17000
+        self.money_needed= 17000
         self.wood_needed = 15
         self.stone_needed = 15
         self.time = 0
@@ -155,7 +155,7 @@ class Nuclear_power_plant(Building):
     def __init__(self):
         Building.__init__(self)
         self.type = 6
-        self.cost= 145000
+        self.money_needed= 145000
         self.wood_needed = 15
         self.stone_needed = 15
         self.time = 0
@@ -166,7 +166,7 @@ class  Hydraulic_power_plant(Building):
     def __init__(self):
         Building.__init__(self)
         self.type = 7
-        self.cost= 27500
+        self.money_needed= 27500
         self.wood_needed = 15
         self.stone_needed = 15
         self.time = 0
@@ -269,7 +269,7 @@ class Map():
             self.map[i][j] = building
             self.wood -= building.wood_needed
             self.stone -= building.stone_needed
-            self.money -= building.cost
+            self.money -= building.money_needed
             self.elec -= building.elec_needed
 
             self.time = timer

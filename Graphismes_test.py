@@ -220,12 +220,12 @@ def drawInfoMenu(DISPLAYSURF, mousex, mousey, buildings):
     k = int(p)*n+int(q)
     #print(k)
     if k < len(buildings)-2 and k >= 0 :
-        if buildings[k].wood_needed != 0 and buildings[k].stone_needed != 0 and buildings[k].cost != 0 and buildings[k].elec_needed != 0:
-            text = "Bois requis : "+str(buildings[k].wood_needed)+" \n "+"Pierre requis : "+str(buildings[k].stone_needed)+" \n "+"Cout : "+str(buildings[k].cost)+" \n "+"NRJ : "+str(buildings[k].elec_needed)
-        elif buildings[k].wood_needed == 0 and buildings[k].stone_needed != 0 and buildings[k].cost != 0 and buildings[k].elec_needed != 0:
-            text = "Pierre requis : "+str(buildings[k].stone_needed)+" \n "+"Cout : "+str(buildings[k].cost)+" \n "+"NRJ : "+str(buildings[k].elec_needed)    
-        elif buildings[k].wood_needed == 0 and buildings[k].stone_needed != 0 and buildings[k].cost != 0 and buildings[k].elec_needed == 0:
-            text = "Pierre requis : "+str(buildings[k].stone_needed)+" \n "+"Cout : "+str(buildings[k].cost)   
+        if buildings[k].wood_needed != 0 and buildings[k].stone_needed != 0 and buildings[k].money_needed != 0 and buildings[k].elec_needed != 0:
+            text = "Bois requis : "+str(buildings[k].wood_needed)+" \n "+"Pierre requis : "+str(buildings[k].stone_needed)+" \n "+"Cout : "+str(buildings[k].money_needed)+" \n "+"NRJ : "+str(buildings[k].elec_needed)
+        elif buildings[k].wood_needed == 0 and buildings[k].stone_needed != 0 and buildings[k].money_needed != 0 and buildings[k].elec_needed != 0:
+            text = "Pierre requis : "+str(buildings[k].stone_needed)+" \n "+"Cout : "+str(buildings[k].money_needed)+" \n "+"NRJ : "+str(buildings[k].elec_needed)    
+        elif buildings[k].wood_needed == 0 and buildings[k].stone_needed != 0 and buildings[k].money_needed != 0 and buildings[k].elec_needed == 0:
+            text = "Pierre requis : "+str(buildings[k].stone_needed)+" \n "+"Cout : "+str(buildings[k].money_needed)   
         elif buildings[k].type == 9 :
             text =""
         height = font_bubble.get_height()*1
