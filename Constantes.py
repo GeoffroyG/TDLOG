@@ -49,3 +49,4 @@ FORESTS_DENSITY = 80
 NBFORESTS = int(NBCOLUMN * NBROW / FORESTS_DENSITY)
 
 BGCOLOR = (255, 255, 255) # white background
+PRODSTEP = 15 # Number of steps between two productions
