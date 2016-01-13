@@ -23,7 +23,7 @@ def main():
     pygame.init()
     FPSCLOCK = pygame.time.Clock()
     DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
-    happiness = 0.3
+    happiness = 1
     # Initialisation of the clock and the window
 
     toBuild = [pygame.image.load("2.Images/Road.png").convert(),
@@ -84,6 +84,8 @@ def main():
     drawBoard(mainBoard, DISPLAYSURF, selected, timing, origin, graphism)
     drawHeader(mainBoard, DISPLAYSURF)
     drawMenu(mainBoard, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected)
+    
+    priority = [2,3,8]
 
 
     while True: # main game loop
@@ -95,7 +97,7 @@ def main():
                 mousex, mousey = event.pos
             elif event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                 pygame.quit()
-                sys.exit()
+                os.sys.exit()
 
             # Shifts on the map
             if event.type == KEYUP and event.key == K_LEFT:
@@ -150,18 +152,9 @@ def main():
                 i, j = k[0], k[1]
                 if  getType(mainBoard, i, j) == 1:
                     mainBoard.habitants += mainBoard.map[i][j].moving(timer)
-
-#        # This is not the most efficient as it focuses more on the first factories built
-#        worker_aux = mainBoard.habitants
-#        for i in range(NBROW):
-#            for j in range(NBCOLUMN):
-#                if  getType(mainBoard, i, j) == 2:
-#                    while worker_aux > 0:
-#                        mainBoard.map[i][j].worker = min(worker_aux,mainBoard.map[i][j].hab_max)
-#                        worker_aux -= mainBoard.map[i][j].worker
-#                        mainBoard.wood += mainBoard.map[i][j].production(timer)
-#                        mainBoard.money += mainBoard.map[i][j].production(timer) * mainBoard.map[i][j].VA / mainBoard.map[i][j].prod_max
-#
+        
+        if timer % PRODSTEP == 0:
+            production(mainBoard, priority, buildings)
 
         # Redraw the screen and wait a clock tick.
         pygame.display.update()
@@ -177,4 +170,41 @@ def main():
         drawMenu(mainBoard, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected)
         drawHappiness(DISPLAYSURF,happiness,0,0,BOXSIZE)
         #happiness -= 0.01
+        
+def production(mainBoard, priority, buildings):
+    workers_needed = [0 for i in range(len(priority))]
+    wood_needed = [0 for i in range(len(priority))]
+    number = [0 for i in range(len(priority))]
+    for i in range(NBROW):
+        for j in range(NBCOLUMN):
+            bat = mainBoard.map[i][j] 
+            if bat.type in priority:
+                workers_needed[priority.index(bat.type)] += bat.hab_max
+                wood_needed[priority.index(bat.type)] += bat.wood_input
+                number[priority.index(bat.type)] += 1
+    workers_remaining = mainBoard.habitants
+    k = 0
+    while k < len(priority) and workers_remaining > 0:
+        
+        workers_assigned = min(workers_needed[k],workers_remaining)
+        if workers_needed[k] == 0:
+            proportion_worker = 1
+        else:
+            proportion_worker = workers_assigned / workers_needed[k]
+            
+        wood_used = min(wood_needed[k],mainBoard.wood)
+        if wood_needed[k] == 0:
+            proportion_wood = 1
+        else:
+            proportion_wood = wood_used / wood_needed[k]
+        
+        mainBoard.wood += buildings[priority[k]].wood_output * min(proportion_worker,proportion_wood) * number[k]
+        mainBoard.money += buildings[priority[k]].money_output * min(proportion_worker,proportion_wood) * number[k] 
+        mainBoard.stone += buildings[priority[k]].stone_output * min(proportion_worker,proportion_wood) * number[k] 
+        mainBoard.wood -= wood_used
+        
+        workers_remaining -= workers_assigned
+        k += 1
+        
+                
 
