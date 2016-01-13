@@ -204,15 +204,16 @@ def drawHappiness(DISPLAYSURF, happiness, topleftx, toplefty, size):
     pygame.draw.line(DISPLAYSURF,(0,0,0),(topleftx+size//2+x,toplefty+size//2-y),(topleftx+size//2+x,toplefty+size//2-y+length))
     height_max = size // 5
     if happiness > 0.5:
-        topleftRect = [topleftx+size//2-size//4, toplefty+size//2+size//8-int(height_max*happiness)]
+        topleftRect = [topleftx+size//2-size//4, toplefty+size//2+size//4-int(height_max*happiness)]
         smileRect = pygame.Rect(topleftRect[0],topleftRect[1],size//2,int(height_max*happiness))
         pygame.draw.arc(DISPLAYSURF,(0,0,0),smileRect,math.pi,2*math.pi)
     if happiness == 0.5:
         pygame.draw.line(DISPLAYSURF,(0,0,0),(topleftx+size//2-size//5, toplefty+size//2+size//8),(topleftx+size//2+size//5, toplefty+size//2+size//8))
     if happiness < 0.5:
-        topleftRect = [topleftx+size//2-size//4, toplefty+size//2+size//8]
+        topleftRect = [topleftx+size//2-size//4, toplefty+size//2+size//4]
         smileRect = pygame.Rect(topleftRect[0],topleftRect[1],size//2,int(height_max*happiness))
         pygame.draw.arc(DISPLAYSURF,(0,0,0),smileRect,0,math.pi)
+    print(happiness)
 
 def drawInfoMenu(DISPLAYSURF, mousex, mousey, buildings):
     p = (mousex-WINDOWWIDTH+MENUBARWIDTH)//(GAPSIZE+BOXSIZE)
