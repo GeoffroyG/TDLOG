@@ -301,9 +301,28 @@ class Map():
 
         return 0
 
-    def insert(self, building, i, j, timer):
+    def insert(self, building_given, i, j, timer):
         ''' Inserts a building in cell [i][j]. '''
-        if self.check_empty(i, j) and self.check_road_junction(i, j) and (building.check_ressource(self.wood,self.stone,self.money,self.elec)):
+        if self.check_empty(i, j) and self.check_road_junction(i, j) and (building_given.check_ressource(self.wood,self.stone,self.money,self.elec)):
+            if building_given.type == 1:
+                building = House()
+            elif building_given.type == 2:
+                building = Factory()
+            elif building_given.type == 3:
+                building = Quarry()
+            elif building_given.type == 4:
+                building = Wind_power_plant()
+            elif building_given.type == 5:
+                building = Coal_power_plant()
+            elif building_given.type == 6:
+                building = Nuclear_power_plant()
+            elif building_given.type == 7:
+                building = Hydraulic_power_plant()
+            elif building_given.type == 8:
+                building = Sawmill()
+            else:
+                building = building_given
+            
             self.map[i][j] = building
             self.wood -= building.wood_needed
             self.stone -= building.stone_needed
