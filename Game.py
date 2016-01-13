@@ -23,7 +23,7 @@ def main():
     pygame.init()
     FPSCLOCK = pygame.time.Clock()
     DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
-    happiness = 1
+    happiness = 0.3
     # Initialisation of the clock and the window
 
     toBuild = [pygame.image.load("2.Images/Road.png").convert(),
@@ -175,6 +175,6 @@ def main():
         drawBoard_changes(mainBoard, DISPLAYSURF, selected, timing, origin, graphism, changes, change_all)
         drawHeader(mainBoard, DISPLAYSURF)
         drawMenu(mainBoard, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected)
-        #drawHappiness(DISPLAYSURF,happiness,0,0,BOXSIZE)
+        drawHappiness(DISPLAYSURF,happiness,0,0,BOXSIZE)
         #happiness -= 0.01
 
