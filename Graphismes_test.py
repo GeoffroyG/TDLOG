@@ -254,15 +254,15 @@ def drawInfoBoard(DISPLAYSURF, boxx, boxy, mainBoard):
 #        DISPLAYSURF.blit(text, textpos)
 
     # Display Factory or workshop data
-    elif getType(mainBoard, boxx, boxy) in [2,3]:
-        text="Empl : "+str(mainBoard.map[boxx][boxy].worker)+" \n "+"Prod : "+str(int(mainBoard.map[boxx][boxy].prod_max * mainBoard.map[boxx][boxy].worker / mainBoard.map[boxx][boxy].hab_max))+" \n "+"NRJ : "+str(mainBoard.map[boxx][boxy].elec_needed)
-        height = font_bubble.get_height()*1
-        gap=0
-        for line in text.splitlines():
-            img = font_bubble.render(line,1,(10,10,10),(255,255,255))
-            textpos = img.get_rect(centerx=GAPSIZE + (BOXSIZE+GAPSIZE)*boxy+15, centery=RESSOURCEBARHEIGHT + GAPSIZE + (BOXSIZE+GAPSIZE)*boxx+gap)
-            DISPLAYSURF.blit(img,textpos)
-            gap += height
+#    elif getType(mainBoard, boxx, boxy) in [2,3]:
+#        text="Empl : "+str(mainBoard.map[boxx][boxy].worker)+" \n "+"Prod : "+str(int(mainBoard.map[boxx][boxy].prod_max * mainBoard.map[boxx][boxy].worker / mainBoard.map[boxx][boxy].hab_max))+" \n "+"NRJ : "+str(mainBoard.map[boxx][boxy].elec_needed)
+#        height = font_bubble.get_height()*1
+#        gap=0
+#        for line in text.splitlines():
+#            img = font_bubble.render(line,1,(10,10,10),(255,255,255))
+#            textpos = img.get_rect(centerx=GAPSIZE + (BOXSIZE+GAPSIZE)*boxy+15, centery=RESSOURCEBARHEIGHT + GAPSIZE + (BOXSIZE+GAPSIZE)*boxx+gap)
+#            DISPLAYSURF.blit(img,textpos)
+#            gap += height
 
     # Display NRJ data
     if  getType(mainBoard, boxx, boxy) in [4,5,6,7]:
