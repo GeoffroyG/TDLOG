@@ -39,6 +39,14 @@ class Building():
         self.elec_needed = 0
         self.money_needed = 0
         self.time = 0
+        self.coeff = 1
+        
+        self.wood_input = 0
+        self.money_input = 0
+        self.stone_input = 0
+        self.wood_output = 0
+        self.money_output = 0
+        self.stone_output = 0
 
     def check_ressource(self, wood, stone, money, elec):
         result = False
@@ -91,16 +99,13 @@ class Factory(Building):
     def __init__(self):
         Building.__init__(self)
         self.type = 2
-        self.wood_needed = 0
         self.stone_needed = 10
         self.money_needed= 300
-        self.hab_max = 10
-        self.VA = 100 # money +++
-        self.prod_max = 10
-        self.worker = 0
-        self.debit = 80
-        self.time = 0
         self.elec_needed = 10 # in MW
+        
+        self.hab_max = 10        
+        self.wood_input = 10
+        self.money_output = 50
 
     def production(self, timing): # La petite fonction de prod tranquilou! Simpliste, mais pour le cas dÃƒÆ’Ã‚Â©gÃƒÆ’Ã‚Â©nÃƒÆ’Ã‚Â©rÃƒÆ’Ã‚Â© on est bons
         wood = 0
@@ -135,6 +140,7 @@ class Quarry(Building):
         self.debit = 80
         self.time = 0
         self.elec_needed = 5
+        self.stone_output = 5
 
 
 class Sawmill(Building):
@@ -151,6 +157,7 @@ class Sawmill(Building):
         self.debit = 80
         self.time = 0
         self.elec_needed = 5
+        self.wood_output = 5
         
         
 class Wind_power_plant(Building):
@@ -241,7 +248,7 @@ class Map():
             for q in range(self.width):
                 if self.map[i][j].type == building_type:
                     coeff += 1/(1+math.fabs(p-i) + math.fabs(q-j))
-        self.map[i][j].coeff = coeff
+        self.map[i][j].coeff = coeff + 1
 
     def check_empty(self, i, j):
         ''' Checks if there is no building in cell [i][j]. '''
@@ -306,20 +313,6 @@ class Map():
         if self.check_empty(i, j) and self.check_road_junction(i, j) and (building_given.check_ressource(self.wood,self.stone,self.money,self.elec)):
             if building_given.type == 1:
                 building = House()
-            elif building_given.type == 2:
-                building = Factory()
-            elif building_given.type == 3:
-                building = Quarry()
-            elif building_given.type == 4:
-                building = Wind_power_plant()
-            elif building_given.type == 5:
-                building = Coal_power_plant()
-            elif building_given.type == 6:
-                building = Nuclear_power_plant()
-            elif building_given.type == 7:
-                building = Hydraulic_power_plant()
-            elif building_given.type == 8:
-                building = Sawmill()
             else:
                 building = building_given
             
