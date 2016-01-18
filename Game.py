@@ -48,15 +48,15 @@ def main():
                         pygame.image.load("2.Images/Sawmill_Selected.png").convert(),
                         pygame.image.load("2.Images/Grass_Selected.png").convert()]
                         
-    graph_priority = [pygame.image.load("2.Images/plus.png").convert(),
-                      pygame.image.load("2.Images/plus.png").convert(),
-                      pygame.image.load("2.Images/plus.png").convert(),
-                      pygame.image.load("2.Images/1.png").convert(),
-                      pygame.image.load("2.Images/2.png").convert(),
-                      pygame.image.load("2.Images/3.png").convert(),
-                      pygame.image.load("2.Images/moins.png").convert(),
-                      pygame.image.load("2.Images/moins.png").convert(),
-                      pygame.image.load("2.Images/moins.png").convert()]
+#    graph_priority = [pygame.image.load("2.Images/plus.png").convert(),
+#                      pygame.image.load("2.Images/plus.png").convert(),
+#                      pygame.image.load("2.Images/plus.png").convert(),
+#                      pygame.image.load("2.Images/1.png").convert(),
+#                      pygame.image.load("2.Images/2.png").convert(),
+#                      pygame.image.load("2.Images/3.png").convert(),
+#                      pygame.image.load("2.Images/moins.png").convert(),
+#                      pygame.image.load("2.Images/moins.png").convert(),
+#                      pygame.image.load("2.Images/moins.png").convert()]
                
     graphism = toBuild + [pygame.image.load("2.Images/Mine.png").convert()] + [pygame.image.load("2.Images/Forest.png").convert()]
     graphism_Selected = toBuild_Selected + [pygame.image.load("2.Images/Mine_Selected.png").convert()] + [pygame.image.load("2.Images/Forest_Selected.png").convert()]
