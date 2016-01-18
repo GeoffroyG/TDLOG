@@ -19,7 +19,7 @@ buildings = [Classes_Tests.Road(), Classes_Tests.House(),
 mainBoard = Classes_Tests.Map(NBROW,NBCOLUMN)
 
 def main():
-    global FPSCLOCK, DISPLAYSURF, selected, building, graphism, graphism_Selected, toBuild, toBuild_Selected, timer
+    global FPSCLOCK, DISPLAYSURF, selected, building, graphism, graphism_Selected, toBuild, toBuild_Selected, timer,graph_priority
     pygame.init()
     FPSCLOCK = pygame.time.Clock()
     DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
@@ -36,7 +36,7 @@ def main():
                pygame.image.load("2.Images/Hydraulic.png").convert(),
                pygame.image.load("2.Images/Sawmill.png").convert(),
                pygame.image.load("2.Images/Grass.png").convert()]
-
+               
     toBuild_Selected = [pygame.image.load("2.Images/Road_Selected.png").convert(),
                         pygame.image.load("2.Images/House_Selected.png").convert(),
                         pygame.image.load("2.Images/Factory_Selected.png").convert(),
@@ -47,8 +47,17 @@ def main():
                         pygame.image.load("2.Images/Hydraulic_Selected.png").convert(),
                         pygame.image.load("2.Images/Sawmill_Selected.png").convert(),
                         pygame.image.load("2.Images/Grass_Selected.png").convert()]
-
-
+                        
+    graph_priority = [pygame.image.load("2.Images/plus.png").convert(),
+                      pygame.image.load("2.Images/plus.png").convert(),
+                      pygame.image.load("2.Images/plus.png").convert(),
+                      pygame.image.load("2.Images/1.png").convert(),
+                      pygame.image.load("2.Images/2.png").convert(),
+                      pygame.image.load("2.Images/3.png").convert(),
+                      pygame.image.load("2.Images/moins.png").convert(),
+                      pygame.image.load("2.Images/moins.png").convert(),
+                      pygame.image.load("2.Images/moins.png").convert()]
+               
     graphism = toBuild + [pygame.image.load("2.Images/Mine.png").convert()] + [pygame.image.load("2.Images/Forest.png").convert()]
     graphism_Selected = toBuild_Selected + [pygame.image.load("2.Images/Mine_Selected.png").convert()] + [pygame.image.load("2.Images/Forest_Selected.png").convert()]
 
