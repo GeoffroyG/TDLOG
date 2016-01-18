@@ -36,7 +36,7 @@ def displayBeginningMenu(DISPLAYSURF, FPSCLOCK, font_title):
             textposRules = text.get_rect(centerx = WINDOWWIDTH / 2, centery = WINDOWHEIGHT / 2 + textposNewGame.height)
             DISPLAYSURF.blit(text, textposRules)
         else:
-            text = font_other.render("Ceci sont les regles, ca va etre coton a  tout taper en faisant les sauts de lignes", 1, (10,10,10), (255,255,255))
+            text = font_other.render("Ceci sont les regles, ca va etre coton aÂ  tout taper en faisant les sauts de lignes", 1, (10,10,10), (255,255,255))
             textpos = text.get_rect(centerx = WINDOWWIDTH / 2, centery = WINDOWHEIGHT / 2)
             DISPLAYSURF.blit(text, textpos)
             back = pygame.image.load("2.Images/Return.png").convert()
@@ -175,8 +175,62 @@ def drawMenu(Map, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected):
             y = (i%n)*(GAPSIZE+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE
             DISPLAYSURF.blit(dessin,(x,y))
         i+=1
+        
+    i=10
+ #   for k in graph_priority:
+        # The formula is more understandable in this order, but it's the same than in detBuildingFromMenu actually
+ #       x = (i//n)*(GAPSIZE+BOXSIZE)+WINDOWWIDTH-MENUBARWIDTH
+ #       y = (i%n)*(GAPSIZE+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE
+ #       DISPLAYSURF.blit(k,(x,y))
+ #       if i == 12:
+ #           i+=7
+ #       elif i == 21:
+ #           i+=7
+ #       else: 
+ #           i+=1
+    i=10
+    for k in [0,1,2]:
+        x = ((i+k)//n)*(GAPSIZE+BOXSIZE)+WINDOWWIDTH-MENUBARWIDTH+BOXSIZE/2
+        y = ((i+k)%n)*(GAPSIZE+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE+BOXSIZE/2
+        text = font_other.render("+", 1, (10,10,10))
+        textpos = text.get_rect(centerx=x, centery=y)
+        DISPLAYSURF.blit(text, textpos)
+    i=19
+    for k in [0,1,2]:
+        x = ((i+k)//n)*(GAPSIZE+BOXSIZE)+WINDOWWIDTH-MENUBARWIDTH+BOXSIZE/2
+        y = ((i+k)%n)*(GAPSIZE+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE+BOXSIZE/2
+        if k == 0:
+            text = font_other.render("1", 1, (10,10,10))
+        elif k==1:
+            text = font_other.render("2", 1, (10,10,10))  
+        else:
+            text = font_other.render("3", 1, (10,10,10))            
+        textpos = text.get_rect(centerx=x, centery=y)
+        DISPLAYSURF.blit(text, textpos)
+    i=28
+    for k in [0,1,2]:
+        x = ((i+k)//n)*(GAPSIZE+BOXSIZE)+WINDOWWIDTH-MENUBARWIDTH+BOXSIZE/2
+        y = ((i+k)%n)*(GAPSIZE+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE+BOXSIZE/2
+        text = font_other.render("-", 1, (10,10,10))
+        textpos = text.get_rect(centerx=x, centery=y)
+        DISPLAYSURF.blit(text, textpos)   
+        
+        mousex = 0
+        mousey = 0
+    for event in pygame.event.get(): # event handling loop
+        if event.type == MOUSEBUTTONUP:
+            mousex, mousey = event.pos
+            mouseClicked = True
+        elif event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
+            pygame.quit()
+            os.sys.exit()
 
+       
+    if textpos.collidepoint(mousex, mousey) and mouseClicked:
+        print("yes")
 
+   
+    
 def isInMenu(mousex):
     ''' Returns True if the mouse is in the menu. '''
     if mousex > WINDOWWIDTH - MENUBARWIDTH:
