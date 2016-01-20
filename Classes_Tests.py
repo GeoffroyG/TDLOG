@@ -32,14 +32,13 @@ workers_remaining = 0 # evolution avec le temps
 class Building():
     def __init__(self):
         self.type = 9
-        self.broken_rate = 0
-        self.isBroken = False
+        self.hab = 0
         self.wood_needed = 0
         self.stone_needed = 0
         self.elec_needed = 0
         self.money_needed = 0
-        self.time = 0
         self.coeff = 1
+        self.time = 0
         
         self.wood_input = 0
         self.money_input = 0
@@ -47,6 +46,7 @@ class Building():
         self.wood_output = 0
         self.money_output = 0
         self.stone_output = 0
+        self.happiness_output = 0
 
     def check_ressource(self, wood, stone, money, elec):
         result = False
@@ -146,7 +146,7 @@ class Quarry(Building):
 class Sawmill(Building):
     def __init__(self):
         Building.__init__(self)
-        self.type = 8
+        self.type = 4
         self.wood_needed = 10
         self.stone_needed = 10
         self.hab_max = 10
@@ -163,7 +163,7 @@ class Sawmill(Building):
 class Wind_power_plant(Building):
     def __init__(self):
         Building.__init__(self)
-        self.type = 4
+        self.type = 5
         self.money_needed= 8000
         self.wood_needed = 10
         self.stone_needed = 10
@@ -174,7 +174,7 @@ class Wind_power_plant(Building):
 class Coal_power_plant(Building):
     def __init__(self):
         Building.__init__(self)
-        self.type = 5
+        self.type = 6
         self.money_needed= 17000
         self.wood_needed = 15
         self.stone_needed = 15
@@ -182,26 +182,28 @@ class Coal_power_plant(Building):
         self.elec_needed = -70
 
 
-class Nuclear_power_plant(Building):
-    def __init__(self):
-        Building.__init__(self)
-        self.type = 6
-        self.money_needed= 145000
-        self.wood_needed = 15
-        self.stone_needed = 15
-        self.time = 0
-        self.elec_needed = -300
-
-
-class  Hydraulic_power_plant(Building):
+class Park(Building):
     def __init__(self):
         Building.__init__(self)
         self.type = 7
-        self.money_needed= 27500
+        self.money_needed= 10000
         self.wood_needed = 15
-        self.stone_needed = 15
+        self.stone_needed = 0
         self.time = 0
-        self.elec_needed = -150
+        self.elec_needed = 2
+        self.happiness_output = 0.03
+
+
+class  ENPC(Building):
+    def __init__(self):
+        Building.__init__(self)
+        self.type = 8
+        self.money_needed= 50000
+        self.wood_needed = 80
+        self.stone_needed = 150
+        self.time = 0
+        self.elec_needed = 50
+        self.happiness_output = 0.2
 
 
 class Map():
@@ -223,6 +225,7 @@ class Map():
         self.stone = 100
         self.money = 30000
         self.elec = 0
+        self.happiness = 1
 
         self.habitants = 0
         self.workers = 0
@@ -235,12 +238,12 @@ class Map():
     def set_mines(self):
         ''' Creates random mines. '''
         for i in range(NBMINES):
-            self.map[int(random.random()*NBCOLUMN)][int(random.random()*NBROW)] = Mine()
+            self.map[int(random.random()*NBROW)][int(random.random()*NBCOLUMN)] = Mine()
 
     def set_forests(self):
         ''' Creates random mines. '''
         for i in range(NBFORESTS):
-            self.map[int(random.random()*NBCOLUMN)][int(random.random()*NBROW)] = Forest()
+            self.map[int(random.random()*NBROW)][int(random.random()*NBCOLUMN)] = Forest()
 
     def distance_ressource(self, i, j, building_type):
         coeff = 0
@@ -308,7 +311,7 @@ class Map():
 
         return 0
 
-    def insert(self, building_given, i, j, timer):
+    def insert(self, building_given, i, j):
         ''' Inserts a building in cell [i][j]. '''
         if self.check_empty(i, j) and self.check_road_junction(i, j) and (building_given.check_ressource(self.wood,self.stone,self.money,self.elec)):
             if building_given.type == 1:
@@ -321,8 +324,10 @@ class Map():
             self.stone -= building.stone_needed
             self.money -= building.money_needed
             self.elec -= building.elec_needed
-
-            self.time = timer
+            if self.happiness + building.happiness_output > 1:
+                self.happiness = 1
+            else:
+                self.happiness += building.happiness_output
 
             # If a factory is built, its impact on nearby houses is calculated
             if building.type == 2:
@@ -330,22 +335,26 @@ class Map():
                 
             if building.type != 0:                
                 self.built.append([i,j])
-                print(self.built)
                 
             if building.type == 3 or building.type == 8:
                 self.distance_ressource(i, j, building.type)
 
             return(True)
+            
+        if not self.check_empty(i, j) and building_given.type == 9:
+            former_building = self.map[i][j]
+            self.wood += former_building.wood_needed // 2
+            self.stone += former_building.stone_needed // 2
+            self.money += former_building.money_needed // 2
+            self.elec += former_building.elec_needed
+            self.map[i][j] = building_given
+            if former_building.type == 1:
+                self.habitants -= former_building.hab
+            
+            return(True)
+            
         return(False)
 
-    def delete(self, i, j):
-        ''' Deletes the [i][j] building. '''
-        # If a factory is destroyed, its impact on nearby houses is calculated
-        if self.map[i][j].type == 2:
-            self.factory_impact(i, j, -1)
-
-        self.map[i][j] = Empty()
-        # add a function to remove the building from the self.built list
 
     def display(self):
         ''' Displays the matrix in text mode. '''

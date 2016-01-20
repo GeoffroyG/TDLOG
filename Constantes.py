@@ -13,10 +13,10 @@ FPS           = 30 # frames per second, the general speed of the program
 BOXSIZE       = 40 # size of box height & width in pixels
 GAPSIZE       = 5 # size of gap between boxes in pixels
 
-NBCOLUMN      = 30 # number of columns of icons in the map
-NBROW         = 30 # number of rows of icons in the map
+NBCOLUMN      = 50 # number of columns of icons in the map
+NBROW         = 45 # number of rows of icons in the map
 NBCOLUMN_DISP = 20 # number of columns displayed in the game windows
-NBROW_DISP    = 10 # number of rows displayed in the game windows
+NBROW_DISP    = 13 # number of rows displayed in the game windows
 
 GAMEWIDTH  = NBCOLUMN_DISP * (GAPSIZE + BOXSIZE) + GAPSIZE # size of game's width in pixels
 GAMEHEIGHT = NBROW_DISP    * (GAPSIZE + BOXSIZE) + GAPSIZE # size of game's height in pixels
@@ -38,6 +38,7 @@ font_title = pygame.font.Font(None, 68)
 font_other = pygame.font.Font(None, 40)
 
 menuCoordinates = [(WINDOWWIDTH-GAPSIZE-MENUBARWIDTH,GAPSIZE),(WINDOWWIDTH-GAPSIZE-MENUBARWIDTH,WINDOWHEIGHT-GAPSIZE),(WINDOWWIDTH-GAPSIZE,WINDOWHEIGHT-GAPSIZE),(WINDOWWIDTH-GAPSIZE,GAPSIZE)]
+largerMenuCoordinates = [(WINDOWWIDTH-GAPSIZE-MENUBARWIDTH-GAPSIZE*2,GAPSIZE),(WINDOWWIDTH-GAPSIZE-MENUBARWIDTH-GAPSIZE*2,WINDOWHEIGHT-GAPSIZE),(WINDOWWIDTH,WINDOWHEIGHT-GAPSIZE),(WINDOWWIDTH,GAPSIZE)]
 headerCoordinates = [(GAPSIZE,GAPSIZE),(GAPSIZE,RESSOURCEBARHEIGHT),(GAPSIZE+RESSOURCEBARWIDTH,RESSOURCEBARHEIGHT),(GAPSIZE+RESSOURCEBARWIDTH,GAPSIZE)]
 boardCoordinates = [(0,RESSOURCEBARHEIGHT),(0,WINDOWHEIGHT),(WINDOWWIDTH-GAPSIZE-MENUBARWIDTH,WINDOWHEIGHT),(WINDOWWIDTH-GAPSIZE-MENUBARWIDTH,RESSOURCEBARHEIGHT)]
 # Initialisation of many variables that are useful later
@@ -50,3 +51,14 @@ NBFORESTS = int(NBCOLUMN * NBROW / FORESTS_DENSITY)
 
 BGCOLOR = (255, 255, 255) # white background
 PRODSTEP = 15 # Number of steps between two productions
+
+HAPPINESSGAP = 15
+HAPPINESSSTEP = 15
+
+time_lost = 5 # Time (sec) you have to improve you inhabitants' happiness before you lose
+
+TAXMAX = 30 # Maximum of tax you can impose
+TAXMIN = 2 # Minimum of tax you can impose
+DROPSTEP = 2 # Drop of percentage of happiness if nothing is done
+
+HABITANTSLEVEL = 200 # Number of inhabitants you need to win the game
