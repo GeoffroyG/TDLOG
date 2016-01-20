@@ -12,6 +12,7 @@ FPS           = 30 # frames per second, the general speed of the program
 
 BOXSIZE       = 40 # size of box height & width in pixels
 GAPSIZE       = 5 # size of gap between boxes in pixels
+GAPSIZE_MENU  = 5
 
 NBCOLUMN      = 50 # number of columns of icons in the map
 NBROW         = 45 # number of rows of icons in the map
@@ -25,10 +26,10 @@ RESSOURCEBARWIDTH = GAMEWIDTH # size of the bar indicating the ressources
 RESSOURCEBARHEIGHT = 60 # size of the bar indicating the ressources
 
 MENUBARWIDTH = 180 # size of the bar indicating the menu
-MENUBARHEIGHT = RESSOURCEBARHEIGHT + GAPSIZE + GAMEHEIGHT # size of the bar indicating the menu
+MENUBARHEIGHT = RESSOURCEBARHEIGHT + GAPSIZE_MENU + GAMEHEIGHT # size of the bar indicating the menu
 
-WINDOWWIDTH  = MENUBARWIDTH + 3*GAPSIZE + GAMEWIDTH  # final size of the window in pixels
-WINDOWHEIGHT = MENUBARHEIGHT + 2*GAPSIZE # final size of the window in pixels
+WINDOWWIDTH  = MENUBARWIDTH + 2*GAPSIZE_MENU + GAMEWIDTH + GAPSIZE # final size of the window in pixels
+WINDOWHEIGHT = MENUBARHEIGHT + GAPSIZE + GAPSIZE_MENU # final size of the window in pixels
 
 pygame.font.init()
 
@@ -59,6 +60,6 @@ time_lost = 5 # Time (sec) you have to improve you inhabitants' happiness before
 
 TAXMAX = 30 # Maximum of tax you can impose
 TAXMIN = 2 # Minimum of tax you can impose
-DROPSTEP = 2 # Drop of percentage of happiness if nothing is done
+DROPSTEP = 0.2 # Drop of percentage of happiness if nothing is done
 
 HABITANTSLEVEL = 200 # Number of inhabitants you need to win the game
