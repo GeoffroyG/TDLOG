@@ -36,7 +36,7 @@ def displayBeginningMenu(DISPLAYSURF, FPSCLOCK, font_title):
             textposRules = text.get_rect(centerx = WINDOWWIDTH / 2, centery = WINDOWHEIGHT / 2 + textposNewGame.height)
             DISPLAYSURF.blit(text, textposRules)
         else:
-            text = font_other.render("Ceci sont les regles, ca va etre coton aÂ  tout taper en faisant les sauts de lignes", 1, (10,10,10), (255,255,255))
+            text = font_other.render("Ceci sont les regles, ca va etre coton a  tout taper en faisant les sauts de lignes", 1, (10,10,10), (255,255,255))
             textpos = text.get_rect(centerx = WINDOWWIDTH / 2, centery = WINDOWHEIGHT / 2)
             DISPLAYSURF.blit(text, textpos)
             back = pygame.image.load("2.Images/Return.png").convert()
@@ -64,6 +64,22 @@ def displayBeginningMenu(DISPLAYSURF, FPSCLOCK, font_title):
         FPSCLOCK.tick(FPS)
         mouseClicked = False
 
+
+
+def isInMenu(mousex):
+    ''' Returns True if the mouse is in the menu. '''
+    if mousex > WINDOWWIDTH - MENUBARWIDTH:
+        return(True)
+    else:
+        return(False)
+
+def isInGame(mousex, mousey):
+    ''' Returns True if the mouse is in the game. '''
+    if mousex < GAMEWIDTH + 2*GAPSIZE and mousey > RESSOURCEBARHEIGHT + 2*GAPSIZE:
+        return(True)
+    else:
+        return(False)
+
 def getBoxAtPixelGame(mousex, mousey, origin):
     ''' Translates the coordinates in the game from pixels to integers. '''
     i = origin[0] + ((mousey - RESSOURCEBARHEIGHT) / GAMEHEIGHT * NBROW_DISP)
@@ -87,24 +103,8 @@ def getType(Map, boxx, boxy):
     ''' Returns the type of the object in position (x,y). '''
     matrix = Map.types()
     return(matrix[boxx][boxy])
-
-def remove(list_types_coords, boxx, boxy):
-    ''' Deletes a building from the map. The list is organized this way :
-    [Building A, Building Coords A, Building B...]. '''
-    n = len(list_types_coords)
-    n = n//2
-    k_final = 0
-    i_final = 0
-    for k in range(n):
-        coords_list = list_types_coords[2*k+1]
-        p = len(coords_list)
-        for i in range(p):
-            if [boxx,boxy] == coords_list[i]:
-                k_final = k
-                i_final = i
-    del list_types_coords[2*k_final][i_final]
-    del list_types_coords[2*k_final+1][i_final]
-
+    
+    
 
 def drawBoard(Map, DISPLAYSURF, selected, timing, origin, graphism):
     ''' Displays the entire board. '''
@@ -140,12 +140,50 @@ def drawBoard_changes(Map, DISPLAYSURF, selected, timing, origin, graphism, chan
 def drawHeader(Map, DISPLAYSURF):
     # Then we display the ressources
     pygame.draw.polygon(DISPLAYSURF, (255,255,255), headerCoordinates)
-    ressources = "Money : "+str(Map.money)+"   Wood : "+str(Map.wood)+"   Stone : "+str(Map.stone)+"   Habitants : "+str(Map.habitants)+"   NRJ : "+str(Map.elec)
+    ressources = "Money : "+str(Map.money)+"   Wood : "+str(Map.wood)+"   Stone : "+str(Map.stone)+"   Habitants : "+str(Map.habitants)+"   Electricity : "+str(Map.elec)
     text = font.render(ressources, 1, (10,10,10))
     textpos = text.get_rect(centerx=RESSOURCEBARWIDTH/2,centery=GAPSIZE+RESSOURCEBARHEIGHT/2)
     DISPLAYSURF.blit(text, textpos)
+    
+def drawHappiness(DISPLAYSURF, happiness, topleftx, toplefty, size, color_text):
+    '''Draws the happiness level'''
+    color = (int(255*(1-happiness)),int(255*happiness),0)
+    center = (topleftx+size//2,toplefty+size//2)
+    pygame.draw.circle(DISPLAYSURF,(0,0,0),center,size//2+1)
+    pygame.draw.circle(DISPLAYSURF,color,center,size//2)
+    x = size//6
+    y = size//4
+    length = size//4
+    pygame.draw.line(DISPLAYSURF,(0,0,0),(topleftx+size//2-x,toplefty+size//2-y),(topleftx+size//2-x,toplefty+size//2-y+length))
+    pygame.draw.line(DISPLAYSURF,(0,0,0),(topleftx+size//2+x,toplefty+size//2-y),(topleftx+size//2+x,toplefty+size//2-y+length))
+    height_max = size // 5
+    center_left = [topleftx+size//2-size//5, toplefty+size//2+size//5]
+    center_right = [topleftx+size//2+size//5, toplefty+size//2+size//5]
+    height_prop = abs(happiness-0.5)
+    if height_prop < 0.2:
+        pygame.draw.line(DISPLAYSURF,(0,0,0),(center_left[0], center_left[1]),(center_right[0], center_right[1]))
+    else:
+        if height_prop < 0.4:
+            height_prop = 0.4
+        else:
+            height_prop = 0.5
+        topleftRect = [center_left[0], center_left[1]-int(height_prop*height_max)]
+        smileRect = pygame.Rect(topleftRect[0],topleftRect[1],2*size//5,int(height_max*height_prop*2))
+        if happiness > 0.5:
+            a = math.pi
+            b = 2*a
+        else:
+            a = 2*math.pi
+            b = 3*math.pi
+        pygame.draw.arc(DISPLAYSURF,(0,0,0),smileRect,a,b)
+    happ = str(int(100*happiness))+"%"
+    text = font.render(happ, 1, color_text)
+    textpos = text.get_rect(centerx=3*topleftx+size,centery=GAPSIZE+RESSOURCEBARHEIGHT/2)
+    DISPLAYSURF.blit(text, textpos)   
 
-def drawMenu(Map, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected):
+def drawMenu(Map, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected,color):
+    # We first draw a white background to erase traces of Menu Info
+    pygame.draw.polygon(DISPLAYSURF, (255,255,255), largerMenuCoordinates)
     # We draw the background for the menu (I don't know why we have to do this step everytime but else it erases)
     pygame.draw.polygon(DISPLAYSURF, (139,69,19), menuCoordinates)
 
@@ -153,7 +191,7 @@ def drawMenu(Map, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected):
     text = font.render("Menu", 1, (10,10,10))
     textpos = text.get_rect(centerx=RESSOURCEBARWIDTH+2*GAPSIZE + MENUBARWIDTH/2, centery=GAPSIZE+RESSOURCEBARHEIGHT/2)
     DISPLAYSURF.blit(text, textpos)
-    text = font.render("Time : "+str(timing), 1, (10,10,10))
+    text = font.render("Time : "+str(timing), 1, color)
     textpos = text.get_rect(centerx=RESSOURCEBARWIDTH+2*GAPSIZE + MENUBARWIDTH/2, centery=WINDOWHEIGHT-GAPSIZE-24/2)
     DISPLAYSURF.blit(text, textpos)
 
@@ -174,153 +212,138 @@ def drawMenu(Map, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected):
             x = (i//n)*(GAPSIZE+BOXSIZE)+WINDOWWIDTH-MENUBARWIDTH
             y = (i%n)*(GAPSIZE+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE
             DISPLAYSURF.blit(dessin,(x,y))
-        i+=1
-        
-    i=10
- #   for k in graph_priority:
-        # The formula is more understandable in this order, but it's the same than in detBuildingFromMenu actually
- #       x = (i//n)*(GAPSIZE+BOXSIZE)+WINDOWWIDTH-MENUBARWIDTH
- #       y = (i%n)*(GAPSIZE+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE
- #       DISPLAYSURF.blit(k,(x,y))
- #       if i == 12:
- #           i+=7
- #       elif i == 21:
- #           i+=7
- #       else: 
- #           i+=1
-    i=10
-    for k in [0,1,2]:
-        x = ((i+k)//n)*(GAPSIZE+BOXSIZE)+WINDOWWIDTH-MENUBARWIDTH+BOXSIZE/2
-        y = ((i+k)%n)*(GAPSIZE+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE+BOXSIZE/2
-        text = font_other.render("+", 1, (10,10,10))
-        textpos = text.get_rect(centerx=x, centery=y)
-        DISPLAYSURF.blit(text, textpos)
-    i=19
-    for k in [0,1,2]:
-        x = ((i+k)//n)*(GAPSIZE+BOXSIZE)+WINDOWWIDTH-MENUBARWIDTH+BOXSIZE/2
-        y = ((i+k)%n)*(GAPSIZE+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE+BOXSIZE/2
-        if k == 0:
-            text = font_other.render("1", 1, (10,10,10))
-        elif k==1:
-            text = font_other.render("2", 1, (10,10,10))  
-        else:
-            text = font_other.render("3", 1, (10,10,10))            
-        textpos = text.get_rect(centerx=x, centery=y)
-        DISPLAYSURF.blit(text, textpos)
-    i=28
-    for k in [0,1,2]:
-        x = ((i+k)//n)*(GAPSIZE+BOXSIZE)+WINDOWWIDTH-MENUBARWIDTH+BOXSIZE/2
-        y = ((i+k)%n)*(GAPSIZE+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE+BOXSIZE/2
-        text = font_other.render("-", 1, (10,10,10))
-        textpos = text.get_rect(centerx=x, centery=y)
-        DISPLAYSURF.blit(text, textpos)   
-        
-        mousex = 0
-        mousey = 0
-    for event in pygame.event.get(): # event handling loop
-        if event.type == MOUSEBUTTONUP:
-            mousex, mousey = event.pos
-            mouseClicked = True
-        elif event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
-            pygame.quit()
-            os.sys.exit()
-
-       
-    if textpos.collidepoint(mousex, mousey) and mouseClicked:
-        print("yes")
-
-   
-    
-def isInMenu(mousex):
-    ''' Returns True if the mouse is in the menu. '''
-    if mousex > WINDOWWIDTH - MENUBARWIDTH:
-        return(True)
-    else:
-        return(False)
-
-def isInGame(mousex, mousey):
-    ''' Returns True if the mouse is in the game. '''
-    if mousex < GAMEWIDTH + 2*GAPSIZE and mousey > RESSOURCEBARHEIGHT + 2*GAPSIZE:
-        return(True)
-    else:
-        return(False)
-
-def drawHappiness(DISPLAYSURF, happiness, topleftx, toplefty, size):
-    '''Draws the happiness level'''
-    color = (int(255*(1-happiness)),int(255*happiness),0)
-    center = (topleftx+size//2,toplefty+size//2)
-    pygame.draw.circle(DISPLAYSURF,(0,0,0),center,size//2+1)
-    pygame.draw.circle(DISPLAYSURF,color,center,size//2)
-    x = size//6
-    y = size//4
-    length = size//4
-    pygame.draw.line(DISPLAYSURF,(0,0,0),(topleftx+size//2-x,toplefty+size//2-y),(topleftx+size//2-x,toplefty+size//2-y+length))
-    pygame.draw.line(DISPLAYSURF,(0,0,0),(topleftx+size//2+x,toplefty+size//2-y),(topleftx+size//2+x,toplefty+size//2-y+length))
-    height_max = size // 5
-    if happiness > 0.5:
-        topleftRect = [topleftx+size//2-size//4, toplefty+size//2+size//4-int(height_max*happiness)]
-        smileRect = pygame.Rect(topleftRect[0],topleftRect[1],size//2,int(height_max*happiness))
-        pygame.draw.arc(DISPLAYSURF,(0,0,0),smileRect,math.pi,2*math.pi)
-    if happiness == 0.5:
-        pygame.draw.line(DISPLAYSURF,(0,0,0),(topleftx+size//2-size//5, toplefty+size//2+size//8),(topleftx+size//2+size//5, toplefty+size//2+size//8))
-    if happiness < 0.5:
-        topleftRect = [topleftx+size//2-size//4, toplefty+size//2+size//4]
-        smileRect = pygame.Rect(topleftRect[0],topleftRect[1],size//2,int(height_max*happiness))
-        pygame.draw.arc(DISPLAYSURF,(0,0,0),smileRect,0,math.pi)
-    print(happiness)
+        i+=1 
 
 def drawInfoMenu(DISPLAYSURF, mousex, mousey, buildings):
     p = (mousex-WINDOWWIDTH+MENUBARWIDTH)//(GAPSIZE+BOXSIZE)
     q = (mousey-RESSOURCEBARHEIGHT-2*GAPSIZE)//(GAPSIZE+BOXSIZE)
     k = int(p)*n+int(q)
-    #print(k)
-    if k < len(buildings)-2 and k >= 0 :
-        if buildings[k].wood_needed != 0 and buildings[k].stone_needed != 0 and buildings[k].money_needed != 0 and buildings[k].elec_needed != 0:
-            text = "Bois requis : "+str(buildings[k].wood_needed)+" \n "+"Pierre requis : "+str(buildings[k].stone_needed)+" \n "+"Cout : "+str(buildings[k].money_needed)+" \n "+"NRJ : "+str(buildings[k].elec_needed)
-        elif buildings[k].wood_needed == 0 and buildings[k].stone_needed != 0 and buildings[k].money_needed != 0 and buildings[k].elec_needed != 0:
-            text = "Pierre requis : "+str(buildings[k].stone_needed)+" \n "+"Cout : "+str(buildings[k].money_needed)+" \n "+"NRJ : "+str(buildings[k].elec_needed)    
-        elif buildings[k].wood_needed == 0 and buildings[k].stone_needed != 0 and buildings[k].money_needed != 0 and buildings[k].elec_needed == 0:
-            text = "Pierre requis : "+str(buildings[k].stone_needed)+" \n "+"Cout : "+str(buildings[k].money_needed)   
-        elif buildings[k].type == 9 :
-            text =""
-        height = font_bubble.get_height()*1
-        gap=0
-        for line in text.splitlines():
-            img = font_bubble.render(line,1,(10,10,10),(255,255,255))
-            textpos = img.get_rect(centerx=(k//n)*(GAPSIZE+BOXSIZE)+WINDOWWIDTH-MENUBARWIDTH+35, centery=(k%n)*(GAPSIZE+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE+5+gap)
-            DISPLAYSURF.blit(img,textpos)
-            gap += height
+    if k < len(buildings)-1 and k >= 0 :
+        text = ""
+        money_needed = buildings[k].money_needed
+        wood_needed = buildings[k].wood_needed
+        stone_needed = buildings[k].stone_needed
+        elec_needed = buildings[k].elec_needed
+        jump = False
+        if money_needed > 0:
+            text += "Money needed : "+str(money_needed)
+            jump = True
+        if wood_needed > 0:
+            if jump:
+                text += " \n "
+            text += "Wood needed : "+str(wood_needed)
+            jump = True
+        if stone_needed > 0:
+            if jump:
+                text += " \n "
+            text += "Stone needed : "+str(stone_needed)
+            jump = True
+        if elec_needed > 0:
+            if jump:
+                text += " \n "
+            text += "Elec. needed : "+str(elec_needed)
+            jump = True
+        if elec_needed < 0:
+            if jump:
+                text += " \n "
+            text += "Gains Elec. : +"+str(-elec_needed)
+            jump = True
+        if buildings[k].type == 9:
+            text = "Erases buildings"
+        else:
+            height = font_bubble.get_height()*1
+            gap=0
+            for line in text.splitlines():
+                img = font_bubble.render(line,1,(10,10,10),(255,255,255))
+                textpos = img.get_rect(centerx=(k//n)*(GAPSIZE+BOXSIZE)+WINDOWWIDTH-MENUBARWIDTH+35, centery=(k%n)*(GAPSIZE+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE+5+gap)
+                DISPLAYSURF.blit(img,textpos)
+                gap += height
+    
         
 
-def drawInfoBoard(DISPLAYSURF, boxx, boxy, mainBoard):
+def drawInfoBoard(DISPLAYSURF, boxx, boxy, mainBoard, buildings):
     # Display House data
-    if  getType(mainBoard, boxx, boxy) == 1:
-        text = "Habs : "+str(mainBoard.map[boxx][boxy].hab)+" \n "+"NRJ : "+str(mainBoard.map[boxx][boxy].elec_needed)
-        height = font_bubble.get_height()*1
-        gap=0
-        for line in text.splitlines():
-            img = font_bubble.render(line,1,(10,10,10),(255,255,255))
-            textpos = img.get_rect(centerx=GAPSIZE + (BOXSIZE+GAPSIZE)*boxy+15, centery=RESSOURCEBARHEIGHT + GAPSIZE + (BOXSIZE+GAPSIZE)*boxx+gap)
-            DISPLAYSURF.blit(img,textpos)
-            gap += height
-
-#        textpos = text.get_rect(centerx=GAPSIZE + (BOXSIZE+GAPSIZE)*boxy+15, centery=RESSOURCEBARHEIGHT + GAPSIZE + (BOXSIZE+GAPSIZE)*boxx)
-#        DISPLAYSURF.blit(text, textpos)
-
-    # Display Factory or workshop data
-#    elif getType(mainBoard, boxx, boxy) in [2,3]:
-#        text="Empl : "+str(mainBoard.map[boxx][boxy].worker)+" \n "+"Prod : "+str(int(mainBoard.map[boxx][boxy].prod_max * mainBoard.map[boxx][boxy].worker / mainBoard.map[boxx][boxy].hab_max))+" \n "+"NRJ : "+str(mainBoard.map[boxx][boxy].elec_needed)
-#        height = font_bubble.get_height()*1
-#        gap=0
-#        for line in text.splitlines():
-#            img = font_bubble.render(line,1,(10,10,10),(255,255,255))
-#            textpos = img.get_rect(centerx=GAPSIZE + (BOXSIZE+GAPSIZE)*boxy+15, centery=RESSOURCEBARHEIGHT + GAPSIZE + (BOXSIZE+GAPSIZE)*boxx+gap)
-#            DISPLAYSURF.blit(img,textpos)
-#            gap += height
-
-    # Display NRJ data
-    if  getType(mainBoard, boxx, boxy) in [4,5,6,7]:
-        text = font_bubble.render("NRJ : "+str(mainBoard.map[boxx][boxy].elec_needed),1,(10,10,10),(255,255,255))
-        textpos = text.get_rect(centerx=GAPSIZE + (BOXSIZE+GAPSIZE)*boxy+15, centery=RESSOURCEBARHEIGHT + GAPSIZE + (BOXSIZE+GAPSIZE)*boxx)
-        DISPLAYSURF.blit(text,textpos)
+    building = mainBoard.map[boxx][boxy]
+    text = ""
+    jump = False
+    if building.hab > 0:
+        text += "Hab. : "+str(building.hab)
+        jump = True
+    if building.elec_needed > 0:
+        if jump:
+            text += " \n "
+        text += "Elec. : -"+str(building.elec_needed)
+        jump = True
+    if building.elec_needed < 0:
+        if jump:
+            text += " \n "
+        text += "Elec. : +"+str(-building.elec_needed)
+        jump = True
+    if building.wood_input > 0:
+        if jump:
+            text += " \n "
+        text += "Wood In. : "+str(building.wood_input)
+        jump = True
+    if building.stone_input > 0:
+        if jump:
+            text += " \n "
+        text += "Stone In. : "+str(building.stone_input)
+        jump = True
+    if building.money_input > 0:
+        if jump:
+            text += " \n "
+        text += "Money In. : "+str(building.money_input)
+        jump = True
+    if building.money_output > 0:
+        if jump:
+            text += " \n "
+        text += "Money Out. : "+str(building.money_output)
+        jump = True
+    if building.wood_output > 0:
+        if jump:
+            text += " \n "
+        text += "Wood Out. : "+str(building.wood_output)
+        jump = True
+    if building.stone_output > 0:
+        if jump:
+            text += " \n "
+        text += "Stone Out. : "+str(building.stone_output)
+        jump = True
+    if building.happiness_output > 0:
+        if jump:
+            text += " \n "
+        text += "Hap. Out. : "+str(int(100*building.happiness_output))+"%"
+        jump = True
+    if text == "":
+        return(1)
         
+    height = font_bubble.get_height()*1
+    gap=0
+    for line in text.splitlines():
+        img = font_bubble.render(line,1,(10,10,10),(255,255,255))
+        textpos = img.get_rect(centerx=GAPSIZE + (BOXSIZE+GAPSIZE)*boxy+15, centery=RESSOURCEBARHEIGHT + GAPSIZE + (BOXSIZE+GAPSIZE)*boxx+gap)
+        DISPLAYSURF.blit(img,textpos)
+        gap += height
+
+        
+def displayLosingMenu(DISPLAYSURF, FPSCLOCK):
+    lost = True
+    DISPLAYSURF.fill((0,0,0))
+    mouseClicked = False
+    
+    while lost:
+        text = font_title.render("YOU LOST : CLICK TO START AGAIN", 1, (255, 0, 0))
+        textposTitle = text.get_rect(centerx = WINDOWWIDTH / 2, centery = WINDOWHEIGHT / 2)
+        DISPLAYSURF.blit(text, textposTitle)
+        for event in pygame.event.get(): # event handling loop
+            if event.type == MOUSEBUTTONUP:
+                mousex, mousey = event.pos
+                mouseClicked = True
+            elif event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
+                pygame.quit()
+                os.sys.exit()
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
+        
+        if mouseClicked:
+            lost = False
