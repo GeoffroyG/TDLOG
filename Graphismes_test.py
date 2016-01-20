@@ -12,7 +12,7 @@ import os
 import math
 
 (font_width, font_height) = font.size("A")
-n = (WINDOWHEIGHT-2*GAPSIZE-2*font_height) // (GAPSIZE + BOXSIZE) - 1 # number of pictures per column in the menu
+n = (WINDOWHEIGHT-2*GAPSIZE_MENU-2*font_height) // (GAPSIZE_MENU + BOXSIZE) - 1 # number of pictures per column in the menu
 
 def displayBeginningMenu(DISPLAYSURF, FPSCLOCK, font_title):
     game = False
@@ -182,6 +182,7 @@ def drawHappiness(DISPLAYSURF, happiness, topleftx, toplefty, size, color_text):
     DISPLAYSURF.blit(text, textpos)   
 
 def drawMenu(Map, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected,color):
+    """ Draws the menu on the right side of the game with buildings, priorities and timing"""
     # We first draw a white background to erase traces of Menu Info
     pygame.draw.polygon(DISPLAYSURF, (255,255,255), largerMenuCoordinates)
     # We draw the background for the menu (I don't know why we have to do this step everytime but else it erases)
@@ -189,10 +190,10 @@ def drawMenu(Map, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected,color
 
     # And finally all the things that are on said menu
     text = font.render("Menu", 1, (10,10,10))
-    textpos = text.get_rect(centerx=RESSOURCEBARWIDTH+2*GAPSIZE + MENUBARWIDTH/2, centery=GAPSIZE+RESSOURCEBARHEIGHT/2)
+    textpos = text.get_rect(centerx=RESSOURCEBARWIDTH+2*GAPSIZE_MENU + MENUBARWIDTH/2, centery=GAPSIZE_MENU+RESSOURCEBARHEIGHT/2)
     DISPLAYSURF.blit(text, textpos)
     text = font.render("Time : "+str(timing), 1, color)
-    textpos = text.get_rect(centerx=RESSOURCEBARWIDTH+2*GAPSIZE + MENUBARWIDTH/2, centery=WINDOWHEIGHT-GAPSIZE-24/2)
+    textpos = text.get_rect(centerx=RESSOURCEBARWIDTH+2*GAPSIZE_MENU + MENUBARWIDTH/2, centery=WINDOWHEIGHT-GAPSIZE_MENU-24/2)
     DISPLAYSURF.blit(text, textpos)
 
     # For the pictures of the buildings we can change n to print more buildings in height, I haven't thought of a formula that would depend on the window length
@@ -200,8 +201,8 @@ def drawMenu(Map, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected,color
 
     for k in toBuild:
         # The formula is more understandable in this order, but it's the same than in detBuildingFromMenu actually
-        x = (i//n)*(GAPSIZE+BOXSIZE)+WINDOWWIDTH-MENUBARWIDTH
-        y = (i%n)*(GAPSIZE+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE
+        x = (i//n)*(GAPSIZE_MENU+BOXSIZE)+WINDOWWIDTH-MENUBARWIDTH
+        y = (i%n)*(GAPSIZE_MENU+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE_MENU
         DISPLAYSURF.blit(k,(x,y))
         i+=1
     i=0
@@ -209,14 +210,15 @@ def drawMenu(Map, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected,color
     for k in selected:
         if k:
             dessin = toBuild_Selected[i]
-            x = (i//n)*(GAPSIZE+BOXSIZE)+WINDOWWIDTH-MENUBARWIDTH
-            y = (i%n)*(GAPSIZE+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE
+            x = (i//n)*(GAPSIZE_MENU+BOXSIZE)+WINDOWWIDTH-MENUBARWIDTH
+            y = (i%n)*(GAPSIZE_MENU+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE_MENU
             DISPLAYSURF.blit(dessin,(x,y))
         i+=1 
 
 def drawInfoMenu(DISPLAYSURF, mousex, mousey, buildings):
-    p = (mousex-WINDOWWIDTH+MENUBARWIDTH)//(GAPSIZE+BOXSIZE)
-    q = (mousey-RESSOURCEBARHEIGHT-2*GAPSIZE)//(GAPSIZE+BOXSIZE)
+    """ Draws info bubbles for buildings in the menu bar"""
+    p = (mousex-WINDOWWIDTH+MENUBARWIDTH)//(GAPSIZE_MENU+BOXSIZE)
+    q = (mousey-RESSOURCEBARHEIGHT-2*GAPSIZE_MENU)//(GAPSIZE_MENU+BOXSIZE)
     k = int(p)*n+int(q)
     if k < len(buildings)-1 and k >= 0 :
         text = ""
@@ -255,13 +257,14 @@ def drawInfoMenu(DISPLAYSURF, mousex, mousey, buildings):
             gap=0
             for line in text.splitlines():
                 img = font_bubble.render(line,1,(10,10,10),(255,255,255))
-                textpos = img.get_rect(centerx=(k//n)*(GAPSIZE+BOXSIZE)+WINDOWWIDTH-MENUBARWIDTH+35, centery=(k%n)*(GAPSIZE+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE+5+gap)
+                textpos = img.get_rect(centerx=(k//n)*(GAPSIZE_MENU+BOXSIZE)+WINDOWWIDTH-MENUBARWIDTH+35, centery=(k%n)*(GAPSIZE_MENU+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE_MENU+5+gap)
                 DISPLAYSURF.blit(img,textpos)
                 gap += height
     
         
 
 def drawInfoBoard(DISPLAYSURF, boxx, boxy, mainBoard, buildings):
+    """ Draws info bubbles for buildings in the main board"""
     # Display House data
     building = mainBoard.map[boxx][boxy]
     text = ""
@@ -327,6 +330,7 @@ def drawInfoBoard(DISPLAYSURF, boxx, boxy, mainBoard, buildings):
 
         
 def displayLosingMenu(DISPLAYSURF, FPSCLOCK):
+    """When the game is over, displays a message to the player"""
     lost = True
     DISPLAYSURF.fill((0,0,0))
     mouseClicked = False
