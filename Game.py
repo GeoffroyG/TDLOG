@@ -89,7 +89,7 @@ def main():
         drawHeader(mainBoard, DISPLAYSURF)
         drawMenu(mainBoard, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected,color)
         
-        priority = [2,3,8]
+        priority = [2,3,4]
         game = True
         danger = False
         
