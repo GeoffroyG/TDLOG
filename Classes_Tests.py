@@ -249,7 +249,7 @@ class Map():
         coeff = 0
         for p in range(self.height):
             for q in range(self.width):
-                if self.map[i][j].type == building_type:
+                if self.map[p][q].type == building_type:
                     coeff += 1/(1+math.fabs(p-i) + math.fabs(q-j))
         self.map[i][j].coeff = coeff + 1
 
@@ -328,16 +328,21 @@ class Map():
                 self.happiness = 1
             else:
                 self.happiness += building.happiness_output
-
-            # If a factory is built, its impact on nearby houses is calculated
-            if building.type == 2:
-                self.factory_impact(i, j)
-                
+                        
             if building.type != 0:                
                 self.built.append([i,j])
                 
-            if building.type == 3 or building.type == 8:
-                self.distance_ressource(i, j, building.type)
+            # If it is a factory, look for houses to reduce the number of inhabitants
+            if building.type == 2:
+                self.factory_impact(i, j)
+
+            # If it is a quarry, look for mines                
+            if building.type == 3:
+                self.distance_ressource(i, j, 10)
+
+            # If it is a sawmill, look for forests
+            if building.type == 4:
+                self.distance_ressource(i, j, 11)
 
             return(True)
             
