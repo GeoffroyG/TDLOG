@@ -103,8 +103,7 @@ def getType(Map, boxx, boxy):
     ''' Returns the type of the object in position (x,y). '''
     matrix = Map.types()
     return(matrix[boxx][boxy])
-    
-    
+
 
 def drawBoard(Map, DISPLAYSURF, selected, timing, origin, graphism):
     ''' Displays the entire board. '''
@@ -115,7 +114,7 @@ def drawBoard(Map, DISPLAYSURF, selected, timing, origin, graphism):
         for j in range(NBCOLUMN_DISP):
             p = Map.map[origin[0]+i][origin[1]+j].type
             dessin = graphism[p]
-            DISPLAYSURF.blit(dessin, (GAPSIZE + (BOXSIZE+GAPSIZE)*j, RESSOURCEBARHEIGHT + GAPSIZE + (BOXSIZE+GAPSIZE)*i))
+            DISPLAYSURF.blit(dessin, ((BOXSIZE+GAPSIZE)*j + GAPSIZE, RESSOURCEBARHEIGHT + GAPSIZE + (BOXSIZE+GAPSIZE)*i))
 
 
 def drawBoard_changes(Map, DISPLAYSURF, selected, timing, origin, graphism, changes, change_all):
@@ -132,7 +131,7 @@ def drawBoard_changes(Map, DISPLAYSURF, selected, timing, origin, graphism, chan
                     j = changes[k][1] - origin[1]
                     p = Map.map[origin[0]+changes[k][0]][origin[1]+changes[k][1]].type
                     dessin = graphism[p]
-                    coordinates = [(j*(BOXSIZE+GAPSIZE),RESSOURCEBARHEIGHT+i*(BOXSIZE+GAPSIZE)),(j*(BOXSIZE+GAPSIZE),RESSOURCEBARHEIGHT+i*(BOXSIZE+GAPSIZE)+BOXSIZE+2*GAPSIZE),(j*(BOXSIZE+GAPSIZE)+BOXSIZE+2*GAPSIZE,RESSOURCEBARHEIGHT+i*(BOXSIZE+GAPSIZE)+BOXSIZE+2*GAPSIZE),(j*(BOXSIZE+GAPSIZE)+BOXSIZE+2*GAPSIZE,RESSOURCEBARHEIGHT+i*(BOXSIZE+GAPSIZE))]
+                    coordinates = [(j*(BOXSIZE+GAPSIZE),RESSOURCEBARHEIGHT+i*(BOXSIZE+GAPSIZE)),(j*(BOXSIZE+GAPSIZE),RESSOURCEBARHEIGHT+i*(BOXSIZE+GAPSIZE)+BOXSIZE+GAPSIZE),(j*(BOXSIZE+GAPSIZE)+BOXSIZE+GAPSIZE,RESSOURCEBARHEIGHT+i*(BOXSIZE+GAPSIZE)+BOXSIZE+GAPSIZE),(j*(BOXSIZE+GAPSIZE)+BOXSIZE+GAPSIZE,RESSOURCEBARHEIGHT+i*(BOXSIZE+GAPSIZE))]
                     pygame.draw.polygon(DISPLAYSURF, (255,255,255), coordinates)
                     DISPLAYSURF.blit(dessin, (GAPSIZE + (BOXSIZE+GAPSIZE)*j, RESSOURCEBARHEIGHT + GAPSIZE + (BOXSIZE+GAPSIZE)*i))
 

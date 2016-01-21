@@ -11,7 +11,7 @@ pygame.init()
 FPS           = 30 # frames per second, the general speed of the program
 
 BOXSIZE       = 40 # size of box height & width in pixels
-GAPSIZE       = 5 # size of gap between boxes in pixels
+GAPSIZE       = 1 # size of gap between boxes in pixels
 GAPSIZE_MENU  = 5
 
 NBCOLUMN      = 50 # number of columns of icons in the map
