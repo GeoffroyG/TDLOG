@@ -78,7 +78,7 @@ def main():
 
         # Initialisation of game variables
         changes = []
-        change_all = False
+        change_all = True
         build = False
         game = True
         danger = False

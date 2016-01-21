@@ -349,7 +349,7 @@ def drawInfoBoard(DISPLAYSURF, boxx, boxy, mainBoard, buildings):
         DISPLAYSURF.blit(img,textpos)
         gap += height
 
-        
+
 def displayLosingMenu(DISPLAYSURF, FPSCLOCK):
     """When the game is over, displays a message to the player. """
     lost = True
