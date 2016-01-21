@@ -17,7 +17,7 @@ GAPSIZE_MENU  = 5
 NBCOLUMN      = 50 # number of columns of icons in the map
 NBROW         = 45 # number of rows of icons in the map
 NBCOLUMN_DISP = 20 # number of columns displayed in the game windows
-NBROW_DISP    = 13 # number of rows displayed in the game windows
+NBROW_DISP    = 15 # number of rows displayed in the game windows
 
 GAMEWIDTH  = NBCOLUMN_DISP * (GAPSIZE + BOXSIZE) + GAPSIZE # size of game's width in pixels
 GAMEHEIGHT = NBROW_DISP    * (GAPSIZE + BOXSIZE) + GAPSIZE # size of game's height in pixels

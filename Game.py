@@ -18,7 +18,7 @@ buildings = [Classes_Tests.Road(), Classes_Tests.House(),
 
 
 def main():
-    global FPSCLOCK, DISPLAYSURF, selected, building, graphism, graphism_Selected, toBuild, toBuild_Selected, timer
+    global FPSCLOCK, DISPLAYSURF, selected, building, graphism, graphism_Selected, toBuild, toBuild_Selected, timer, tax
     pygame.init()
 
     # Initialisation of the clock and the window
@@ -64,11 +64,11 @@ def main():
 
         # Initialization of main board
         mainBoard = Classes_Tests.Map(NBROW,NBCOLUMN)
-        
+
         tax = TAXMIN
         timer_aux = 0
         color = (0,0,0)
-        
+
         selected = [False, False, False, False, False, False, False, False, False, False]
         building = Classes_Tests.Empty()
 
@@ -76,33 +76,33 @@ def main():
         buildingselected = False
         mouseClicked = False
 
-        # Initialisation of the variables 
+        # Initialisation of game variables
         changes = []
         change_all = False
-
         build = False
+        game = True
+        danger = False
 
-        timer = 0 # set of a timer in frames
-        timing = 0 # set of a timer in seconds to manipulate production
+        timer = 0 # timer in FPS
+        timing = timer // FPS # timer in seconds
 
         origin = [0,0] # coordinates of the top-left cell displayed
         mousex = 0 # used to store x coordinate of mouse event
         mousey = 0 # used to store y coordinate of mouse event
 
-
-        DISPLAYSURF.fill(BGCOLOR) # drawing the window
+        # Draw the main window for the first time
+        DISPLAYSURF.fill(BGCOLOR)
         drawBoard(mainBoard, DISPLAYSURF, selected, timing, origin, graphism)
         drawHeader(mainBoard, DISPLAYSURF)
-        drawMenu(mainBoard, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected,color)
+        drawMenu(mainBoard, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected, color, tax)
 
+        # Initial priorities for worker repartition into buildings        
         priority = [2,3,4]
-        game = True
-        danger = False
-
+        
         # Main game loop
-        while game: 
+        while game:
             # Event handling loop
-            for event in pygame.event.get(): 
+            for event in pygame.event.get():
                 if event.type == MOUSEBUTTONUP:
                     mousex, mousey = event.pos
                     mouseClicked = True
@@ -155,6 +155,13 @@ def main():
 
                 drawInfoMenu(DISPLAYSURF, mousex, mousey, buildings)
 
+                if mouseClicked and mainBoard.tax_plus_button.collidepoint(mousex, mousey):
+                    tax = increase_taxes(tax)
+                    drawMenu(mainBoard, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected, color, tax)
+                
+                if mouseClicked and mainBoard.tax_minus_button.collidepoint(mousex, mousey):
+                    tax = decrease_taxes(tax)
+                    drawMenu(mainBoard, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected, color, tax)
 
             # Reinitialization of the parameters after
             boxx, boxy = None, None
@@ -179,7 +186,7 @@ def main():
             # Redraw the screen and wait a clock tick.
             pygame.display.update()
             FPSCLOCK.tick(FPS)
-            
+
             # Increase of the timer
             timer += 1
             timing = timer // FPS
@@ -197,8 +204,8 @@ def main():
             #drawBoard(mainBoard, DISPLAYSURF, selected, timing, origin, graphism)
             drawBoard_changes(mainBoard, DISPLAYSURF, selected, timing, origin, graphism, changes, change_all)
             drawHeader(mainBoard, DISPLAYSURF)
-            drawMenu(mainBoard, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected, color)
-            drawHappiness(DISPLAYSURF,mainBoard.happiness,HAPPINESSGAP,HAPPINESSGAP,BOXSIZE,color)
+            drawMenu(mainBoard, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected, color, tax)
+            drawHappiness(DISPLAYSURF, mainBoard.happiness, HAPPINESSGAP, HAPPINESSGAP, BOXSIZE, color)
 
             if timing_aux >= time_lost:
                 game = False
@@ -210,7 +217,7 @@ def production(mainBoard, priority, buildings):
     workers_needed = [0 for i in range(len(priority))]
     wood_needed = [0 for i in range(len(priority))]
     number = [0 for i in range(len(priority))]
-    
+
     # Aggregation of the requirements of every building in the map
     for i in range(NBROW):
         for j in range(NBCOLUMN):
@@ -222,7 +229,7 @@ def production(mainBoard, priority, buildings):
     workers_remaining = mainBoard.habitants
     k = 0
 
-    # Assign workers to building types depending on priorization    
+    # Assign workers to building types depending on priorization
     while k < len(priority) and workers_remaining > 0:
 
         workers_assigned = min(workers_needed[k],workers_remaining)
@@ -232,7 +239,7 @@ def production(mainBoard, priority, buildings):
             proportion_worker = workers_assigned / workers_needed[k]
 
         wood_used = min(wood_needed[k],mainBoard.wood)
-        
+
         if wood_needed[k] == 0:
             proportion_wood = 1
         else:
@@ -246,6 +253,15 @@ def production(mainBoard, priority, buildings):
         workers_remaining -= workers_assigned
         k += 1
 
+def increase_taxes(tax):
+    if tax < TAXMAX:
+        tax += 1
+    return tax
+
+def decrease_taxes(tax):
+    if tax > TAXMIN:
+        tax -= 1
+    return tax
 
 def happiness_calc(mainBoard, tax):
     if mainBoard.habitants == 0:

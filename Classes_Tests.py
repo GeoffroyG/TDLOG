@@ -230,6 +230,9 @@ class Map():
         self.width = width
 
         self.built = []
+        
+        self.tax_plus_button = []
+        self.tax_minus_button = []
 
     def set_mines(self):
         ''' Creates random mines. '''
