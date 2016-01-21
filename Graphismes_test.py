@@ -89,8 +89,8 @@ def getBoxAtPixelGame(mousex, mousey, origin):
 
 def getBuildingFromMenu(mousex, mousey, selected, buildings):
     ''' Gives the building from the coordinates in the menu (see drawBoard). '''
-    p = (mousex-WINDOWWIDTH+MENUBARWIDTH)//(GAPSIZE+BOXSIZE)
-    q = (mousey-RESSOURCEBARHEIGHT-2*GAPSIZE)//(GAPSIZE+BOXSIZE)
+    p = (mousex-WINDOWWIDTH+MENUBARWIDTH)//(GAPSIZE_MENU+BOXSIZE)
+    q = (mousey-RESSOURCEBARHEIGHT-2*GAPSIZE_MENU)//(GAPSIZE_MENU+BOXSIZE)
     k = int(p)*n+int(q)
     if k >= 0 and k < 10:
         for i in range(len(selected)):
