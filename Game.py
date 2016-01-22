@@ -71,6 +71,8 @@ def main():
 
         selected = [False, False, False, False, False, False, False, False, False, False]
         building = Classes_Tests.Empty()
+        
+        shortcuts = [K_r, K_h, K_f, K_a, K_s, K_z, K_c, K_p, K_e, K_g]
 
         # Initialisation of the selection variables
         buildingselected = False
@@ -79,7 +81,6 @@ def main():
         # Initialisation of game variables
         changes = []
         change_all = True
-        build = False
         game = True
         danger = False
 
@@ -117,6 +118,9 @@ def main():
                 elif event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                     pygame.quit()
                     os.sys.exit()
+
+                if event.type == KEYUP and event.key in shortcuts:
+                    selected, buildingselected, building = shortcuts_manager(shortcuts.index(event.key), selected, buildingselected, building)
 
                 # Shifts on the map
                 if event.type == KEYUP and event.key == K_LEFT:
@@ -291,3 +295,16 @@ def happiness_calc(mainBoard, tax):
         else:
             mainBoard.happiness -= drop
 
+
+def shortcuts_manager(shortcut_index, selected, buildingselected, building):
+
+    if selected[shortcut_index] == False:
+        buildingselected = True
+        building = buildings[shortcut_index]
+        selected = [False, False, False, False, False, False, False, False, False, False]
+        selected[shortcut_index] = True
+    else:
+        buildingselected = False
+        building = Classes_Tests.Empty()
+        selected = [False, False, False, False, False, False, False, False, False, False]
+    return selected, buildingselected, building
