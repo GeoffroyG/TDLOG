@@ -256,9 +256,9 @@ def production(mainBoard, priority, buildings):
         else:
             proportion_wood = wood_used / wood_needed[k]
 
-        mainBoard.wood += buildings[priority[k]].wood_output * min(proportion_worker,proportion_wood) * number[k]
+        mainBoard.wood += buildings[priority[k]].wood_output * min(proportion_worker,proportion_wood) * mainBoard.sawmill_coeff * number[k]
         mainBoard.money += buildings[priority[k]].money_output * min(proportion_worker,proportion_wood) * number[k]
-        mainBoard.stone += buildings[priority[k]].stone_output * min(proportion_worker,proportion_wood) * number[k]
+        mainBoard.stone += buildings[priority[k]].stone_output * min(proportion_worker,proportion_wood) * mainBoard.quarry_coeff * number[k]
         mainBoard.wood -= wood_used
 
         workers_remaining -= workers_assigned

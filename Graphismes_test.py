@@ -144,7 +144,7 @@ def drawBoard_changes(Map, DISPLAYSURF, selected, timing, origin, graphism, chan
 def drawHeader(Map, DISPLAYSURF):
     # Then we display the ressources
     pygame.draw.polygon(DISPLAYSURF, (255,255,255), headerCoordinates)
-    ressources = "Money : "+str(Map.money)+"   Wood : "+str(Map.wood)+"   Stone : "+str(Map.stone)+"   Habitants : "+str(Map.habitants)+"   Electricity : "+str(Map.elec)
+    ressources = "Money : "+str(round(Map.money, 2)) +"   Wood : "+str(round(Map.wood, 2))+"   Stone : "+str(round(Map.stone, 2))+"   Habitants : "+str(Map.habitants)+"   Electricity : "+str(Map.elec)
     text = font.render(ressources, 1, (10,10,10))
     textpos = text.get_rect(centerx=RESSOURCEBARWIDTH/2,centery=GAPSIZE+RESSOURCEBARHEIGHT/2)
     DISPLAYSURF.blit(text, textpos)
