@@ -317,22 +317,29 @@ class Map():
 
     def insert(self, building_given, i, j):
         ''' Inserts a building in cell [i][j]. '''
+        
+        # Check is conditions are met to build the new building
         if self.check_empty(i, j) and self.check_road_junction(i, j) and (building_given.check_ressource(self.wood,self.stone,self.money,self.elec)):
+            # Each house is unique for they all contains a certain amount of inhabitants, whereas variable for other buildings are all macro
             if building_given.type == 1:
                 building = House()
             else:
                 building = building_given
 
+            # The building is created with the ressources
             self.map[i][j] = building
             self.wood -= building.wood_needed
             self.stone -= building.stone_needed
             self.money -= building.money_needed
             self.elec -= building.elec_needed
-            if self.happiness + building.happiness_output > 1:
-                self.happiness = 1
-            else:
+            
+            # The impact of the new building on happiness is computed
+            if self.happiness + building.happiness_output <= 1:
                 self.happiness += building.happiness_output
+            else:
+                self.happiness = 1                
 
+            # Built is used to store the buildings and only inspect them at each loop
             if building.type != 0:
                 self.built.append([i,j])
 
@@ -350,20 +357,41 @@ class Map():
 
             return(True)
 
-        if not self.check_empty(i, j) and building_given.type == 9:
+        # Delete buildings
+        if building_given.type == 9:
             former_building = self.map[i][j]
-            self.wood += former_building.wood_needed // 2
-            self.stone += former_building.stone_needed // 2
-            self.money += former_building.money_needed // 2
-            self.elec += former_building.elec_needed
-            self.map[i][j] = building_given
-            if former_building.type == 1:
-                self.habitants -= former_building.hab
+            # If it is a road, we check potential road junction issues
+            if self.map[i][j].type == 0 and not(self.delete_road(i, j)):
+                return(False)
+            # Else, half of the initial ressources are given back
+            elif former_building.type < 9:
+                self.wood += former_building.wood_needed // 2
+                self.stone += former_building.stone_needed // 2
+                self.money += former_building.money_needed // 2
+                self.elec += former_building.elec_needed
+                self.map[i][j] = building_given
+                
+                # Inhabitants of a house have to leave the city
+                if former_building.type == 1:
+                    self.habitants -= former_building.hab
 
-            return(True)
+                return(True)
 
         return(False)
 
+    def delete_road(self, i, j):
+        """ It is possible to delete a road if it is only attached to 1 road and if no building is directly linked to this road. """
+        if i == 2 and j == 0:
+            delete = False
+        else:     
+            roads_near = (self.map[i-1][j].type == 0) + (self.map[i+1][j].type == 0) + (self.map[i][j-1].type == 0) + (self.map[i][j+1].type == 0)
+            buildings_near = (self.map[i-1][j].type > 0 and self.map[i-1][j].type < 9) + (self.map[i+1][j].type > 0 and self.map[i+1][j].type < 9) + (self.map[i][j-1].type > 0 and self.map[i][j-1].type < 9) + (self.map[i][j+1].type > 0 and self.map[i][j+1].type < 9)  
+    
+            if roads_near < 2 and buildings_near == 0:
+                delete = True
+            else:
+                delete = False
+        return delete
 
     def display(self):
         ''' Displays the matrix in text mode. '''
