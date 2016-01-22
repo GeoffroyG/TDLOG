@@ -98,16 +98,22 @@ def main():
 
         # Initial priorities for worker repartition into buildings        
         priority = [2,3,4]
-        
+
         # Main game loop
         while game:
+            build = False
             # Event handling loop
             for event in pygame.event.get():
-                if event.type == MOUSEBUTTONUP:
+                if event.type == MOUSEBUTTONDOWN and event.button == 1:
                     mousex, mousey = event.pos
                     mouseClicked = True
+                elif event.type == MOUSEBUTTONUP and event.button == 1:
+                    mousex, mousey = event.pos
+                    mouseClicked = False
                 elif event.type == MOUSEMOTION:
                     mousex, mousey = event.pos
+                    if event.buttons[0] == 1:
+                        mouseClicked = True
                 elif event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                     pygame.quit()
                     os.sys.exit()
@@ -136,11 +142,12 @@ def main():
                 # Build a new building
                 if boxx != None and boxy != None and mouseClicked and buildingselected:
                     build = mainBoard.insert(building, boxx, boxy)
+                    if build:
+                        changes.append([boxx, boxy])
+                if boxx != None and boxy != None and not(mouseClicked) and buildingselected and build:
                     buildingselected = False
                     building = Classes_Tests.Empty()
                     selected = [False, False, False, False, False, False, False, False, False, False]
-                    if build:
-                        changes.append([boxx, boxy])
 
                 drawInfoBoard(DISPLAYSURF, boxx, boxy, mainBoard, buildings)
 
