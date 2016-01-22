@@ -187,6 +187,9 @@ def main():
             if timer % PRODSTEP == 0:
                 production(mainBoard, priority, buildings)
 
+            if timer % TAXSTEP == 0:
+                mainBoard.money += mainBoard.habitants * tax
+
             if timer % HAPPINESSSTEP == 0:
                 happiness_calc(mainBoard, tax)
                 if mainBoard.happiness > 0.4:

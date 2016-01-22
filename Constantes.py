@@ -58,8 +58,9 @@ HAPPINESSSTEP = 15
 
 time_lost = 5 # Time (sec) you have to improve you inhabitants' happiness before you lose
 
-TAXMAX = 30 # Maximum of tax you can impose
-TAXMIN = 2 # Minimum of tax you can impose
+TAXMAX = 10 # Maximum of tax you can impose
+TAXMIN = 1 # Minimum of tax you can impose
+TAXSTEP = 200 # Number of loops before tax is taken
 DROPSTEP = 0.2 # Drop of percentage of happiness if nothing is done
 
 HABITANTSLEVEL = 200 # Number of inhabitants you need to win the game
