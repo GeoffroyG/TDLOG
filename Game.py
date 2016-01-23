@@ -37,6 +37,8 @@ def main():
         selected = [False, False, False, False, False, False, False, False, False, False]
         building = Classes_Tests.Empty()
 
+        shortcuts = [K_r, K_h, K_f, K_a, K_s, K_z, K_c, K_p, K_e, K_g]
+
         # Initialisation of the selection variables
         buildingselected = False
         mouseClicked = False
@@ -79,8 +81,8 @@ def main():
                     pygame.quit()
                     os.sys.exit()
 
-                if event.type == KEYUP and event.key in mainBoard.shortcuts:
-                    selected, buildingselected, building = shortcuts_manager(mainBoard.shortcuts.index(event.key), selected, buildingselected, building)
+                if event.type == KEYUP and event.key in shortcuts:
+                    selected, buildingselected, building = shortcuts_manager(shortcuts.index(event.key), selected, buildingselected, building)
 
                 # Shifts on the map
                 if event.type == KEYUP and event.key == K_LEFT:

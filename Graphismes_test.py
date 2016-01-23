@@ -265,7 +265,6 @@ def drawShortcuts(Map, DISPLAYSURF, color, toBuild):
         textpos = text.get_rect(centerx = RESSOURCEBARWIDTH + BOXSIZE + 6*GAPSIZE_MENU, centery = k*(GAPSIZE_MENU+BOXSIZE) + RESSOURCEBARHEIGHT + 2*GAPSIZE_MENU + BOXSIZE/2)
         DISPLAYSURF.blit(text, textpos)
 
-
 def drawInfoMenu(DISPLAYSURF, mousex, mousey, buildings):
     """ Draws info bubbles for buildings in the menu bar"""
     p = (mousex-WINDOWWIDTH+MENUBARWIDTH)//(GAPSIZE_MENU+BOXSIZE)

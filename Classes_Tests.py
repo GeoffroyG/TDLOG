@@ -244,7 +244,7 @@ class Map():
         self.prio_plus = [0, 0, 0]
         self.prio_minus= [0, 0, 0]
         
-        self.shortcuts = ["K_r", "K_h", "K_f", "K_a", "K_s", "K_z", "K_c", "K_p", "K_e", "K_g"]
+
         self.shortcuts_str = ["R", "H", "F", "Q", "S", "W", "C", "P", "E", "G"]
 
     def set_mines(self):
