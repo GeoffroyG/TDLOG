@@ -72,7 +72,7 @@ def main():
                     mouseClicked = True
                 elif event.type == MOUSEBUTTONUP and event.button == 1:
                     mousex, mousey = event.pos
-                    mouseClicked = False
+                    mouseClicked = False               
                 elif event.type == MOUSEMOTION:
                     mousex, mousey = event.pos
                     if event.buttons[0] == 1:
@@ -117,23 +117,40 @@ def main():
 
                 drawInfoBoard(DISPLAYSURF, boxx, boxy, mainBoard, buildings)
 
-
-            if isInMenu(mousex):
-
-                # Select a building in the menu
-                if mouseClicked and getBuildingFromMenu(mousex, mousey, selected, buildings) != None:
-                    buildingselected = True
-                    building = getBuildingFromMenu(mousex, mousey, selected, buildings)
-
+            if isInMenu(mousex) and getBuildingFromMenu(mousex, mousey, selected, buildings, False) != None:
                 drawInfoMenu(DISPLAYSURF, mousex, mousey, buildings)
 
-                if mouseClicked and mainBoard.tax_plus_button.collidepoint(mousex, mousey):
-                    tax = increase_taxes(tax)
-                    drawMenu(mainBoard, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected, color, tax)
+            if isInMenu(mousex) and mouseClicked:
+
+                # Selection of a building in the menu
+                selected, buildingselected, building = getBuildingFromMenu(mousex, mousey, selected, buildings, mouseClicked)
                 
-                if mouseClicked and mainBoard.tax_minus_button.collidepoint(mousex, mousey):
+                # Modification of tax level
+                if mainBoard.tax_plus_button.collidepoint(mousex, mousey):
+                    tax = increase_taxes(tax)
+                
+                if mainBoard.tax_minus_button.collidepoint(mousex, mousey):
                     tax = decrease_taxes(tax)
-                    drawMenu(mainBoard, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected, color, tax)
+
+                if mainBoard.prio_plus[0].collidepoint(mousex, mousey):
+                    priorize(mainBoard, 2, -1)
+
+                if mainBoard.prio_minus[0].collidepoint(mousex, mousey):
+                    priorize(mainBoard, 2, 1)
+                    
+                if mainBoard.prio_plus[1].collidepoint(mousex, mousey):
+                    priorize(mainBoard, 3, -1)
+                    
+                if mainBoard.prio_minus[1].collidepoint(mousex, mousey):
+                    priorize(mainBoard, 3, 1)
+                    
+                if mainBoard.prio_plus[2].collidepoint(mousex, mousey):
+                    priorize(mainBoard, 4, -1)
+                    
+                if mainBoard.prio_minus[2].collidepoint(mousex, mousey):
+                    priorize(mainBoard, 4, 1)
+
+                drawMenu(mainBoard, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected, color, tax)
 
             # Reinitialization of the parameters after each loop
             boxx, boxy = None, None
@@ -275,6 +292,13 @@ def decrease_taxes(tax):
     if tax > TAXMIN:
         tax -= 1
     return tax
+
+def priorize(mainBoard, building, order):
+    index = mainBoard.priority.index(building)
+    if index + order >= 0 and index + order < len(mainBoard.priority):
+        mainBoard.priority.remove(building)
+        mainBoard.priority.insert(index + order, building)
+        print(mainBoard.priority)
 
 def happiness_calc(mainBoard, tax):
     """ Calculates the happiness based on the number of inhabitants and taxes. """

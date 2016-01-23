@@ -239,11 +239,10 @@ class Map():
         self.sawmill_coeff = 0
         self.sawmill_nb = 0
         
-        self.priority = [2,3,4]
+        self.priority = [2, 3, 4]
         
         self.prio_plus = [0, 0, 0]
         self.prio_minus= [0, 0, 0]
-        
 
         self.shortcuts_str = ["R", "H", "F", "Q", "S", "W", "C", "P", "E", "G"]
 

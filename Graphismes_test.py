@@ -86,22 +86,20 @@ def getBoxAtPixelGame(mousex, mousey, origin):
     j = origin[1] + (mousex / GAMEWIDTH * NBCOLUMN_DISP)
     return(int(i),int(j))
 
-def getBuildingFromMenu(mousex, mousey, selected, buildings):
+def getBuildingFromMenu(mousex, mousey, selected, buildings, click):
     ''' Gives the building from the coordinates in the menu (see drawBoard). '''
     p = (mousex-WINDOWWIDTH+MENUBARWIDTH)//(GAPSIZE_MENU+BOXSIZE)
     q = (mousey-RESSOURCEBARHEIGHT-2*GAPSIZE_MENU)//(GAPSIZE_MENU+BOXSIZE)
     k = int(p)*n+int(q)
     if k >= 0 and k < 10:
-        for i in range(len(selected)):
-            selected[i] = False
-        selected[k] = True
-        return(buildings[k])
-    elif mousex:
-        return "-"
-    elif mousex:
-        return "+"
+        if click == True:
+            old_status = selected[k]
+            for i in range(len(selected)):
+                selected[i] = False
+            selected[k] = (old_status + 1)%2
+        return(selected, True, buildings[k])
     else:
-        return(None)
+        return(selected, False, buildings[9])
 
 def getType(Map, boxx, boxy):
     ''' Returns the type of the object in position (x,y). '''
