@@ -258,6 +258,12 @@ def drawPriorities(Map, DISPLAYSURF, color):
         text = font.render("+", 1, color)
         Map.prio_plus[k] = text.get_rect(centerx = RESSOURCEBARWIDTH + MENUBARWIDTH - 4*GAPSIZE_MENU, centery = (k+2)*(GAPSIZE_MENU+BOXSIZE) + RESSOURCEBARHEIGHT + 2*GAPSIZE_MENU + BOXSIZE/2)
         DISPLAYSURF.blit(text, Map.prio_plus[k])
+        
+def drawShortcuts(Map, DISPLAYSURF, color, toBuild):
+    for k in range(len(toBuild)):
+        text = font.render(Map.shortcuts_str[k], 1, color)
+        textpos = text.get_rect(centerx = RESSOURCEBARWIDTH + BOXSIZE + 6*GAPSIZE_MENU, centery = k*(GAPSIZE_MENU+BOXSIZE) + RESSOURCEBARHEIGHT + 2*GAPSIZE_MENU + BOXSIZE/2)
+        DISPLAYSURF.blit(text, textpos)
 
 
 def drawInfoMenu(DISPLAYSURF, mousex, mousey, buildings):
