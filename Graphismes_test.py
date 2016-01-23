@@ -65,7 +65,6 @@ def displayBeginningMenu(DISPLAYSURF, FPSCLOCK, font_title):
         mouseClicked = False
 
 
-
 def isInMenu(mousex):
     ''' Returns True if the mouse is in the menu. '''
     if mousex > WINDOWWIDTH - MENUBARWIDTH:
@@ -142,7 +141,7 @@ def drawBoard_changes(Map, DISPLAYSURF, selected, timing, origin, graphism, chan
 
 
 def drawHeader(Map, DISPLAYSURF):
-    # Then we display the ressources
+    """ Header to display the main variable : ressources, happiness and inhabitants. """
     pygame.draw.polygon(DISPLAYSURF, (255,255,255), headerCoordinates)
     ressources = "Money : "+str(round(Map.money, 2)) +"   Wood : "+str(round(Map.wood, 2))+"   Stone : "+str(round(Map.stone, 2))+"   Habitants : "+str(Map.habitants)+"   Electricity : "+str(Map.elec)
     text = font.render(ressources, 1, (10,10,10))
@@ -150,7 +149,7 @@ def drawHeader(Map, DISPLAYSURF):
     DISPLAYSURF.blit(text, textpos)
     
 def drawHappiness(DISPLAYSURF, happiness, topleftx, toplefty, size, color_text):
-    '''Draws the happiness level'''
+    '''Draws the happiness level with a percentage and a smiley. '''
     color = (int(255*(1-happiness)),int(255*happiness),0)
     center = (topleftx+size//2,toplefty+size//2)
     pygame.draw.circle(DISPLAYSURF,(0,0,0),center,size//2+1)
@@ -164,6 +163,7 @@ def drawHappiness(DISPLAYSURF, happiness, topleftx, toplefty, size, color_text):
     center_left = [topleftx+size//2-size//5, toplefty+size//2+size//5]
     center_right = [topleftx+size//2+size//5, toplefty+size//2+size//5]
     height_prop = abs(happiness-0.5)
+    
     if height_prop < 0.2:
         pygame.draw.line(DISPLAYSURF,(0,0,0),(center_left[0], center_left[1]),(center_right[0], center_right[1]))
     else:
@@ -180,13 +180,14 @@ def drawHappiness(DISPLAYSURF, happiness, topleftx, toplefty, size, color_text):
             a = 2*math.pi
             b = 3*math.pi
         pygame.draw.arc(DISPLAYSURF,(0,0,0),smileRect,a,b)
+        
     happ = str(int(100*happiness))+"%"
     text = font.render(happ, 1, color_text)
     textpos = text.get_rect(centerx=3*topleftx+size,centery=GAPSIZE+RESSOURCEBARHEIGHT/2)
     DISPLAYSURF.blit(text, textpos)   
 
 def drawMenu(Map, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected, color, tax):
-    """ Draws the menu on the right side of the game with buildings, priorities and timing"""
+    """ Draws the menu on the right side of the game with buildings, priorities and timing. """
     # We first draw a white background to erase traces of Menu Info
     pygame.draw.polygon(DISPLAYSURF, (255,255,255), largerMenuCoordinates)
     # We draw the background for the menu (I don't know why we have to do this step everytime but else it erases)
@@ -198,22 +199,6 @@ def drawMenu(Map, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected, colo
     DISPLAYSURF.blit(text, textpos)
     text = font.render("Time : "+str(timing), 1, color)
     textpos = text.get_rect(centerx=RESSOURCEBARWIDTH+2*GAPSIZE_MENU + MENUBARWIDTH/2, centery=WINDOWHEIGHT-GAPSIZE_MENU-12)
-    DISPLAYSURF.blit(text, textpos)
-
-    text = font.render("Taxes", 1, color)
-    textpos = text.get_rect(centerx=RESSOURCEBARWIDTH+2*GAPSIZE_MENU + MENUBARWIDTH/2, centery=WINDOWHEIGHT-GAPSIZE_MENU-72)
-    DISPLAYSURF.blit(text, textpos)
-
-    text = font.render("-", 1, color)
-    Map.tax_minus_button = text.get_rect(centerx=RESSOURCEBARWIDTH+6*GAPSIZE_MENU, centery=WINDOWHEIGHT-GAPSIZE_MENU-54)
-    DISPLAYSURF.blit(text, Map.tax_minus_button)
-    
-    text = font.render("+", 1, color)
-    Map.tax_plus_button = text.get_rect(centerx=RESSOURCEBARWIDTH+MENUBARWIDTH-4*GAPSIZE_MENU, centery=WINDOWHEIGHT-GAPSIZE_MENU-54)
-    DISPLAYSURF.blit(text, Map.tax_plus_button)    
-    
-    text = font.render(str(tax), 1, color)
-    textpos = text.get_rect(centerx=RESSOURCEBARWIDTH+2*GAPSIZE_MENU + MENUBARWIDTH/2, centery=WINDOWHEIGHT-GAPSIZE_MENU-54)
     DISPLAYSURF.blit(text, textpos)
 
     # For the pictures of the buildings we can change n to print more buildings in height, I haven't thought of a formula that would depend on the window length
@@ -234,7 +219,46 @@ def drawMenu(Map, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected, colo
             y = (i%n)*(GAPSIZE_MENU+BOXSIZE)+RESSOURCEBARHEIGHT+2*GAPSIZE_MENU
             DISPLAYSURF.blit(dessin,(x,y))
         i+=1 
+        
+    drawPriorities(Map, DISPLAYSURF, color)
+    drawTaxes(Map, DISPLAYSURF, color, tax)
+    drawShortcuts(Map, DISPLAYSURF, color, toBuild)
+
+def drawTaxes(Map, DISPLAYSURF, color, tax):    
+    """ Displays the current amount of taxes and "+" and "-" buttons. """
     
+    text = font.render("Taxes", 1, color)
+    textpos = text.get_rect(centerx=RESSOURCEBARWIDTH+2*GAPSIZE_MENU + MENUBARWIDTH/2, centery=WINDOWHEIGHT-GAPSIZE_MENU-72)
+    DISPLAYSURF.blit(text, textpos)
+
+    text = font.render("-", 1, color)
+    Map.tax_minus_button = text.get_rect(centerx=RESSOURCEBARWIDTH+6*GAPSIZE_MENU, centery=WINDOWHEIGHT-GAPSIZE_MENU-54)
+    DISPLAYSURF.blit(text, Map.tax_minus_button)
+    
+    text = font.render("+", 1, color)
+    Map.tax_plus_button = text.get_rect(centerx=RESSOURCEBARWIDTH+MENUBARWIDTH-4*GAPSIZE_MENU, centery=WINDOWHEIGHT-GAPSIZE_MENU-54)
+    DISPLAYSURF.blit(text, Map.tax_plus_button)    
+    
+    text = font.render(str(tax), 1, color)
+    textpos = text.get_rect(centerx=RESSOURCEBARWIDTH+2*GAPSIZE_MENU + MENUBARWIDTH/2, centery=WINDOWHEIGHT-GAPSIZE_MENU-54)
+    DISPLAYSURF.blit(text, textpos)    
+    
+def drawPriorities(Map, DISPLAYSURF, color):
+    """ Displays priorities for the repartition of inhabitants in production buildings, ans "+" and "-" buttons. """
+    
+    for k in range(3):
+        text = font.render(str(Map.priority.index(k+2) + 1), 1, color)
+        textpos = text.get_rect(centerx = RESSOURCEBARWIDTH + MENUBARWIDTH - 8*GAPSIZE_MENU, centery = (k+2)*(GAPSIZE_MENU+BOXSIZE) + RESSOURCEBARHEIGHT + 2*GAPSIZE_MENU + BOXSIZE/2)
+        DISPLAYSURF.blit(text, textpos)
+    
+        text = font.render("-", 1, color)
+        Map.prio_minus[k] = text.get_rect(centerx = RESSOURCEBARWIDTH + MENUBARWIDTH - 12*GAPSIZE_MENU, centery = (k+2)*(GAPSIZE_MENU+BOXSIZE) + RESSOURCEBARHEIGHT + 2*GAPSIZE_MENU + BOXSIZE/2)
+        DISPLAYSURF.blit(text, Map.prio_minus[k])
+        
+        text = font.render("+", 1, color)
+        Map.prio_plus[k] = text.get_rect(centerx = RESSOURCEBARWIDTH + MENUBARWIDTH - 4*GAPSIZE_MENU, centery = (k+2)*(GAPSIZE_MENU+BOXSIZE) + RESSOURCEBARHEIGHT + 2*GAPSIZE_MENU + BOXSIZE/2)
+        DISPLAYSURF.blit(text, Map.prio_plus[k])
+
 
 def drawInfoMenu(DISPLAYSURF, mousex, mousey, buildings):
     """ Draws info bubbles for buildings in the menu bar"""

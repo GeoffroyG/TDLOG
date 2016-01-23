@@ -7,17 +7,8 @@ Created on Sun Jan  3 21:18:54 2016
 
 from Graphismes_test import *
 
-
-buildings = [Classes_Tests.Road(), Classes_Tests.House(),
-             Classes_Tests.Factory(), Classes_Tests.Quarry(),
-             Classes_Tests.Sawmill(), Classes_Tests.Wind_power_plant(),
-             Classes_Tests.Coal_power_plant(), Classes_Tests.Park(),
-             Classes_Tests.ENPC(),Classes_Tests.Empty(),
-             Classes_Tests.Mine(), Classes_Tests.Forest()]
-# graphism and buildings are to be modified together, one is the buidings list the other the pictures list
-
-
 def main():
+    """ Main game loop. """
     global FPSCLOCK, DISPLAYSURF, selected, building, graphism, graphism_Selected, toBuild, toBuild_Selected, timer, tax
     pygame.init()
 
@@ -25,34 +16,8 @@ def main():
     FPSCLOCK = pygame.time.Clock()
     DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
 
-    # Load images
-    toBuild = [pygame.image.load("2.Images/Road.png").convert(),
-               pygame.image.load("2.Images/House.png").convert(),
-               pygame.image.load("2.Images/Factory.png").convert(),
-               pygame.image.load("2.Images/Quarry.png").convert(),
-               pygame.image.load("2.Images/Sawmill.png").convert(),
-               pygame.image.load("2.Images/Wind.png").convert(),
-               pygame.image.load("2.Images/Coal.png").convert(),
-               pygame.image.load("2.Images/Park.png").convert(),
-               pygame.image.load("2.Images/ENPC.png").convert(),
-               pygame.image.load("2.Images/Grass.png").convert()]
-
-    toBuild_Selected = [pygame.image.load("2.Images/Road_Selected.png").convert(),
-                        pygame.image.load("2.Images/House_Selected.png").convert(),
-                        pygame.image.load("2.Images/Factory_Selected.png").convert(),
-                        pygame.image.load("2.Images/Quarry_Selected.png").convert(),
-                        pygame.image.load("2.Images/Sawmill_Selected.png").convert(),
-                        pygame.image.load("2.Images/Wind_Selected.png").convert(),
-                        pygame.image.load("2.Images/Coal_Selected.png").convert(),
-                        pygame.image.load("2.Images/Park_Selected.png").convert(),
-                        pygame.image.load("2.Images/ENPC_Selected.png").convert(),
-                        pygame.image.load("2.Images/Grass_Selected.png").convert()]
-
-    # "Graphism" is the extension of "toBuild" with elements that can not be built.
-    # This distinction will be useful in the display of the menu.
-    graphism = toBuild + [pygame.image.load("2.Images/Mine.png").convert()] + [pygame.image.load("2.Images/Forest.png").convert()]
-    graphism_Selected = toBuild_Selected + [pygame.image.load("2.Images/Mine_Selected.png").convert()] + [pygame.image.load("2.Images/Forest_Selected.png").convert()]
-
+    init_buildings()
+    
     pygame.display.set_caption('Jeu Sim City') # name of the game
 
     DISPLAYSURF.fill(BGCOLOR)
@@ -71,8 +36,6 @@ def main():
 
         selected = [False, False, False, False, False, False, False, False, False, False]
         building = Classes_Tests.Empty()
-        
-        shortcuts = [K_r, K_h, K_f, K_a, K_s, K_z, K_c, K_p, K_e, K_g]
 
         # Initialisation of the selection variables
         buildingselected = False
@@ -97,9 +60,6 @@ def main():
         drawHeader(mainBoard, DISPLAYSURF)
         drawMenu(mainBoard, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected, color, tax)
 
-        # Initial priorities for worker repartition into buildings        
-        priority = [2,3,4]
-
         # Main game loop
         while game:
             build = False
@@ -119,8 +79,8 @@ def main():
                     pygame.quit()
                     os.sys.exit()
 
-                if event.type == KEYUP and event.key in shortcuts:
-                    selected, buildingselected, building = shortcuts_manager(shortcuts.index(event.key), selected, buildingselected, building)
+                if event.type == KEYUP and event.key in mainBoard.shortcuts:
+                    selected, buildingselected, building = shortcuts_manager(mainBoard.shortcuts.index(event.key), selected, buildingselected, building)
 
                 # Shifts on the map
                 if event.type == KEYUP and event.key == K_LEFT:
@@ -156,7 +116,6 @@ def main():
                 drawInfoBoard(DISPLAYSURF, boxx, boxy, mainBoard, buildings)
 
 
-
             if isInMenu(mousex):
 
                 # Select a building in the menu
@@ -174,7 +133,7 @@ def main():
                     tax = decrease_taxes(tax)
                     drawMenu(mainBoard, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected, color, tax)
 
-            # Reinitialization of the parameters after
+            # Reinitialization of the parameters after each loop
             boxx, boxy = None, None
             mouseClicked = False
             # Increase of the newcomers
@@ -185,7 +144,7 @@ def main():
                         mainBoard.habitants += mainBoard.map[i][j].moving(timer)
 
             if timer % PRODSTEP == 0:
-                production(mainBoard, priority, buildings)
+                production(mainBoard, buildings)
 
             if timer % TAXSTEP == 0:
                 mainBoard.money += mainBoard.habitants * tax
@@ -215,7 +174,6 @@ def main():
                 timer_aux = 0
                 timing_aux = timer_aux // FPS
 
-            #drawBoard(mainBoard, DISPLAYSURF, selected, timing, origin, graphism)
             drawBoard_changes(mainBoard, DISPLAYSURF, selected, timing, origin, graphism, changes, change_all)
             drawHeader(mainBoard, DISPLAYSURF)
             drawMenu(mainBoard, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected, color, tax)
@@ -225,26 +183,65 @@ def main():
                 game = False
                 displayLosingMenu(DISPLAYSURF, FPSCLOCK)
 
+def init_buildings():
+    global buildings, toBuild, toBuild_Selected, graphism, graphism_Selected
 
-def production(mainBoard, priority, buildings):
+    buildings = [Classes_Tests.Road(), Classes_Tests.House(),
+                 Classes_Tests.Factory(), Classes_Tests.Quarry(),
+                 Classes_Tests.Sawmill(), Classes_Tests.Wind_power_plant(),
+                 Classes_Tests.Coal_power_plant(), Classes_Tests.Park(),
+                 Classes_Tests.ENPC(),Classes_Tests.Empty(),
+                 Classes_Tests.Mine(), Classes_Tests.Forest()]
+    # toBuild and buildings are to be modified together, one is the buidings list the other the pictures list
+
+    # Load images
+    toBuild = [pygame.image.load("2.Images/Road.png").convert(),
+               pygame.image.load("2.Images/House.png").convert(),
+               pygame.image.load("2.Images/Factory.png").convert(),
+               pygame.image.load("2.Images/Quarry.png").convert(),
+               pygame.image.load("2.Images/Sawmill.png").convert(),
+               pygame.image.load("2.Images/Wind.png").convert(),
+               pygame.image.load("2.Images/Coal.png").convert(),
+               pygame.image.load("2.Images/Park.png").convert(),
+               pygame.image.load("2.Images/ENPC.png").convert(),
+               pygame.image.load("2.Images/Grass.png").convert()]
+
+    toBuild_Selected = [pygame.image.load("2.Images/Road_Selected.png").convert(),
+                        pygame.image.load("2.Images/House_Selected.png").convert(),
+                        pygame.image.load("2.Images/Factory_Selected.png").convert(),
+                        pygame.image.load("2.Images/Quarry_Selected.png").convert(),
+                        pygame.image.load("2.Images/Sawmill_Selected.png").convert(),
+                        pygame.image.load("2.Images/Wind_Selected.png").convert(),
+                        pygame.image.load("2.Images/Coal_Selected.png").convert(),
+                        pygame.image.load("2.Images/Park_Selected.png").convert(),
+                        pygame.image.load("2.Images/ENPC_Selected.png").convert(),
+                        pygame.image.load("2.Images/Grass_Selected.png").convert()]
+
+    # "Graphism" is the extension of "toBuild" with elements that can not be built.
+    # This distinction will be useful in the display of the menu.
+    graphism = toBuild + [pygame.image.load("2.Images/Mine.png").convert()] + [pygame.image.load("2.Images/Forest.png").convert()]
+    graphism_Selected = toBuild_Selected + [pygame.image.load("2.Images/Mine_Selected.png").convert()] + [pygame.image.load("2.Images/Forest_Selected.png").convert()]
+
+
+def production(mainBoard, buildings):
     """ Function computing the production of each building depending on the inputs required. """
-    workers_needed = [0 for i in range(len(priority))]
-    wood_needed = [0 for i in range(len(priority))]
-    number = [0 for i in range(len(priority))]
+    workers_needed = [0 for i in range(len(mainBoard.priority))]
+    wood_needed = [0 for i in range(len(mainBoard.priority))]
+    number = [0 for i in range(len(mainBoard.priority))]
 
     # Aggregation of the requirements of every building in the map
     for i in range(NBROW):
         for j in range(NBCOLUMN):
             bat = mainBoard.map[i][j]
-            if bat.type in priority:
-                workers_needed[priority.index(bat.type)] += bat.hab_max
-                wood_needed[priority.index(bat.type)] += bat.wood_input
-                number[priority.index(bat.type)] += 1
+            if bat.type in mainBoard.priority:
+                workers_needed[mainBoard.priority.index(bat.type)] += bat.hab_max
+                wood_needed[mainBoard.priority.index(bat.type)] += bat.wood_input
+                number[mainBoard.priority.index(bat.type)] += 1
     workers_remaining = mainBoard.habitants
     k = 0
 
     # Assign workers to building types depending on priorization
-    while k < len(priority) and workers_remaining > 0:
+    while k < len(mainBoard.priority) and workers_remaining > 0:
 
         workers_assigned = min(workers_needed[k],workers_remaining)
         if workers_needed[k] == 0:
@@ -259,9 +256,9 @@ def production(mainBoard, priority, buildings):
         else:
             proportion_wood = wood_used / wood_needed[k]
 
-        mainBoard.wood += buildings[priority[k]].wood_output * min(proportion_worker,proportion_wood) * mainBoard.sawmill_coeff * number[k]
-        mainBoard.money += buildings[priority[k]].money_output * min(proportion_worker,proportion_wood) * number[k]
-        mainBoard.stone += buildings[priority[k]].stone_output * min(proportion_worker,proportion_wood) * mainBoard.quarry_coeff * number[k]
+        mainBoard.wood += buildings[mainBoard.priority[k]].wood_output * min(proportion_worker,proportion_wood) * mainBoard.sawmill_coeff * number[k]
+        mainBoard.money += buildings[mainBoard.priority[k]].money_output * min(proportion_worker,proportion_wood) * number[k]
+        mainBoard.stone += buildings[mainBoard.priority[k]].stone_output * min(proportion_worker,proportion_wood) * mainBoard.quarry_coeff * number[k]
         mainBoard.wood -= wood_used
 
         workers_remaining -= workers_assigned
@@ -278,6 +275,7 @@ def decrease_taxes(tax):
     return tax
 
 def happiness_calc(mainBoard, tax):
+    """ Calculates the happiness based on the number of inhabitants and taxes. """
     if mainBoard.habitants == 0:
         mainBoard.happiness = 1
     else:
@@ -300,7 +298,7 @@ def happiness_calc(mainBoard, tax):
 
 
 def shortcuts_manager(shortcut_index, selected, buildingselected, building):
-
+    """ Selection of buildings with keyboards shortcuts. """
     if selected[shortcut_index] == False:
         buildingselected = True
         building = buildings[shortcut_index]
