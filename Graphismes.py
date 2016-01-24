@@ -5,7 +5,7 @@ Created on Wed Dec 16 15:36:10 2015
 @author: Fatma - Geoffroy - Pierre
 """
 
-import Classes_Tests
+import Classes
 from Constantes import *
 from pygame.locals import *
 import os
@@ -17,6 +17,7 @@ n = (WINDOWHEIGHT-2*GAPSIZE_MENU-2*font_height) // (GAPSIZE_MENU + BOXSIZE) - 1 
 def displayBeginningMenu(DISPLAYSURF, FPSCLOCK, font_title):
     game = False
     rules = False
+    Credits = False
     mousex = 0
     mousey = 0
     posReturn = pygame.Rect(0,0,0,0)
@@ -25,24 +26,33 @@ def displayBeginningMenu(DISPLAYSURF, FPSCLOCK, font_title):
 
     while not game:
         DISPLAYSURF.blit(background, (0,0))
-        text = font_title.render("Simulation de ville 2D", 1, (255, 0, 0))
+        text = font_title.render("City Management 2D", 1, (255, 0, 0))
         textposTitle = text.get_rect(centerx = WINDOWWIDTH / 2, centery = 50)
         DISPLAYSURF.blit(text, textposTitle)
-        if not rules:
-            text = font_other.render("Nouveau Jeu", 1, (10,10,10), (255,255,255))
+        if not rules and not Credits:
+            text = font_other.render("New Game", 1, (10,10,10), (255,255,255))
             textposNewGame = text.get_rect(centerx = WINDOWWIDTH / 2, centery = WINDOWHEIGHT / 2)
             DISPLAYSURF.blit(text, textposNewGame)
-            text = font_other.render("Regles", 1, (10,10,10), (255,255,255))
+            text = font_other.render("Instructions", 1, (10,10,10), (255,255,255))
             textposRules = text.get_rect(centerx = WINDOWWIDTH / 2, centery = WINDOWHEIGHT / 2 + textposNewGame.height)
             DISPLAYSURF.blit(text, textposRules)
-        else:
+            text = font_other.render("Credits", 1, (10,10,10), (255,255,255))
+            textposCredits = text.get_rect(centerx = WINDOWWIDTH / 2, centery = WINDOWHEIGHT / 2 + textposNewGame.height+ textposNewGame.height)
+            DISPLAYSURF.blit(text, textposCredits)
+        elif rules:
             text = font_other.render("Ceci sont les regles, ca va etre coton a  tout taper en faisant les sauts de lignes", 1, (10,10,10), (255,255,255))
             textpos = text.get_rect(centerx = WINDOWWIDTH / 2, centery = WINDOWHEIGHT / 2)
             DISPLAYSURF.blit(text, textpos)
             back = pygame.image.load("2.Images/Return.png").convert()
             DISPLAYSURF.blit(back, (0,0))
             posReturn = pygame.Rect(0, 0, 40, 40)
-
+        elif Credits:
+            text = font_other.render("Credits for noun Projet and Pygame", 1, (10,10,10), (255,255,255))
+            textpos = text.get_rect(centerx = WINDOWWIDTH / 2, centery = WINDOWHEIGHT / 2)
+            DISPLAYSURF.blit(text, textpos)
+            back = pygame.image.load("2.Images/Return.png").convert()
+            DISPLAYSURF.blit(back, (0,0))
+            posReturn = pygame.Rect(0, 0, 40, 40)            
 
         for event in pygame.event.get(): # event handling loop
             if event.type == MOUSEBUTTONUP:
@@ -53,12 +63,16 @@ def displayBeginningMenu(DISPLAYSURF, FPSCLOCK, font_title):
                 os.sys.exit()
 
 
-        if textposNewGame.collidepoint(mousex, mousey) and not rules and mouseClicked:
+        if textposNewGame.collidepoint(mousex, mousey) and not rules and not Credits and mouseClicked:
             game = True
-        elif textposRules.collidepoint(mousex, mousey) and not rules and mouseClicked:
+        elif textposRules.collidepoint(mousex, mousey) and not rules and not Credits and mouseClicked:
             rules = True
+        elif textposCredits.collidepoint(mousex, mousey) and not Credits and not Credits and mouseClicked:
+            Credits = True           
         elif posReturn.collidepoint(mousex, mousey) and rules and mouseClicked:
             rules = False
+        elif posReturn.collidepoint(mousex, mousey) and Credits and mouseClicked:
+            Credits = False
 
         pygame.display.update()
         FPSCLOCK.tick(FPS)
