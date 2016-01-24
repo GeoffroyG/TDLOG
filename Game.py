@@ -5,7 +5,7 @@ Created on Sun Jan  3 21:18:54 2016
 @author: Fatma - Geoffroy - Pierre
 """
 
-from Graphismes_test import *
+from Graphismes import *
 
 def main():
     """ Main game loop. """
@@ -28,14 +28,14 @@ def main():
         displayBeginningMenu(DISPLAYSURF, FPSCLOCK, font_title)
 
         # Initialization of main board
-        mainBoard = Classes_Tests.Map(NBROW,NBCOLUMN)
+        mainBoard = Classes.Map(NBROW,NBCOLUMN)
 
         tax = TAXMIN
         timer_aux = 0
         color = (0,0,0)
 
         selected = [False, False, False, False, False, False, False, False, False, False]
-        building = Classes_Tests.Empty()
+        building = Classes.Empty()
 
         shortcuts = [K_r, K_h, K_f, K_a, K_s, K_z, K_c, K_p, K_e, K_g]
 
@@ -112,7 +112,7 @@ def main():
                         changes.append([boxx, boxy])
                 if boxx != None and boxy != None and not(mouseClicked) and buildingselected and build:
                     buildingselected = False
-                    building = Classes_Tests.Empty()
+                    building = Classes.Empty()
                     selected = [False, False, False, False, False, False, False, False, False, False]
 
                 drawInfoBoard(DISPLAYSURF, boxx, boxy, mainBoard, buildings)
@@ -175,6 +175,9 @@ def main():
                 else:
                     danger = True
 
+            # Redraw the screen and wait a clock tick.
+            pygame.display.update()
+            FPSCLOCK.tick(FPS)
 
             # Increase of the timer
             timer += 1
@@ -199,20 +202,15 @@ def main():
                 game = False
                 displayLosingMenu(DISPLAYSURF, FPSCLOCK)
 
-            # Redraw the screen and wait a clock tick.
-            pygame.display.update()
-            FPSCLOCK.tick(FPS)
-
-
 def init_buildings():
     global buildings, toBuild, toBuild_Selected, graphism, graphism_Selected
 
-    buildings = [Classes_Tests.Road(), Classes_Tests.House(),
-                 Classes_Tests.Factory(), Classes_Tests.Quarry(),
-                 Classes_Tests.Sawmill(), Classes_Tests.Wind_power_plant(),
-                 Classes_Tests.Coal_power_plant(), Classes_Tests.Park(),
-                 Classes_Tests.ENPC(),Classes_Tests.Empty(),
-                 Classes_Tests.Mine(), Classes_Tests.Forest()]
+    buildings = [Classes.Road(), Classes.House(),
+                 Classes.Factory(), Classes.Quarry(),
+                 Classes.Sawmill(), Classes.Wind_power_plant(),
+                 Classes.Coal_power_plant(), Classes.Park(),
+                 Classes.ENPC(),Classes.Empty(),
+                 Classes.Mine(), Classes.Forest()]
     # toBuild and buildings are to be modified together, one is the buidings list the other the pictures list
 
     # Load images
@@ -334,6 +332,6 @@ def shortcuts_manager(shortcut_index, selected, buildingselected, building):
         selected[shortcut_index] = True
     else:
         buildingselected = False
-        building = Classes_Tests.Empty()
+        building = Classes.Empty()
         selected = [False, False, False, False, False, False, False, False, False, False]
     return selected, buildingselected, building
