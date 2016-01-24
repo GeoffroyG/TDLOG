@@ -175,9 +175,6 @@ def main():
                 else:
                     danger = True
 
-            # Redraw the screen and wait a clock tick.
-            pygame.display.update()
-            FPSCLOCK.tick(FPS)
 
             # Increase of the timer
             timer += 1
@@ -201,6 +198,11 @@ def main():
             if timing_aux >= time_lost:
                 game = False
                 displayLosingMenu(DISPLAYSURF, FPSCLOCK)
+
+            # Redraw the screen and wait a clock tick.
+            pygame.display.update()
+            FPSCLOCK.tick(FPS)
+
 
 def init_buildings():
     global buildings, toBuild, toBuild_Selected, graphism, graphism_Selected
