@@ -18,7 +18,7 @@ def main():
     DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
 
     init_buildings()
-    
+
     pygame.display.set_caption('Jeu Sim City') # name of the game
 
     DISPLAYSURF.fill(WHITE)
@@ -35,7 +35,7 @@ def main():
         timer_aux = 0
         color = (0,0,0)
 
-        selected = [False, False, False, False, False, False, False, False, 
+        selected = [False, False, False, False, False, False, False, False,
                     False, False]
         building = Classes.Empty()
 
@@ -75,7 +75,7 @@ def main():
                     mouseClicked = True
                 elif event.type == MOUSEBUTTONUP and event.button == 1:
                     mousex, mousey = event.pos
-                    mouseClicked = False               
+                    mouseClicked = False
                 elif event.type == MOUSEMOTION:
                     mousex, mousey = event.pos
                     if event.buttons[0] == 1:
@@ -121,7 +121,7 @@ def main():
                                 and buildingselected and build:
                     buildingselected = False
                     building = Classes.Empty()
-                    selected = [False, False, False, False, False, False, 
+                    selected = [False, False, False, False, False, False,
                                 False, False, False, False]
 
                 drawInfoBoard(DISPLAYSURF, boxx, boxy, mainBoard, buildings)
@@ -135,13 +135,13 @@ def main():
 
                 # Selection of a building in the menu
                 selected, buildingselected, building = \
-                getBuildingFromMenu(mousex, mousey, selected, 
+                getBuildingFromMenu(mousex, mousey, selected,
                                     buildings, mouseClicked)
-                
+
                 # Modification of tax level
                 if mainBoard.tax_plus_button.collidepoint(mousex, mousey):
                     tax = increase_taxes(tax)
-                
+
                 if mainBoard.tax_minus_button.collidepoint(mousex, mousey):
                     tax = decrease_taxes(tax)
 
@@ -150,16 +150,16 @@ def main():
 
                 if mainBoard.prio_minus[0].collidepoint(mousex, mousey):
                     priorize(mainBoard, 2, 1)
-                    
+
                 if mainBoard.prio_plus[1].collidepoint(mousex, mousey):
                     priorize(mainBoard, 3, -1)
-                    
+
                 if mainBoard.prio_minus[1].collidepoint(mousex, mousey):
                     priorize(mainBoard, 3, 1)
-                    
+
                 if mainBoard.prio_plus[2].collidepoint(mousex, mousey):
                     priorize(mainBoard, 4, -1)
-                    
+
                 if mainBoard.prio_minus[2].collidepoint(mousex, mousey):
                     priorize(mainBoard, 4, 1)
 
@@ -207,12 +207,12 @@ def main():
                 timer_aux = 0
                 timing_aux = timer_aux // FPS
 
-            drawBoard_changes(mainBoard, DISPLAYSURF, selected, timing, origin, 
+            drawBoard_changes(mainBoard, DISPLAYSURF, selected, timing, origin,
                               graphism, changes, change_all)
             drawHeader(mainBoard, DISPLAYSURF)
-            drawMenu(mainBoard, DISPLAYSURF, selected, timing, toBuild, 
+            drawMenu(mainBoard, DISPLAYSURF, selected, timing, toBuild,
                      toBuild_Selected, color, tax)
-            drawHappiness(DISPLAYSURF, mainBoard.happiness, HAPPINESSGAP, 
+            drawHappiness(DISPLAYSURF, mainBoard.happiness, HAPPINESSGAP,
                           HAPPINESSGAP, BOXSIZE, color)
 
             if timing_aux >= time_lost:
@@ -258,14 +258,14 @@ def init_buildings():
     # This distinction will be useful in the display of the menu.
     graphism = toBuild + [pygame.image.load("2.Images/Mine.png").convert()] \
                        + [pygame.image.load("2.Images/Forest.png").convert()]
-                       
+
     graphism_Selected = toBuild_Selected \
     + [pygame.image.load("2.Images/Mine_S.png").convert()] \
     + [pygame.image.load("2.Images/Forest_S.png").convert()]
 
 
 def production(mainBoard, buildings):
-    """ Function computing the production of each building depending on the 
+    """ Function computing the production of each building depending on the
     inputs required. """
     workers_needed = [0 for i in range(len(mainBoard.priority))]
     wood_needed = [0 for i in range(len(mainBoard.priority))]
@@ -277,11 +277,11 @@ def production(mainBoard, buildings):
             bat = mainBoard.map[i][j]
             if bat.type in mainBoard.priority:
                 workers_needed[mainBoard.priority.index(bat.type)] += \
-                bat.hab_max
-                
+                bat.cit_max
+
                 wood_needed[mainBoard.priority.index(bat.type)] += \
                 bat.wood_input
-                
+
                 number[mainBoard.priority.index(bat.type)] += 1
     workers_remaining = mainBoard.citizens
     k = 0
@@ -333,7 +333,7 @@ def priorize(mainBoard, building, order):
         print(mainBoard.priority)
 
 def happiness_calc(mainBoard, tax):
-    """ Calculates the happiness based on the number of inhabitants 
+    """ Calculates the happiness based on the number of inhabitants
     and taxes. """
     if mainBoard.citizens == 0:
         mainBoard.happiness = 1
@@ -361,12 +361,39 @@ def shortcuts_manager(shortcut_index, selected, buildingselected, building):
     if selected[shortcut_index] == False:
         buildingselected = True
         building = buildings[shortcut_index]
-        selected = [False, False, False, False, False, False, False, False, 
+        selected = [False, False, False, False, False, False, False, False,
                     False, False]
         selected[shortcut_index] = True
     else:
         buildingselected = False
         building = Classes.Empty()
-        selected = [False, False, False, False, False, False, False, False, 
+        selected = [False, False, False, False, False, False, False, False,
                     False, False]
     return selected, buildingselected, building
+
+
+
+def read_leaderboard(filename):
+    scores = []
+    with open(filename, 'r', encoding='utf-8') as infile:
+        for line in infile:
+            data = line.split()
+            scores.append([data[0], data[1], data[3], data[5]])
+    print(scores)
+
+
+def write_leaderboard(filename, playername, minutes, seconds, date):
+    score = playername + " " + str(minutes) + " min " + str(seconds) + " sec " + date + "\n"
+    with open(filename, 'a', encoding='utf-8') as infile:
+        infile.write(score)
+
+def convert_time(timer):
+    minutes = times // 60
+    seconds = timer - minutes * 60
+    return minutes, seconds
+
+
+
+read_leaderboard(LEADERBOARDFILE)
+write_leaderboard(LEADERBOARDFILE, "Geoffroy", 12, 14, "26/01/2015")
+read_leaderboard(LEADERBOARDFILE)

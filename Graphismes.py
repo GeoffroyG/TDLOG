@@ -15,7 +15,7 @@ import math
 
 # Number of pictures per column in the menu
 n = (WINDOWHEIGHT - 2*GAPSIZE_MENU - 2*font_height) \
-    // (GAPSIZE_MENU + BOXSIZE) - 1 
+    // (GAPSIZE_MENU + BOXSIZE) - 1
 
 def displayBeginningMenu(DISPLAYSURF, FPSCLOCK, font_title):
     game = False
@@ -35,37 +35,37 @@ def displayBeginningMenu(DISPLAYSURF, FPSCLOCK, font_title):
         DISPLAYSURF.blit(text, textposTitle)
         if not rules and not credits_game and not leaderboard:
             text = font_other.render("New Game", 1, BLACK, WHITE)
-            textposNewGame = text.get_rect(centerx = WINDOWWIDTH / 2, 
+            textposNewGame = text.get_rect(centerx = WINDOWWIDTH / 2,
                                            centery = WINDOWHEIGHT / 2)
             DISPLAYSURF.blit(text, textposNewGame)
             text = font_other.render("Instructions", 1, BLACK, WHITE)
-            textposRules = text.get_rect(centerx = WINDOWWIDTH / 2, 
+            textposRules = text.get_rect(centerx = WINDOWWIDTH / 2,
                                          centery = WINDOWHEIGHT / 2 + \
                                                    textposNewGame.height)
             DISPLAYSURF.blit(text, textposRules)
             text = font_other.render("Credits", 1, BLACK, WHITE)
-            textposCredits = text.get_rect(centerx = WINDOWWIDTH / 2, 
+            textposCredits = text.get_rect(centerx = WINDOWWIDTH / 2,
                                            centery = WINDOWHEIGHT / 2 + \
                                                      textposNewGame.height + \
                                                      textposNewGame.height)
             DISPLAYSURF.blit(text, textposCredits)
         elif rules:
             text = font_other.render("Rules", 1, BLACK, WHITE)
-            textpos = text.get_rect(centerx = WINDOWWIDTH / 2, 
+            textpos = text.get_rect(centerx = WINDOWWIDTH / 2,
                                     centery = WINDOWHEIGHT / 2)
             DISPLAYSURF.blit(text, textpos)
             back = pygame.image.load("2.Images/Return.png").convert()
             DISPLAYSURF.blit(back, (0, 0))
             posReturn = pygame.Rect(0, 0, 40, 40)
         elif credits_game:
-            text = font_other.render("Credits for noun Projet and Pygame", 1, 
+            text = font_other.render("Credits for noun Projet and Pygame", 1,
                                      BLACK, WHITE)
-            textpos = text.get_rect(centerx = WINDOWWIDTH / 2, 
+            textpos = text.get_rect(centerx = WINDOWWIDTH / 2,
                                     centery = WINDOWHEIGHT / 2)
             DISPLAYSURF.blit(text, textpos)
             back = pygame.image.load("2.Images/Return.png").convert()
             DISPLAYSURF.blit(back, (0, 0))
-            posReturn = pygame.Rect(0, 0, 40, 40)            
+            posReturn = pygame.Rect(0, 0, 40, 40)
 
         for event in pygame.event.get(): # event handling loop
             if event.type == MOUSEBUTTONUP:
@@ -85,7 +85,7 @@ def displayBeginningMenu(DISPLAYSURF, FPSCLOCK, font_title):
             rules = True
         elif textposCredits.collidepoint(mousex, mousey) \
              and not credits_game and mouseClicked:
-            credits_game = True           
+            credits_game = True
         elif posReturn.collidepoint(mousex, mousey) \
              and rules and mouseClicked:
             rules = False
@@ -151,12 +151,12 @@ def drawBoard(Map, DISPLAYSURF, selected, timing, origin, graphism):
         for j in range(NBCOLUMN_DISP):
             p = Map.map[origin[0]+i][origin[1]+j].type
             dessin = graphism[p]
-            DISPLAYSURF.blit(dessin, ((BOXSIZE+GAPSIZE)*j + GAPSIZE, 
+            DISPLAYSURF.blit(dessin, ((BOXSIZE+GAPSIZE)*j + GAPSIZE,
                                       RESSOURCEBARHEIGHT + GAPSIZE + \
                                       (BOXSIZE+GAPSIZE)*i))
 
 
-def drawBoard_changes(Map, DISPLAYSURF, selected, timing, origin, graphism, 
+def drawBoard_changes(Map, DISPLAYSURF, selected, timing, origin, graphism,
                       changes, change_all):
     ''' Displays the entire board. '''
 
@@ -178,21 +178,21 @@ def drawBoard_changes(Map, DISPLAYSURF, selected, timing, origin, graphism,
                     dessin = graphism[p]
                     coords = [(j*(BOXSIZE + GAPSIZE),
                                RESSOURCEBARHEIGHT + i*(BOXSIZE + GAPSIZE)),
-                              (j*(BOXSIZE + GAPSIZE), 
+                              (j*(BOXSIZE + GAPSIZE),
                                RESSOURCEBARHEIGHT + i*(BOXSIZE + GAPSIZE)\
-                               + BOXSIZE + GAPSIZE), 
-                              ((j+1)*(BOXSIZE + GAPSIZE), 
-                               RESSOURCEBARHEIGHT + (i+1)*(BOXSIZE + GAPSIZE)), 
-                              ((j+1)*(BOXSIZE + GAPSIZE), 
+                               + BOXSIZE + GAPSIZE),
+                              ((j+1)*(BOXSIZE + GAPSIZE),
+                               RESSOURCEBARHEIGHT + (i+1)*(BOXSIZE + GAPSIZE)),
+                              ((j+1)*(BOXSIZE + GAPSIZE),
                                RESSOURCEBARHEIGHT + i*(BOXSIZE + GAPSIZE))]
                     pygame.draw.polygon(DISPLAYSURF, WHITE, coords)
-                    DISPLAYSURF.blit(dessin, (GAPSIZE + (BOXSIZE+GAPSIZE)*j, 
+                    DISPLAYSURF.blit(dessin, (GAPSIZE + (BOXSIZE+GAPSIZE)*j,
                                               RESSOURCEBARHEIGHT + GAPSIZE + \
                                               (BOXSIZE+GAPSIZE)*i))
 
 
 def drawHeader(Map, DISPLAYSURF):
-    """ Header to display the main variable : ressources, happiness and 
+    """ Header to display the main variable : ressources, happiness and
     number of inhabitants. """
     pygame.draw.polygon(DISPLAYSURF, WHITE, headerCoords)
     ressources = "Money : "+str(round(Map.money, 2)) + \
@@ -201,10 +201,10 @@ def drawHeader(Map, DISPLAYSURF):
                  "   Habitants : "+str(Map.citizens) + \
                  "   Electricity : "+str(Map.elec)
     text = font.render(ressources, 1, BLACK)
-    textpos = text.get_rect(centerx = RESSOURCEBARWIDTH/2, 
+    textpos = text.get_rect(centerx = RESSOURCEBARWIDTH/2,
                             centery = GAPSIZE + RESSOURCEBARHEIGHT/2)
     DISPLAYSURF.blit(text, textpos)
-    
+
 def drawHappiness(DISPLAYSURF, happiness, topleftx, toplefty, size, color_txt):
     '''Draws the happiness level with a percentage and a smiley. '''
     color = (int(255*(1-happiness)), int(255*happiness), 0)
@@ -217,19 +217,19 @@ def drawHappiness(DISPLAYSURF, happiness, topleftx, toplefty, size, color_txt):
     pygame.draw.line(DISPLAYSURF, BLACK,
                      (topleftx + size//2 - x, toplefty + size//2 - y),
                      (topleftx + size//2 - x, toplefty + size//2 - y + length))
-    pygame.draw.line(DISPLAYSURF, BLACK, (topleftx + size//2 + x, 
+    pygame.draw.line(DISPLAYSURF, BLACK, (topleftx + size//2 + x,
                                           toplefty + size//2 - y),
-                                         (topleftx + size//2 + x, 
+                                         (topleftx + size//2 + x,
                                           toplefty + size//2 - y + length))
     height_max = size // 5
     center_left = [topleftx + size//2 - size//5, toplefty + size//2 + size//5]
     center_right = [topleftx + size//2 + size//5, toplefty + size//2 + size//5]
     height_prop = abs(happiness - 0.5)
-    
+
     if height_prop < 0.2:
-        pygame.draw.line(DISPLAYSURF, BLACK, (center_left[0], 
-                                              center_left[1]), 
-                                              (center_right[0], 
+        pygame.draw.line(DISPLAYSURF, BLACK, (center_left[0],
+                                              center_left[1]),
+                                              (center_right[0],
                                                center_right[1]))
     else:
         if height_prop < 0.4:
@@ -238,7 +238,7 @@ def drawHappiness(DISPLAYSURF, happiness, topleftx, toplefty, size, color_txt):
             height_prop = 0.5
         topleftRect = [center_left[0], center_left[1] \
                                        - int(height_prop*height_max)]
-        smileRect = pygame.Rect(topleftRect[0], topleftRect[1], 2*size//5, 
+        smileRect = pygame.Rect(topleftRect[0], topleftRect[1], 2*size//5,
                                 int(height_max*height_prop*2))
         if happiness > 0.5:
             a = math.pi
@@ -247,16 +247,16 @@ def drawHappiness(DISPLAYSURF, happiness, topleftx, toplefty, size, color_txt):
             a = 2*math.pi
             b = 3*math.pi
         pygame.draw.arc(DISPLAYSURF, BLACK, smileRect, a, b)
-        
+
     happ = str(int(100*happiness)) + "%"
     text = font.render(happ, 1, color_txt)
-    textpos = text.get_rect(centerx = 3*topleftx + size, 
+    textpos = text.get_rect(centerx = 3*topleftx + size,
                             centery = GAPSIZE + RESSOURCEBARHEIGHT/2)
-    DISPLAYSURF.blit(text, textpos)   
+    DISPLAYSURF.blit(text, textpos)
 
-def drawMenu(Map, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected, 
+def drawMenu(Map, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected,
              color, tax):
-    """ Draws the menu on the right side of the game with buildings, 
+    """ Draws the menu on the right side of the game with buildings,
     priorities and timing. """
     # We first draw a white background to erase traces of Menu Info
     pygame.draw.polygon(DISPLAYSURF, WHITE, largermenuCoords)
@@ -266,21 +266,21 @@ def drawMenu(Map, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected,
     # And finally all the things that are on said menu
     text = font.render("Menu", 1, BLACK)
     textpos = text.get_rect(centerx = RESSOURCEBARWIDTH + 2*GAPSIZE_MENU \
-                                    + MENUBARWIDTH/2, 
+                                    + MENUBARWIDTH/2,
                             centery = GAPSIZE_MENU + RESSOURCEBARHEIGHT/2)
     DISPLAYSURF.blit(text, textpos)
     text = font.render("Time : " + str(timing), 1, color)
     textpos = text.get_rect(centerx = RESSOURCEBARWIDTH + 2*GAPSIZE_MENU \
-                                    + MENUBARWIDTH/2, 
+                                    + MENUBARWIDTH/2,
                                     centery = WINDOWHEIGHT - GAPSIZE_MENU - 12)
     DISPLAYSURF.blit(text, textpos)
 
-    # For the pictures of the buildings we can change n to print more 
+    # For the pictures of the buildings we can change n to print more
     # buildings in height
     i = 0
 
     for k in toBuild:
-        # The formula is more understandable in this order, but it's 
+        # The formula is more understandable in this order, but it's
         # the same than in detBuildingFromMenu actually.
         x = (i//n)*(GAPSIZE_MENU + BOXSIZE) + WINDOWWIDTH - MENUBARWIDTH
         y = (i%n)*(GAPSIZE_MENU + BOXSIZE) + RESSOURCEBARHEIGHT \
@@ -296,15 +296,15 @@ def drawMenu(Map, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected,
             y = (i%n)*(GAPSIZE_MENU + BOXSIZE) + RESSOURCEBARHEIGHT \
                 + 2*GAPSIZE_MENU
             DISPLAYSURF.blit(dessin,(x,y))
-        i += 1 
-        
+        i += 1
+
     drawPriorities(Map, DISPLAYSURF, color)
     drawTaxes(Map, DISPLAYSURF, color, tax)
     drawShortcuts(Map, DISPLAYSURF, color, toBuild)
 
-def drawTaxes(Map, DISPLAYSURF, color, tax):    
+def drawTaxes(Map, DISPLAYSURF, color, tax):
     """ Displays the current amount of taxes and "+" and "-" buttons. """
-    
+
     text = font.render("Taxes", 1, color)
     x = RESSOURCEBARWIDTH + 2*GAPSIZE_MENU + MENUBARWIDTH/2
     y = WINDOWHEIGHT - GAPSIZE_MENU - 72
@@ -316,23 +316,23 @@ def drawTaxes(Map, DISPLAYSURF, color, tax):
     y = WINDOWHEIGHT - GAPSIZE_MENU - 54
     Map.tax_minus_button = text.get_rect(centerx = x, centery = y)
     DISPLAYSURF.blit(text, Map.tax_minus_button)
-    
+
     text = font.render("+", 1, color)
     x = RESSOURCEBARWIDTH + MENUBARWIDTH - 4*GAPSIZE_MENU
     y = WINDOWHEIGHT - GAPSIZE_MENU - 54
     Map.tax_plus_button = text.get_rect(centerx = x, centery = y)
-    DISPLAYSURF.blit(text, Map.tax_plus_button)    
-    
+    DISPLAYSURF.blit(text, Map.tax_plus_button)
+
     text = font.render(str(tax), 1, color)
     x = RESSOURCEBARWIDTH + 2*GAPSIZE_MENU + MENUBARWIDTH/2
     y = WINDOWHEIGHT - GAPSIZE_MENU - 54
     textpos = text.get_rect(centerx = x, centery = y)
-    DISPLAYSURF.blit(text, textpos)    
-    
+    DISPLAYSURF.blit(text, textpos)
+
 def drawPriorities(Map, DISPLAYSURF, color):
-    """ Displays priorities for the repartition of inhabitants 
+    """ Displays priorities for the repartition of inhabitants
     in production buildings, ans "+" and "-" buttons. """
-    
+
     for k in range(3):
         text = font.render(str(Map.priority.index(k+2) + 1), 1, color)
         x = RESSOURCEBARWIDTH + MENUBARWIDTH - 8*GAPSIZE_MENU
@@ -340,22 +340,22 @@ def drawPriorities(Map, DISPLAYSURF, color):
                                            + 2*GAPSIZE_MENU + BOXSIZE/2
         textpos = text.get_rect(centerx = x, centery = y)
         DISPLAYSURF.blit(text, textpos)
-    
+
         text = font.render("-", 1, color)
         x = RESSOURCEBARWIDTH + MENUBARWIDTH - 12*GAPSIZE_MENU
         y = (k+2)*(GAPSIZE_MENU + BOXSIZE) + RESSOURCEBARHEIGHT \
                                            + 2*GAPSIZE_MENU + BOXSIZE/2
         Map.prio_minus[k] = text.get_rect(centerx = x, centery = y)
         DISPLAYSURF.blit(text, Map.prio_minus[k])
-        
+
         text = font.render("+", 1, color)
-        
+
         x = RESSOURCEBARWIDTH + MENUBARWIDTH - 4*GAPSIZE_MENU
         y = (k+2)*(GAPSIZE_MENU + BOXSIZE) + RESSOURCEBARHEIGHT \
                                            + 2*GAPSIZE_MENU + BOXSIZE/2
         Map.prio_plus[k] = text.get_rect(centerx = x, centery = y)
         DISPLAYSURF.blit(text, Map.prio_plus[k])
-        
+
 def drawShortcuts(Map, DISPLAYSURF, color, toBuild):
     for k in range(len(toBuild)):
         text = font.render(Map.shortcuts_str[k], 1, color)
@@ -415,7 +415,7 @@ def drawInfoMenu(DISPLAYSURF, mousex, mousey, buildings):
                 textpos = img.get_rect(centerx = x, centery = y)
                 DISPLAYSURF.blit(img, textpos)
                 gap += height
-    
+
 
 def drawInfoBoard(DISPLAYSURF, boxx, boxy, mainBoard, buildings):
     """ Draws info bubbles for buildings in the main board"""
@@ -473,7 +473,7 @@ def drawInfoBoard(DISPLAYSURF, boxx, boxy, mainBoard, buildings):
         jump = True
     if text == "":
         return(1)
-        
+
     height = font_bubble.get_height()*1
     gap=0
     for line in text.splitlines():
@@ -490,10 +490,10 @@ def displayLosingMenu(DISPLAYSURF, FPSCLOCK):
     lost = True
     DISPLAYSURF.fill((0,0,0))
     mouseClicked = False
-    
+
     while lost:
         text = font_title.render("YOU LOST : CLICK TO START AGAIN", 1, RED)
-        textposTitle = text.get_rect(centerx = WINDOWWIDTH / 2, 
+        textposTitle = text.get_rect(centerx = WINDOWWIDTH / 2,
                                      centery = WINDOWHEIGHT / 2)
         DISPLAYSURF.blit(text, textposTitle)
         for event in pygame.event.get(): # event handling loop
@@ -506,6 +506,12 @@ def displayLosingMenu(DISPLAYSURF, FPSCLOCK):
                 os.sys.exit()
         pygame.display.update()
         FPSCLOCK.tick(FPS)
-        
+
         if mouseClicked:
             lost = False
+
+
+
+import inputbox
+DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
+answer = inputbox.ask(DISPLAYSURF, "Your name")

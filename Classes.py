@@ -239,9 +239,9 @@ class Map():
         self.quarry_nb = 0
         self.sawmill_coeff = 0
         self.sawmill_nb = 0
-        
+
         self.priority = [2, 3, 4]
-        
+
         self.prio_plus = [0, 0, 0]
         self.prio_minus= [0, 0, 0]
 
@@ -258,7 +258,7 @@ class Map():
             self.map[int(random()*NBROW)][int(random()*NBCOLUMN)] = Forest()
 
     def distance_ressource(self, i, j, building_type, delete = 1):
-        """ Creates a coefficient reflecting the number of natural ressources 
+        """ Creates a coefficient reflecting the number of natural ressources
         nearby. """
         coeff = 0
         for p in range(self.height):
@@ -303,7 +303,7 @@ class Map():
         return(result)
 
     def check_junction(self, types, i, j):
-        ''' Determines how many buildings of type 'types' 
+        ''' Determines how many buildings of type 'types'
         near the [i][j] cell. '''
         result = 0
         # Type 0 is a road
@@ -344,9 +344,9 @@ class Map():
 
         # Check is conditions are met to build the new building
         if self.check_empty(i, j) and self.check_road_junction(i, j) \
-           and (building_given.check_ressource(self.wood, self.stone, 
+           and (building_given.check_ressource(self.wood, self.stone,
                                                self.money, self.elec)):
-            # Each house is unique for they all contains a certain amount of 
+            # Each house is unique for they all contains a certain amount of
             # inhabitants, whereas variable for other buildings are all macro
             if building_given.type == 1:
                 building = House()
@@ -366,12 +366,12 @@ class Map():
             else:
                 self.happiness = 1
 
-            # Built is used to store the buildings and only inspect them 
+            # Built is used to store the buildings and only inspect them
             # at each loop
             if building.type != 0:
                 self.built.append([i,j])
 
-            # If it is a factory, look for houses to reduce the number 
+            # If it is a factory, look for houses to reduce the number
             # of inhabitants
             if building.type == 2:
                 self.factory_impact(i, j)
@@ -415,7 +415,7 @@ class Map():
         return(False)
 
     def delete_road(self, i, j):
-        """ It is possible to delete a road if it is only attached to 
+        """ It is possible to delete a road if it is only attached to
         one road and if no building is directly linked to this road. """
         if i == 2 and j == 0:
             delete = False
