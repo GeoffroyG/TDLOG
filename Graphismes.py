@@ -30,7 +30,7 @@ def displayBeginningMenu(DISPLAYSURF, FPSCLOCK, font_title):
 
     while not game:
         DISPLAYSURF.blit(background, (0,0))
-        text = font_title.render("City Management 2D", 1, RED)
+        text = font_title.render(TITLE, 1, RED)
         textposTitle = text.get_rect(centerx = WINDOWWIDTH / 2, centery = 50)
         DISPLAYSURF.blit(text, textposTitle)
         if not rules and not credits_game and not leaderboard:

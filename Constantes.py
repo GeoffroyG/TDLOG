@@ -19,6 +19,8 @@ NBROW         = 45 # number of rows of icons in the map
 NBCOLUMN_DISP = 20 # number of columns displayed in the game windows
 NBROW_DISP    = 15 # number of rows displayed in the game windows
 
+TITLE = "French City Simulator"
+
 # Map width and height in pixels
 GAMEWIDTH  = NBCOLUMN_DISP * (GAPSIZE + BOXSIZE) + GAPSIZE 
 GAMEHEIGHT = NBROW_DISP    * (GAPSIZE + BOXSIZE) + GAPSIZE 
