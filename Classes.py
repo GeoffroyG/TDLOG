@@ -22,7 +22,7 @@ Created on Wed Dec 16 15:36:10 2015
 """
 
 from Constantes import *
-import random
+from random import *
 import math
 
 
@@ -30,7 +30,7 @@ class Building():
     """ Parent class for every building in the game. """
     def __init__(self):
         self.type = 9
-        self.hab = 0
+        self.cit = 0
         self.wood_needed = 0
         self.stone_needed = 0
         self.elec_needed = 0
@@ -47,9 +47,10 @@ class Building():
         self.happiness_output = 0
 
     def check_ressource(self, wood, stone, money, elec):
-        """ Check if enough ressources are available to build this building. """
+        """ Check if enough ressources are available to build a building. """
         result = False
-        if wood >= self.wood_needed and stone >= self.stone_needed and money >= self.money_needed and elec >= self.elec_needed :
+        if wood >= self.wood_needed and stone >= self.stone_needed \
+           and money >= self.money_needed and elec >= self.elec_needed:
             result = True
         return(result)
 
@@ -73,9 +74,9 @@ class House(Building):
     def __init__(self):
         Building.__init__(self)
         self.type = 1
-        self.hab_max = 5
+        self.cit_max = 5
         self.factories = 0
-        self.hab = 0
+        self.cit = 0
         self.wood_needed = 5
         self.stone_needed = 5
         self.debit = 40
@@ -83,19 +84,19 @@ class House(Building):
         self.elec_needed = 5 # in MW
 
     def moving(self, timer):
-        """ Evolution of the number of inhabitants in a house. """
+        """ Evolution of the number of incitizens in a house. """
         # If the amount of habs is superior to the number allowed
-        if self.hab > self.hab_max - self.factories:
-            diff = self.hab_max - self.factories - self.hab
+        if self.cit > self.cit_max - self.factories:
+            diff = self.cit_max - self.factories - self.cit
 
-        # If the number of habs is correct but its time to host a new citizen
+        # If the number of cits is correct but its time to host a new citizen
         else:
             if (timer-self.time)%self.debit == 0:
                 diff = 1
             else:
                 diff= 0
 
-        self.hab += diff
+        self.cit += diff
         return diff
 
 
@@ -107,7 +108,7 @@ class Factory(Building):
         self.money_needed= 300
         self.elec_needed = 10 # in MW
 
-        self.hab_max = 10
+        self.cit_max = 10
         self.wood_input = 10
         self.money_output = 50
 
@@ -118,7 +119,7 @@ class Quarry(Building):
         self.type = 3
         self.wood_needed = 10
         self.stone_needed = 10
-        self.hab_max = 10
+        self.cit_max = 10
         self.money_needed= 200
         self.prod_max = 10
         self.coeff = 0
@@ -135,7 +136,7 @@ class Sawmill(Building):
         self.type = 4
         self.wood_needed = 10
         self.stone_needed = 10
-        self.hab_max = 10
+        self.cit_max = 10
         self.money_needed= 200
         self.prod_max = 10
         self.coeff = 0
@@ -223,7 +224,7 @@ class Map():
         self.elec = 0
         self.happiness = 1
 
-        self.habitants = 0
+        self.citizens = 0
         self.workers = 0
 
         self.height = height
@@ -249,25 +250,30 @@ class Map():
     def set_mines(self):
         ''' Creates random mines. '''
         for i in range(NBMINES):
-            self.map[int(random.random()*NBROW)][int(random.random()*NBCOLUMN)] = Mine()
+            self.map[int(random()*NBROW)][int(random()*NBCOLUMN)] = Mine()
 
     def set_forests(self):
         ''' Creates random mines. '''
         for i in range(NBFORESTS):
-            self.map[int(random.random()*NBROW)][int(random.random()*NBCOLUMN)] = Forest()
+            self.map[int(random()*NBROW)][int(random()*NBCOLUMN)] = Forest()
 
     def distance_ressource(self, i, j, building_type, delete = 1):
-        """ Creates a coefficient reflecting the number of natural ressources nearby. """
+        """ Creates a coefficient reflecting the number of natural ressources 
+        nearby. """
         coeff = 0
         for p in range(self.height):
             for q in range(self.width):
                 if self.map[p][q].type == building_type:
                     coeff += 1/(1+math.fabs(p-i) + math.fabs(q-j))
         if building_type == 10:
-            self.quarry_coeff = round((self.quarry_coeff * self.quarry_nb + delete * coeff) / (self.quarry_nb + delete), 2)
+            self.quarry_coeff = round((self.quarry_coeff * self.quarry_nb \
+                                        + delete * coeff) / \
+                                        (self.quarry_nb + delete), 2)
             self.quarry_nb += delete
         if building_type == 11:
-            self.sawmill_coeff = round((self.sawmill_coeff * self.sawmill_nb + delete * coeff) / (self.sawmill_nb + delete), 2)
+            self.sawmill_coeff = round((self.sawmill_coeff * self.sawmill_nb \
+                                        + delete * coeff) / \
+                                        (self.sawmill_nb + delete), 2)
             self.sawmill_nb += delete
 
     def check_empty(self, i, j):
@@ -297,7 +303,8 @@ class Map():
         return(result)
 
     def check_junction(self, types, i, j):
-        ''' Determines how many buildings of type 'types' near the [i][j] cell. '''
+        ''' Determines how many buildings of type 'types' 
+        near the [i][j] cell. '''
         result = 0
         # Type 0 is a road
         if i-1 >= 0:
@@ -336,8 +343,11 @@ class Map():
         ''' Inserts a building in cell [i][j]. '''
 
         # Check is conditions are met to build the new building
-        if self.check_empty(i, j) and self.check_road_junction(i, j) and (building_given.check_ressource(self.wood,self.stone,self.money,self.elec)):
-            # Each house is unique for they all contains a certain amount of inhabitants, whereas variable for other buildings are all macro
+        if self.check_empty(i, j) and self.check_road_junction(i, j) \
+           and (building_given.check_ressource(self.wood, self.stone, 
+                                               self.money, self.elec)):
+            # Each house is unique for they all contains a certain amount of 
+            # inhabitants, whereas variable for other buildings are all macro
             if building_given.type == 1:
                 building = House()
             else:
@@ -356,11 +366,13 @@ class Map():
             else:
                 self.happiness = 1
 
-            # Built is used to store the buildings and only inspect them at each loop
+            # Built is used to store the buildings and only inspect them 
+            # at each loop
             if building.type != 0:
                 self.built.append([i,j])
 
-            # If it is a factory, look for houses to reduce the number of inhabitants
+            # If it is a factory, look for houses to reduce the number 
+            # of inhabitants
             if building.type == 2:
                 self.factory_impact(i, j)
 
@@ -390,7 +402,7 @@ class Map():
 
                 # Inhabitants of a house have to leave the city
                 if former_building.type == 1:
-                    self.habitants -= former_building.hab
+                    self.citizens -= former_building.cit
 
                 if former_building.type == 3:
                     self.distance_ressource(i, j, 10, -1)
@@ -403,12 +415,23 @@ class Map():
         return(False)
 
     def delete_road(self, i, j):
-        """ It is possible to delete a road if it is only attached to 1 road and if no building is directly linked to this road. """
+        """ It is possible to delete a road if it is only attached to 
+        one road and if no building is directly linked to this road. """
         if i == 2 and j == 0:
             delete = False
         else:
-            roads_near = (self.map[i-1][j].type == 0) + (self.map[i+1][j].type == 0) + (self.map[i][j-1].type == 0) + (self.map[i][j+1].type == 0)
-            buildings_near = (self.map[i-1][j].type > 0 and self.map[i-1][j].type < 9) + (self.map[i+1][j].type > 0 and self.map[i+1][j].type < 9) + (self.map[i][j-1].type > 0 and self.map[i][j-1].type < 9) + (self.map[i][j+1].type > 0 and self.map[i][j+1].type < 9)
+            roads_near = (self.map[i-1][j].type == 0) \
+                       + (self.map[i+1][j].type == 0) \
+                       + (self.map[i][j-1].type == 0) \
+                       + (self.map[i][j+1].type == 0)
+            buildings_near = (self.map[i-1][j].type > 0 \
+                              and self.map[i-1][j].type < 9) \
+                           + (self.map[i+1][j].type > 0 \
+                              and self.map[i+1][j].type < 9) \
+                           + (self.map[i][j-1].type > 0 \
+                              and self.map[i][j-1].type < 9) \
+                           + (self.map[i][j+1].type > 0 \
+                              and self.map[i][j+1].type < 9)
 
             if roads_near < 2 and buildings_near == 0:
                 delete = True

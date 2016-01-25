@@ -9,7 +9,8 @@ from Graphismes import *
 
 def main():
     """ Main game loop. """
-    global FPSCLOCK, DISPLAYSURF, selected, building, graphism, graphism_Selected, toBuild, toBuild_Selected, timer, tax
+    global FPSCLOCK, DISPLAYSURF, selected, building, graphism, \
+    graphism_Selected, toBuild, toBuild_Selected, timer, tax
     pygame.init()
 
     # Initialisation of the clock and the window
@@ -20,7 +21,7 @@ def main():
     
     pygame.display.set_caption('Jeu Sim City') # name of the game
 
-    DISPLAYSURF.fill(BGCOLOR)
+    DISPLAYSURF.fill(WHITE)
 
     while True:
 
@@ -28,13 +29,14 @@ def main():
         displayBeginningMenu(DISPLAYSURF, FPSCLOCK, font_title)
 
         # Initialization of main board
-        mainBoard = Classes.Map(NBROW,NBCOLUMN)
+        mainBoard = Classes.Map(NBROW, NBCOLUMN)
 
         tax = TAXMIN
         timer_aux = 0
         color = (0,0,0)
 
-        selected = [False, False, False, False, False, False, False, False, False, False]
+        selected = [False, False, False, False, False, False, False, False, 
+                    False, False]
         building = Classes.Empty()
 
         shortcuts = [K_r, K_h, K_f, K_a, K_s, K_z, K_c, K_p, K_e, K_g]
@@ -57,10 +59,11 @@ def main():
         mousey = 0 # used to store y coordinate of mouse event
 
         # Draw the main window for the first time
-        DISPLAYSURF.fill(BGCOLOR)
+        DISPLAYSURF.fill(WHITE)
         drawBoard(mainBoard, DISPLAYSURF, selected, timing, origin, graphism)
         drawHeader(mainBoard, DISPLAYSURF)
-        drawMenu(mainBoard, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected, color, tax)
+        drawMenu(mainBoard, DISPLAYSURF, selected, timing, toBuild,
+                 toBuild_Selected, color, tax)
 
         # Main game loop
         while game:
@@ -77,12 +80,15 @@ def main():
                     mousex, mousey = event.pos
                     if event.buttons[0] == 1:
                         mouseClicked = True
-                elif event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
+                elif event.type == QUIT \
+                     or (event.type == KEYUP and event.key == K_ESCAPE):
                     pygame.quit()
                     os.sys.exit()
 
                 if event.type == KEYUP and event.key in shortcuts:
-                    selected, buildingselected, building = shortcuts_manager(shortcuts.index(event.key), selected, buildingselected, building)
+                    selected, buildingselected, building = \
+                    shortcuts_manager(shortcuts.index(event.key), selected,
+                                      buildingselected, building)
 
                 # Shifts on the map
                 if event.type == KEYUP and event.key == K_LEFT:
@@ -106,24 +112,31 @@ def main():
                 boxx, boxy = getBoxAtPixelGame(mousex, mousey, origin)
 
                 # Build a new building
-                if boxx != None and boxy != None and mouseClicked and buildingselected:
+                if boxx != None and boxy != None and mouseClicked \
+                                and buildingselected:
                     build = mainBoard.insert(building, boxx, boxy)
                     if build:
                         changes.append([boxx, boxy])
-                if boxx != None and boxy != None and not(mouseClicked) and buildingselected and build:
+                if boxx != None and boxy != None and not(mouseClicked) \
+                                and buildingselected and build:
                     buildingselected = False
                     building = Classes.Empty()
-                    selected = [False, False, False, False, False, False, False, False, False, False]
+                    selected = [False, False, False, False, False, False, 
+                                False, False, False, False]
 
                 drawInfoBoard(DISPLAYSURF, boxx, boxy, mainBoard, buildings)
 
-            if isInMenu(mousex) and getBuildingFromMenu(mousex, mousey, selected, buildings, False) != None:
+            if isInMenu(mousex) \
+                and getBuildingFromMenu(mousex, mousey, selected,
+                                        buildings, False) != None:
                 drawInfoMenu(DISPLAYSURF, mousex, mousey, buildings)
 
             if isInMenu(mousex) and mouseClicked:
 
                 # Selection of a building in the menu
-                selected, buildingselected, building = getBuildingFromMenu(mousex, mousey, selected, buildings, mouseClicked)
+                selected, buildingselected, building = \
+                getBuildingFromMenu(mousex, mousey, selected, 
+                                    buildings, mouseClicked)
                 
                 # Modification of tax level
                 if mainBoard.tax_plus_button.collidepoint(mousex, mousey):
@@ -150,7 +163,8 @@ def main():
                 if mainBoard.prio_minus[2].collidepoint(mousex, mousey):
                     priorize(mainBoard, 4, 1)
 
-                drawMenu(mainBoard, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected, color, tax)
+                drawMenu(mainBoard, DISPLAYSURF, selected, timing, toBuild,
+                         toBuild_Selected, color, tax)
 
             # Reinitialization of the parameters after each loop
             boxx, boxy = None, None
@@ -160,13 +174,13 @@ def main():
                 if len(k) > 0:
                     i, j = k[0], k[1]
                     if  getType(mainBoard, i, j) == 1:
-                        mainBoard.habitants += mainBoard.map[i][j].moving(timer)
+                        mainBoard.citizens += mainBoard.map[i][j].moving(timer)
 
             if timer % PRODSTEP == 0:
                 production(mainBoard, buildings)
 
             if timer % TAXSTEP == 0:
-                mainBoard.money += mainBoard.habitants * tax
+                mainBoard.money += mainBoard.citizens * tax
 
             if timer % HAPPINESSSTEP == 0:
                 happiness_calc(mainBoard, tax)
@@ -193,10 +207,13 @@ def main():
                 timer_aux = 0
                 timing_aux = timer_aux // FPS
 
-            drawBoard_changes(mainBoard, DISPLAYSURF, selected, timing, origin, graphism, changes, change_all)
+            drawBoard_changes(mainBoard, DISPLAYSURF, selected, timing, origin, 
+                              graphism, changes, change_all)
             drawHeader(mainBoard, DISPLAYSURF)
-            drawMenu(mainBoard, DISPLAYSURF, selected, timing, toBuild, toBuild_Selected, color, tax)
-            drawHappiness(DISPLAYSURF, mainBoard.happiness, HAPPINESSGAP, HAPPINESSGAP, BOXSIZE, color)
+            drawMenu(mainBoard, DISPLAYSURF, selected, timing, toBuild, 
+                     toBuild_Selected, color, tax)
+            drawHappiness(DISPLAYSURF, mainBoard.happiness, HAPPINESSGAP, 
+                          HAPPINESSGAP, BOXSIZE, color)
 
             if timing_aux >= time_lost:
                 game = False
@@ -205,13 +222,14 @@ def main():
 def init_buildings():
     global buildings, toBuild, toBuild_Selected, graphism, graphism_Selected
 
-    buildings = [Classes.Road(), Classes.House(),
-                 Classes.Factory(), Classes.Quarry(),
-                 Classes.Sawmill(), Classes.Wind_power_plant(),
-                 Classes.Coal_power_plant(), Classes.Park(),
-                 Classes.ENPC(),Classes.Empty(),
-                 Classes.Mine(), Classes.Forest()]
-    # toBuild and buildings are to be modified together, one is the buidings list the other the pictures list
+    buildings = [Classes.Road(),                Classes.House(),
+                 Classes.Factory(),             Classes.Quarry(),
+                 Classes.Sawmill(),             Classes.Wind_power_plant(),
+                 Classes.Coal_power_plant(),    Classes.Park(),
+                 Classes.ENPC(),                Classes.Empty(),
+                 Classes.Mine(),                Classes.Forest()]
+    # toBuild and buildings are to be modified together :
+    # one is the buidings list the other the pictures list
 
     # Load images
     toBuild = [pygame.image.load("2.Images/Road.png").convert(),
@@ -225,25 +243,30 @@ def init_buildings():
                pygame.image.load("2.Images/ENPC.png").convert(),
                pygame.image.load("2.Images/Grass.png").convert()]
 
-    toBuild_Selected = [pygame.image.load("2.Images/Road_Selected.png").convert(),
-                        pygame.image.load("2.Images/House_Selected.png").convert(),
-                        pygame.image.load("2.Images/Factory_Selected.png").convert(),
-                        pygame.image.load("2.Images/Quarry_Selected.png").convert(),
-                        pygame.image.load("2.Images/Sawmill_Selected.png").convert(),
-                        pygame.image.load("2.Images/Wind_Selected.png").convert(),
-                        pygame.image.load("2.Images/Coal_Selected.png").convert(),
-                        pygame.image.load("2.Images/Park_Selected.png").convert(),
-                        pygame.image.load("2.Images/ENPC_Selected.png").convert(),
-                        pygame.image.load("2.Images/Grass_Selected.png").convert()]
+    toBuild_Selected = [pygame.image.load("2.Images/Road_S.png").convert(),
+                        pygame.image.load("2.Images/House_S.png").convert(),
+                        pygame.image.load("2.Images/Factory_S.png").convert(),
+                        pygame.image.load("2.Images/Quarry_S.png").convert(),
+                        pygame.image.load("2.Images/Sawmill_S.png").convert(),
+                        pygame.image.load("2.Images/Wind_S.png").convert(),
+                        pygame.image.load("2.Images/Coal_S.png").convert(),
+                        pygame.image.load("2.Images/Park_S.png").convert(),
+                        pygame.image.load("2.Images/ENPC_S.png").convert(),
+                        pygame.image.load("2.Images/Grass_S.png").convert()]
 
-    # "Graphism" is the extension of "toBuild" with elements that can not be built.
+    # "Graphism" is the extension of "toBuild" with things that cant be built.
     # This distinction will be useful in the display of the menu.
-    graphism = toBuild + [pygame.image.load("2.Images/Mine.png").convert()] + [pygame.image.load("2.Images/Forest.png").convert()]
-    graphism_Selected = toBuild_Selected + [pygame.image.load("2.Images/Mine_Selected.png").convert()] + [pygame.image.load("2.Images/Forest_Selected.png").convert()]
+    graphism = toBuild + [pygame.image.load("2.Images/Mine.png").convert()] \
+                       + [pygame.image.load("2.Images/Forest.png").convert()]
+                       
+    graphism_Selected = toBuild_Selected \
+    + [pygame.image.load("2.Images/Mine_S.png").convert()] \
+    + [pygame.image.load("2.Images/Forest_S.png").convert()]
 
 
 def production(mainBoard, buildings):
-    """ Function computing the production of each building depending on the inputs required. """
+    """ Function computing the production of each building depending on the 
+    inputs required. """
     workers_needed = [0 for i in range(len(mainBoard.priority))]
     wood_needed = [0 for i in range(len(mainBoard.priority))]
     number = [0 for i in range(len(mainBoard.priority))]
@@ -253,10 +276,14 @@ def production(mainBoard, buildings):
         for j in range(NBCOLUMN):
             bat = mainBoard.map[i][j]
             if bat.type in mainBoard.priority:
-                workers_needed[mainBoard.priority.index(bat.type)] += bat.hab_max
-                wood_needed[mainBoard.priority.index(bat.type)] += bat.wood_input
+                workers_needed[mainBoard.priority.index(bat.type)] += \
+                bat.hab_max
+                
+                wood_needed[mainBoard.priority.index(bat.type)] += \
+                bat.wood_input
+                
                 number[mainBoard.priority.index(bat.type)] += 1
-    workers_remaining = mainBoard.habitants
+    workers_remaining = mainBoard.citizens
     k = 0
 
     # Assign workers to building types depending on priorization
@@ -275,9 +302,14 @@ def production(mainBoard, buildings):
         else:
             proportion_wood = wood_used / wood_needed[k]
 
-        mainBoard.wood += buildings[mainBoard.priority[k]].wood_output * min(proportion_worker,proportion_wood) * mainBoard.sawmill_coeff * number[k]
-        mainBoard.money += buildings[mainBoard.priority[k]].money_output * min(proportion_worker,proportion_wood) * number[k]
-        mainBoard.stone += buildings[mainBoard.priority[k]].stone_output * min(proportion_worker,proportion_wood) * mainBoard.quarry_coeff * number[k]
+        mainBoard.wood += buildings[mainBoard.priority[k]].wood_output * \
+                          min(proportion_worker,proportion_wood) * \
+                          mainBoard.sawmill_coeff * number[k]
+        mainBoard.money += buildings[mainBoard.priority[k]].money_output * \
+                           min(proportion_worker,proportion_wood) * number[k]
+        mainBoard.stone += buildings[mainBoard.priority[k]].stone_output * \
+                           min(proportion_worker,proportion_wood) * \
+                           mainBoard.quarry_coeff * number[k]
         mainBoard.wood -= wood_used
 
         workers_remaining -= workers_assigned
@@ -301,12 +333,13 @@ def priorize(mainBoard, building, order):
         print(mainBoard.priority)
 
 def happiness_calc(mainBoard, tax):
-    """ Calculates the happiness based on the number of inhabitants and taxes. """
-    if mainBoard.habitants == 0:
+    """ Calculates the happiness based on the number of inhabitants 
+    and taxes. """
+    if mainBoard.citizens == 0:
         mainBoard.happiness = 1
     else:
         drop_tax = (tax - TAXMIN) / TAXMAX * DROPSTEP
-        drop_habitants = mainBoard.habitants / HABITANTSLEVEL * DROPSTEP
+        drop_citizens = mainBoard.citizens / CITIZENSLEVEL * DROPSTEP
         if mainBoard.elec < 0:
             drop_supp = 20
         else:
@@ -315,8 +348,8 @@ def happiness_calc(mainBoard, tax):
             if len(k) > 0:
                 i, j = k[0], k[1]
                 if  getType(mainBoard, i, j) == 1:
-                    mainBoard.habitants += mainBoard.map[i][j].moving(timer)
-        drop = drop_tax + drop_habitants + drop_supp
+                    mainBoard.citizens += mainBoard.map[i][j].moving(timer)
+        drop = drop_tax + drop_citizens + drop_supp
         if drop > mainBoard.happiness:
             mainBoard.happiness = 0
         else:
@@ -328,10 +361,12 @@ def shortcuts_manager(shortcut_index, selected, buildingselected, building):
     if selected[shortcut_index] == False:
         buildingselected = True
         building = buildings[shortcut_index]
-        selected = [False, False, False, False, False, False, False, False, False, False]
+        selected = [False, False, False, False, False, False, False, False, 
+                    False, False]
         selected[shortcut_index] = True
     else:
         buildingselected = False
         building = Classes.Empty()
-        selected = [False, False, False, False, False, False, False, False, False, False]
+        selected = [False, False, False, False, False, False, False, False, 
+                    False, False]
     return selected, buildingselected, building

@@ -19,17 +19,21 @@ NBROW         = 45 # number of rows of icons in the map
 NBCOLUMN_DISP = 20 # number of columns displayed in the game windows
 NBROW_DISP    = 15 # number of rows displayed in the game windows
 
-GAMEWIDTH  = NBCOLUMN_DISP * (GAPSIZE + BOXSIZE) + GAPSIZE # size of game's width in pixels
-GAMEHEIGHT = NBROW_DISP    * (GAPSIZE + BOXSIZE) + GAPSIZE # size of game's height in pixels
+# Map width and height in pixels
+GAMEWIDTH  = NBCOLUMN_DISP * (GAPSIZE + BOXSIZE) + GAPSIZE 
+GAMEHEIGHT = NBROW_DISP    * (GAPSIZE + BOXSIZE) + GAPSIZE 
 
-RESSOURCEBARWIDTH = GAMEWIDTH # size of the bar indicating the ressources
-RESSOURCEBARHEIGHT = 60 # size of the bar indicating the ressources
+# Ressource bar width and height in pixels
+RESSOURCEBARWIDTH = GAMEWIDTH
+RESSOURCEBARHEIGHT = 60
 
-MENUBARWIDTH = 180 # size of the bar indicating the menu
-MENUBARHEIGHT = RESSOURCEBARHEIGHT + GAPSIZE_MENU + GAMEHEIGHT # size of the bar indicating the menu
+# Menu bar width and height in pixels
+MENUBARWIDTH = 180 
+MENUBARHEIGHT = RESSOURCEBARHEIGHT + GAPSIZE_MENU + GAMEHEIGHT 
 
-WINDOWWIDTH  = MENUBARWIDTH + 2*GAPSIZE_MENU + GAMEWIDTH + GAPSIZE # final size of the window in pixels
-WINDOWHEIGHT = MENUBARHEIGHT + GAPSIZE + GAPSIZE_MENU # final size of the window in pixels
+# Total window width and height in pixels
+WINDOWWIDTH  = MENUBARWIDTH + 2*GAPSIZE_MENU + GAMEWIDTH + GAPSIZE
+WINDOWHEIGHT = MENUBARHEIGHT + GAPSIZE + GAPSIZE_MENU
 
 pygame.font.init()
 
@@ -38,10 +42,23 @@ font = pygame.font.Font(None, 24)
 font_title = pygame.font.Font(None, 68)
 font_other = pygame.font.Font(None, 40)
 
-menuCoordinates = [(WINDOWWIDTH-GAPSIZE-MENUBARWIDTH,GAPSIZE),(WINDOWWIDTH-GAPSIZE-MENUBARWIDTH,WINDOWHEIGHT-GAPSIZE),(WINDOWWIDTH-GAPSIZE,WINDOWHEIGHT-GAPSIZE),(WINDOWWIDTH-GAPSIZE,GAPSIZE)]
-largerMenuCoordinates = [(WINDOWWIDTH-GAPSIZE-MENUBARWIDTH-GAPSIZE*2,GAPSIZE),(WINDOWWIDTH-GAPSIZE-MENUBARWIDTH-GAPSIZE*2,WINDOWHEIGHT-GAPSIZE),(WINDOWWIDTH,WINDOWHEIGHT-GAPSIZE),(WINDOWWIDTH,GAPSIZE)]
-headerCoordinates = [(GAPSIZE,GAPSIZE),(GAPSIZE,RESSOURCEBARHEIGHT),(GAPSIZE+RESSOURCEBARWIDTH,RESSOURCEBARHEIGHT),(GAPSIZE+RESSOURCEBARWIDTH,GAPSIZE)]
-boardCoordinates = [(0,RESSOURCEBARHEIGHT),(0,WINDOWHEIGHT),(WINDOWWIDTH-GAPSIZE-MENUBARWIDTH,WINDOWHEIGHT),(WINDOWWIDTH-GAPSIZE-MENUBARWIDTH,RESSOURCEBARHEIGHT)]
+menuCoords = [(WINDOWWIDTH - GAPSIZE - MENUBARWIDTH, GAPSIZE), 
+              (WINDOWWIDTH - GAPSIZE - MENUBARWIDTH, WINDOWHEIGHT - GAPSIZE), 
+              (WINDOWWIDTH - GAPSIZE, WINDOWHEIGHT - GAPSIZE), 
+              (WINDOWWIDTH - GAPSIZE, GAPSIZE)]
+largermenuCoords = [(WINDOWWIDTH - 3*GAPSIZE - MENUBARWIDTH, GAPSIZE), 
+                    (WINDOWWIDTH - 3*GAPSIZE - MENUBARWIDTH, WINDOWHEIGHT \
+                    - GAPSIZE), 
+                    (WINDOWWIDTH, WINDOWHEIGHT - GAPSIZE), 
+                    (WINDOWWIDTH, GAPSIZE)]
+headerCoords = [(GAPSIZE, GAPSIZE), 
+                (GAPSIZE, RESSOURCEBARHEIGHT), 
+                (GAPSIZE + RESSOURCEBARWIDTH, RESSOURCEBARHEIGHT), 
+                (GAPSIZE + RESSOURCEBARWIDTH, GAPSIZE)]
+boardCoords = [(0, RESSOURCEBARHEIGHT), 
+               (0, WINDOWHEIGHT), 
+               (WINDOWWIDTH - GAPSIZE - MENUBARWIDTH, WINDOWHEIGHT), 
+               (WINDOWWIDTH - GAPSIZE - MENUBARWIDTH, RESSOURCEBARHEIGHT)]
 # Initialisation of many variables that are useful later
 
 MINES_DENSITY = 80
@@ -50,17 +67,21 @@ NBMINES = int(NBCOLUMN * NBROW / MINES_DENSITY)
 FORESTS_DENSITY = 80
 NBFORESTS = int(NBCOLUMN * NBROW / FORESTS_DENSITY)
 
-BGCOLOR = (255, 255, 255) # white background
+WHITE = (255, 255, 255) # white background
+BLACK = (10, 10, 10)
+RED = (255, 0, 0)
+ORANGE = (139, 69, 19)
+
 PRODSTEP = 15 # Number of steps between two productions
 
 HAPPINESSGAP = 15
 HAPPINESSSTEP = 15
 
-time_lost = 5 # Time (sec) you have to improve you inhabitants' happiness before you lose
+time_lost = 5 # Time (sec) you have to improve happiness before you lose
 
 TAXMAX = 10 # Maximum of tax you can impose
 TAXMIN = 1 # Minimum of tax you can impose
 TAXSTEP = 200 # Number of loops before tax is taken
 DROPSTEP = 0.2 # Drop of percentage of happiness if nothing is done
 
-HABITANTSLEVEL = 200 # Number of inhabitants you need to win the game
+CITIZENSLEVEL = 200
