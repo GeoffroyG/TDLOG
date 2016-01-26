@@ -513,5 +513,5 @@ def displayLosingMenu(DISPLAYSURF, FPSCLOCK):
 
 
 import inputbox
-DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
-answer = inputbox.ask(DISPLAYSURF, "Your name")
+#DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
+#answer = inputbox.ask(DISPLAYSURF, "Your name")
