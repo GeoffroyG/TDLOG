@@ -183,7 +183,7 @@ def main():
                 mainBoard.money += mainBoard.citizens * tax
 
             if timer % HAPPINESSSTEP == 0:
-                happiness_calc(mainBoard, tax)
+                happiness_calc(mainBoard, tax, timing)
                 if mainBoard.happiness > 0.4:
                     danger = False
                 else:
@@ -332,7 +332,7 @@ def priorize(mainBoard, building, order):
         mainBoard.priority.insert(index + order, building)
         print(mainBoard.priority)
 
-def happiness_calc(mainBoard, tax):
+def happiness_calc(mainBoard, tax, timing):
     """ Calculates the happiness based on the number of inhabitants
     and taxes. """
     if mainBoard.citizens == 0:
@@ -340,18 +340,21 @@ def happiness_calc(mainBoard, tax):
     else:
         drop_tax = (tax - TAXMIN) / TAXMAX * DROPSTEP
         drop_citizens = mainBoard.citizens / CITIZENSLEVEL * DROPSTEP
+        drop_timing = timing / TIMINGLEVEL * DROPSTEP
         if mainBoard.elec < 0:
             drop_supp = 20
         else:
             drop_supp = 0
+        drop_happ = 0
         for k in mainBoard.built:
             if len(k) > 0:
                 i, j = k[0], k[1]
-                if  getType(mainBoard, i, j) == 1:
-                    mainBoard.citizens += mainBoard.map[i][j].moving(timer)
-        drop = drop_tax + drop_citizens + drop_supp
+                drop_happ += mainBoard.map[i][j].happiness_output
+        drop = drop_tax + drop_citizens + drop_supp + drop_timing - drop_happ
         if drop > mainBoard.happiness:
             mainBoard.happiness = 0
+        elif mainBoard.happiness - drop >= 1:
+            mainBoard.happiness = 1
         else:
             mainBoard.happiness -= drop
 
