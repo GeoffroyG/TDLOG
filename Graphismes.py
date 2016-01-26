@@ -10,6 +10,8 @@ from Constantes import *
 from pygame.locals import *
 import os
 import math
+import inputbox
+from datetime import datetime
 
 (font_width, font_height) = font.size("A")
 
@@ -38,31 +40,52 @@ def displayBeginningMenu(DISPLAYSURF, FPSCLOCK, font_title):
             textposNewGame = text.get_rect(centerx = WINDOWWIDTH / 2,
                                            centery = WINDOWHEIGHT / 2)
             DISPLAYSURF.blit(text, textposNewGame)
+            
             text = font_other.render("Instructions", 1, BLACK, WHITE)
             textposRules = text.get_rect(centerx = WINDOWWIDTH / 2,
                                          centery = WINDOWHEIGHT / 2 + \
-                                                   textposNewGame.height)
+                                                   2*textposNewGame.height)
             DISPLAYSURF.blit(text, textposRules)
+            
+            text = font_other.render("Leaderboard", 1, BLACK, WHITE)
+            textposLeaderboard = text.get_rect(centerx = WINDOWWIDTH / 2,
+                                               centery = WINDOWHEIGHT / 2 + \
+                                                     4*textposNewGame.height)
+            DISPLAYSURF.blit(text, textposLeaderboard)
+            
             text = font_other.render("Credits", 1, BLACK, WHITE)
             textposCredits = text.get_rect(centerx = WINDOWWIDTH / 2,
                                            centery = WINDOWHEIGHT / 2 + \
-                                                     textposNewGame.height + \
-                                                     textposNewGame.height)
+                                                     6*textposNewGame.height)
             DISPLAYSURF.blit(text, textposCredits)
+            
         elif rules:
-            text = font_other.render("Rules", 1, BLACK, WHITE)
+            text = font_other.render("Rules (TBD)", 1, BLACK, WHITE)
             textpos = text.get_rect(centerx = WINDOWWIDTH / 2,
                                     centery = WINDOWHEIGHT / 2)
             DISPLAYSURF.blit(text, textpos)
             back = pygame.image.load("2.Images/Return.png").convert()
             DISPLAYSURF.blit(back, (0, 0))
             posReturn = pygame.Rect(0, 0, 40, 40)
+            
         elif credits_game:
-            text = font_other.render("Credits for noun Projet and Pygame", 1,
+            text = font_other.render("Credits goes to Noun Projet for the icons and Pygame for the library", 1,
                                      BLACK, WHITE)
             textpos = text.get_rect(centerx = WINDOWWIDTH / 2,
                                     centery = WINDOWHEIGHT / 2)
             DISPLAYSURF.blit(text, textpos)
+            back = pygame.image.load("2.Images/Return.png").convert()
+            DISPLAYSURF.blit(back, (0, 0))
+            posReturn = pygame.Rect(0, 0, 40, 40)
+            
+        elif leaderboard:
+            scores = read_leaderboard(LEADERBOARDFILE)
+            for k in range(len(scores)):
+                text = font_other.render(str(scores[k]), 1,
+                                     BLACK, WHITE)
+                textpos = text.get_rect(centerx = WINDOWWIDTH / 2,
+                                        centery = WINDOWHEIGHT / 5 + 2*k*textposNewGame.height)
+                DISPLAYSURF.blit(text, textpos)
             back = pygame.image.load("2.Images/Return.png").convert()
             DISPLAYSURF.blit(back, (0, 0))
             posReturn = pygame.Rect(0, 0, 40, 40)
@@ -77,21 +100,28 @@ def displayBeginningMenu(DISPLAYSURF, FPSCLOCK, font_title):
                 os.sys.exit()
 
 
-        if textposNewGame.collidepoint(mousex, mousey) \
-           and not rules and not credits_game and mouseClicked:
+        if textposNewGame.collidepoint(mousex, mousey) and not rules \
+           and not credits_game and not leaderboard and mouseClicked:
             game = True
-        elif textposRules.collidepoint(mousex, mousey) \
-             and not rules and not credits_game and mouseClicked:
+        elif textposRules.collidepoint(mousex, mousey) and not rules\
+             and not credits_game and not leaderboard and mouseClicked:
             rules = True
-        elif textposCredits.collidepoint(mousex, mousey) \
-             and not credits_game and mouseClicked:
+        elif textposCredits.collidepoint(mousex, mousey) and not rules\
+             and not credits_game and not leaderboard and mouseClicked:
             credits_game = True
+        elif textposLeaderboard.collidepoint(mousex, mousey) and not rules\
+             and not credits_game and not leaderboard and mouseClicked:
+            leaderboard = True
+            
         elif posReturn.collidepoint(mousex, mousey) \
              and rules and mouseClicked:
             rules = False
         elif posReturn.collidepoint(mousex, mousey) \
              and credits_game and mouseClicked:
             credits_game = False
+        elif posReturn.collidepoint(mousex, mousey) \
+             and leaderboard and mouseClicked:
+            leaderboard = False
 
         pygame.display.update()
         FPSCLOCK.tick(FPS)
@@ -485,7 +515,7 @@ def drawInfoBoard(DISPLAYSURF, boxx, boxy, mainBoard, buildings):
         gap += height
 
 
-def displayLosingMenu(DISPLAYSURF, FPSCLOCK):
+def displayLosingMenu(DISPLAYSURF, FPSCLOCK, timer):
     """When the game is over, displays a message to the player. """
     lost = True
     DISPLAYSURF.fill((0,0,0))
@@ -508,10 +538,33 @@ def displayLosingMenu(DISPLAYSURF, FPSCLOCK):
         FPSCLOCK.tick(FPS)
 
         if mouseClicked:
+            DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
+            answer = inputbox.ask(DISPLAYSURF, "Your name")
+            time_min, time_sec = convert_time(timer)
+            date = get_date_str()
+            write_leaderboard(LEADERBOARDFILE, answer, time_min, time_sec, date)
             lost = False
 
+def read_leaderboard(filename):
+    scores = []
+    with open(filename, 'r', encoding='utf-8') as infile:
+        for line in infile:
+            data = line.split()
+            scores.append([data[0], data[1], data[3], data[5]])
+    return scores
+    
 
+def write_leaderboard(filename, playername, minutes, seconds, date):
+    score = playername + " " + str(minutes) + " min " + str(seconds) + " sec " + date + "\n"
+    with open(filename, 'a', encoding='utf-8') as infile:
+        infile.write(score)
 
-import inputbox
-#DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
-#answer = inputbox.ask(DISPLAYSURF, "Your name")
+def convert_time(timer):
+    minutes = timer // 60
+    seconds = timer - minutes * 60
+    return minutes, seconds
+
+def get_date_str():
+    now = datetime.now()
+    return str(now.day) + "/" + str(now.month) + "/" + str(now.year)
+

@@ -7,6 +7,7 @@ Created on Sun Jan  3 21:18:54 2016
 
 from Graphismes import *
 
+
 def main():
     """ Main game loop. """
     global FPSCLOCK, DISPLAYSURF, selected, building, graphism, \
@@ -217,7 +218,7 @@ def main():
 
             if timing_aux >= time_lost:
                 game = False
-                displayLosingMenu(DISPLAYSURF, FPSCLOCK)
+                displayLosingMenu(DISPLAYSURF, FPSCLOCK, timer)
 
 def init_buildings():
     global buildings, toBuild, toBuild_Selected, graphism, graphism_Selected
@@ -374,29 +375,3 @@ def shortcuts_manager(shortcut_index, selected, buildingselected, building):
                     False, False]
     return selected, buildingselected, building
 
-
-
-def read_leaderboard(filename):
-    scores = []
-    with open(filename, 'r', encoding='utf-8') as infile:
-        for line in infile:
-            data = line.split()
-            scores.append([data[0], data[1], data[3], data[5]])
-    print(scores)
-
-
-def write_leaderboard(filename, playername, minutes, seconds, date):
-    score = playername + " " + str(minutes) + " min " + str(seconds) + " sec " + date + "\n"
-    with open(filename, 'a', encoding='utf-8') as infile:
-        infile.write(score)
-
-def convert_time(timer):
-    minutes = times // 60
-    seconds = timer - minutes * 60
-    return minutes, seconds
-
-
-
-read_leaderboard(LEADERBOARDFILE)
-write_leaderboard(LEADERBOARDFILE, "Geoffroy", 12, 14, "26/01/2015")
-read_leaderboard(LEADERBOARDFILE)
