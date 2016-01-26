@@ -87,5 +87,6 @@ TAXSTEP = 200 # Number of loops before tax is taken
 DROPSTEP = 0.2 # Drop of percentage of happiness if nothing is done
 
 CITIZENSLEVEL = 200
+TIMINGLEVEL = 180 # In seconds level of happiness drop
 
 LEADERBOARDFILE = "leaderboard.txt"
