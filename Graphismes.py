@@ -69,10 +69,22 @@ def displayBeginningMenu(DISPLAYSURF, FPSCLOCK, font_title):
             posReturn = pygame.Rect(0, 0, 40, 40)
             
         elif credits_game:
-            text = font_other.render("Credits goes to Noun Projet for the icons and Pygame for the library", 1,
+            text = font_other.render("Credits goes to Noun Projet for the icons", 1,
                                      BLACK, WHITE)
             textpos = text.get_rect(centerx = WINDOWWIDTH / 2,
                                     centery = WINDOWHEIGHT / 2)
+            DISPLAYSURF.blit(text, textpos)
+            text = font_other.render("Credits goes to Pygame for the graphic library", 1,
+                                     BLACK, WHITE)
+            textpos = text.get_rect(centerx = WINDOWWIDTH / 2,
+                                    centery = WINDOWHEIGHT / 2+ \
+                                                     2*textposNewGame.height)
+            DISPLAYSURF.blit(text, textpos)
+            text = font_other.render("Credits goes to Timothy Downs for the module to prompt player name", 1,
+                                     BLACK, WHITE)
+            textpos = text.get_rect(centerx = WINDOWWIDTH / 2,
+                                    centery = WINDOWHEIGHT / 2+ \
+                                                     4*textposNewGame.height)
             DISPLAYSURF.blit(text, textpos)
             back = pygame.image.load("2.Images/Return.png").convert()
             DISPLAYSURF.blit(back, (0, 0))
@@ -81,11 +93,11 @@ def displayBeginningMenu(DISPLAYSURF, FPSCLOCK, font_title):
         elif leaderboard:
             scores = read_leaderboard(LEADERBOARDFILE)
             for k in range(len(scores)):
-                text = font_other.render(str(scores[k]), 1,
-                                     BLACK, WHITE)
-                textpos = text.get_rect(centerx = WINDOWWIDTH / 2,
-                                        centery = WINDOWHEIGHT / 5 + 2*k*textposNewGame.height)
-                DISPLAYSURF.blit(text, textpos)
+                if len(scores[k]) > 0:
+                    text = font_other.render(str(scores[k][0]) + " : " + str(scores[k][1]) + " min " + str(scores[k][2]) + " sec, le " + str(scores[k][3]), 1, BLACK, WHITE)
+                    textpos = text.get_rect(centerx = WINDOWWIDTH / 2,
+                                            centery = WINDOWHEIGHT / 5 + 2*k*textposNewGame.height)
+                    DISPLAYSURF.blit(text, textpos)
             back = pygame.image.load("2.Images/Return.png").convert()
             DISPLAYSURF.blit(back, (0, 0))
             posReturn = pygame.Rect(0, 0, 40, 40)
@@ -540,7 +552,7 @@ def displayLosingMenu(DISPLAYSURF, FPSCLOCK, timer):
         if mouseClicked:
             DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
             answer = inputbox.ask(DISPLAYSURF, "Your name")
-            time_min, time_sec = convert_time(timer)
+            time_min, time_sec = convert_time(timer//FPS)
             date = get_date_str()
             write_leaderboard(LEADERBOARDFILE, answer, time_min, time_sec, date)
             lost = False
