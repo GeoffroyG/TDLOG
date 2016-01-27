@@ -79,11 +79,11 @@ PRODSTEP = 15 # Number of steps between two productions
 HAPPINESSGAP = 15
 HAPPINESSSTEP = 15
 
-time_lost = 20 # Time (sec) you have to improve happiness before you lose
+time_lost = 10 # Time (sec) you have to improve happiness before you lose
 
 TAXMAX = 10 # Maximum of tax you can impose
 TAXMIN = 1 # Minimum of tax you can impose
-TAXSTEP = 200 # Number of loops before tax is taken
+TAXSTEP = 10 # Number of loops before tax is taken
 DROPSTEP = 0.02 # Drop of percentage of happiness if nothing is done
 
 CITIZENSLEVEL = 200
