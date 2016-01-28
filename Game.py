@@ -20,7 +20,7 @@ def main():
 
     init_buildings()
 
-    pygame.display.set_caption('Jeu Sim City') # name of the game
+    pygame.display.set_caption('French City Simulator') # name of the game
 
     DISPLAYSURF.fill(WHITE)
 
@@ -216,7 +216,7 @@ def main():
             drawHappiness(DISPLAYSURF, mainBoard.happiness, HAPPINESSGAP,
                           HAPPINESSGAP, BOXSIZE, color)
 
-            if timing_aux >= time_lost:
+            if timing_aux >= TIMELOST:
                 game = False
                 displayLosingMenu(DISPLAYSURF, FPSCLOCK, timer)
 

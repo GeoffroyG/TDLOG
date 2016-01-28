@@ -16,8 +16,8 @@ GAPSIZE_MENU  = 5
 
 NBCOLUMN      = 50 # number of columns of icons in the map
 NBROW         = 45 # number of rows of icons in the map
-NBCOLUMN_DISP = 20 # number of columns displayed in the game windows
-NBROW_DISP    = 15 # number of rows displayed in the game windows
+NBCOLUMN_DISP = 19 # number of columns displayed in the game windows
+NBROW_DISP    = 14 # number of rows displayed in the game windows
 
 TITLE = "French City Simulator"
 
@@ -79,7 +79,7 @@ PRODSTEP = 15 # Number of steps between two productions
 HAPPINESSGAP = 15
 HAPPINESSSTEP = 15
 
-time_lost = 10 # Time (sec) you have to improve happiness before you lose
+TIMELOST = 10 # Time (sec) you have to improve happiness before you lose
 
 TAXMAX = 10 # Maximum of tax you can impose
 TAXMIN = 1 # Minimum of tax you can impose

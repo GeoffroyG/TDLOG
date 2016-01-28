@@ -171,12 +171,12 @@ class Park(Building):
     def __init__(self):
         Building.__init__(self)
         self.type = 7
-        self.money_needed= 10000
+        self.money_needed= 500
         self.wood_needed = 15
         self.stone_needed = 0
         self.time = 0
         self.elec_needed = 2
-        self.happiness_output = 0.03
+        self.happiness_output = 0.01
 
 
 class ENPC(Building):

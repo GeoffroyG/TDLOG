@@ -69,18 +69,22 @@ def displayBeginningMenu(DISPLAYSURF, FPSCLOCK, font_title):
             posReturn = pygame.Rect(0, 0, 40, 40)
             
         elif credits_game:
-            text = font_other.render("Credits goes to Noun Projet for the icons", 1,
+            to_display = "Credits goes to Noun Projet for the icons"
+            text = font_other.render(to_display, 1,
                                      BLACK, WHITE)
             textpos = text.get_rect(centerx = WINDOWWIDTH / 2,
                                     centery = WINDOWHEIGHT / 2)
             DISPLAYSURF.blit(text, textpos)
-            text = font_other.render("Credits goes to Pygame for the graphic library", 1,
+            to_display = "Credits goes to Pygame for the graphic library"
+            text = font_other.render(to_display, 1,
                                      BLACK, WHITE)
             textpos = text.get_rect(centerx = WINDOWWIDTH / 2,
                                     centery = WINDOWHEIGHT / 2+ \
                                                      2*textposNewGame.height)
             DISPLAYSURF.blit(text, textpos)
-            text = font_other.render("Credits goes to Timothy Downs for the module to prompt player name", 1,
+            ti_display = "Credits goes to Timothy Downs for the module to \
+                         prompt player name"
+            text = font_other.render(to_display, 1,
                                      BLACK, WHITE)
             textpos = text.get_rect(centerx = WINDOWWIDTH / 2,
                                     centery = WINDOWHEIGHT / 2+ \
@@ -94,9 +98,12 @@ def displayBeginningMenu(DISPLAYSURF, FPSCLOCK, font_title):
             scores = read_leaderboard(LEADERBOARDFILE)
             for k in range(len(scores)):
                 if len(scores[k]) > 0:
-                    text = font_other.render(str(scores[k][0]) + " : " + str(scores[k][1]) + " min " + str(scores[k][2]) + " sec, le " + str(scores[k][3]), 1, BLACK, WHITE)
+                    text = font_other.render(str(scores[k][0]) + " : " + \
+                           str(scores[k][1]) + " min " + str(scores[k][2]) + \
+                           " sec, le " + str(scores[k][3]), 1, BLACK, WHITE)
                     textpos = text.get_rect(centerx = WINDOWWIDTH / 2,
-                                            centery = WINDOWHEIGHT / 5 + 2*k*textposNewGame.height)
+                                            centery = WINDOWHEIGHT / 5 + \
+                                            2*k*textposNewGame.height)
                     DISPLAYSURF.blit(text, textpos)
             back = pygame.image.load("2.Images/Return.png").convert()
             DISPLAYSURF.blit(back, (0, 0))
@@ -565,9 +572,9 @@ def read_leaderboard(filename):
             scores.append([data[0], data[1], data[3], data[5]])
     return scores
     
-
 def write_leaderboard(filename, playername, minutes, seconds, date):
-    score = playername + " " + str(minutes) + " min " + str(seconds) + " sec " + date + "\n"
+    score = playername + " " + str(minutes) + " min " + str(seconds) + " sec "\
+            + date + "\n"
     with open(filename, 'a', encoding='utf-8') as infile:
         infile.write(score)
 
