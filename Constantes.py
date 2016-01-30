@@ -39,6 +39,8 @@ WINDOWHEIGHT = MENUBARHEIGHT + GAPSIZE + GAPSIZE_MENU
 
 pygame.font.init()
 
+TEXTLINEHEIGHT = 28
+
 font_bubble = pygame.font.Font(None, 14)
 font = pygame.font.Font(None, 24)
 font_title = pygame.font.Font(None, 68)

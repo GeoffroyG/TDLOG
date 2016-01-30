@@ -44,19 +44,19 @@ def displayBeginningMenu(DISPLAYSURF, FPSCLOCK, font_title):
             text = font_other.render("Instructions", 1, BLACK, WHITE)
             textposRules = text.get_rect(centerx = WINDOWWIDTH / 2,
                                          centery = WINDOWHEIGHT / 2 + \
-                                                   2*textposNewGame.height)
+                                                   2*TEXTLINEHEIGHT)
             DISPLAYSURF.blit(text, textposRules)
             
             text = font_other.render("Leaderboard", 1, BLACK, WHITE)
             textposLeaderboard = text.get_rect(centerx = WINDOWWIDTH / 2,
                                                centery = WINDOWHEIGHT / 2 + \
-                                                     4*textposNewGame.height)
+                                                     4*TEXTLINEHEIGHT)
             DISPLAYSURF.blit(text, textposLeaderboard)
             
             text = font_other.render("Credits", 1, BLACK, WHITE)
             textposCredits = text.get_rect(centerx = WINDOWWIDTH / 2,
                                            centery = WINDOWHEIGHT / 2 + \
-                                                     6*textposNewGame.height)
+                                                     6*TEXTLINEHEIGHT)
             DISPLAYSURF.blit(text, textposCredits)
             
         elif rules:
@@ -80,34 +80,24 @@ def displayBeginningMenu(DISPLAYSURF, FPSCLOCK, font_title):
                                      BLACK, WHITE)
             textpos = text.get_rect(centerx = WINDOWWIDTH / 2,
                                     centery = WINDOWHEIGHT / 2+ \
-                                                     2*textposNewGame.height)
+                                                     2*TEXTLINEHEIGHT)
             DISPLAYSURF.blit(text, textpos)
-            ti_display = "Credits goes to Timothy Downs for the module to \
-                         prompt player name"
+            to_display = "Credits goes to Timothy Downs for inputbox module"
             text = font_other.render(to_display, 1,
                                      BLACK, WHITE)
             textpos = text.get_rect(centerx = WINDOWWIDTH / 2,
                                     centery = WINDOWHEIGHT / 2+ \
-                                                     4*textposNewGame.height)
+                                                     4*TEXTLINEHEIGHT)
             DISPLAYSURF.blit(text, textpos)
             back = pygame.image.load("2.Images/Return.png").convert()
             DISPLAYSURF.blit(back, (0, 0))
             posReturn = pygame.Rect(0, 0, 40, 40)
             
+            print(textposNewGame.height)
+            
         elif leaderboard:
             scores = read_leaderboard(LEADERBOARDFILE)
-            for k in range(len(scores)):
-                if len(scores[k]) > 0:
-                    text = font_other.render(str(scores[k][0]) + " : " + \
-                           str(scores[k][1]) + " min " + str(scores[k][2]) + \
-                           " sec, le " + str(scores[k][3]), 1, BLACK, WHITE)
-                    textpos = text.get_rect(centerx = WINDOWWIDTH / 2,
-                                            centery = WINDOWHEIGHT / 5 + \
-                                            2*k*textposNewGame.height)
-                    DISPLAYSURF.blit(text, textpos)
-            back = pygame.image.load("2.Images/Return.png").convert()
-            DISPLAYSURF.blit(back, (0, 0))
-            posReturn = pygame.Rect(0, 0, 40, 40)
+            posReturn = print_leaderboard(DISPLAYSURF, scores)
 
         for event in pygame.event.get(): # event handling loop
             if event.type == MOUSEBUTTONUP:
@@ -569,7 +559,7 @@ def read_leaderboard(filename):
     with open(filename, 'r', encoding='utf-8') as infile:
         for line in infile:
             data = line.split()
-            scores.append([data[0], data[1], data[3], data[5]])
+            scores.append((data[0], data[1], data[3], data[5]))
     return scores
     
 def write_leaderboard(filename, playername, minutes, seconds, date):
@@ -587,3 +577,21 @@ def get_date_str():
     now = datetime.now()
     return str(now.day) + "/" + str(now.month) + "/" + str(now.year)
 
+def score(one_score):
+    return one_score[1]*60+one_score[2]
+
+def print_leaderboard(DISPLAYSURF, scores):
+    scores_sorted = sorted(scores, key = lambda score: int(score[1])*60 + int(score[2]), reverse = True)
+    for k in range(len(scores_sorted)):
+        if len(scores_sorted[k]) > 0 and k < 10:
+            text = font_other.render(str(scores_sorted[k][0]) + " : " + \
+                   str(scores_sorted[k][1]) + " min " + str(scores_sorted[k][2]) + \
+                   " sec, le " + str(scores_sorted[k][3]), 1, BLACK, WHITE)
+            textpos = text.get_rect(centerx = WINDOWWIDTH / 2,
+                                    centery = WINDOWHEIGHT / 5 + \
+                                    1.3*k*TEXTLINEHEIGHT)
+            DISPLAYSURF.blit(text, textpos)
+    back = pygame.image.load("2.Images/Return.png").convert()
+    DISPLAYSURF.blit(back, (0, 0))
+    posReturn = pygame.Rect(0, 0, 40, 40)
+    return posReturn
