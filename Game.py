@@ -69,6 +69,7 @@ def main():
         # Main game loop
         while game:
             build = False
+            house_built = False
             # Event handling loop
             for event in pygame.event.get():
                 if event.type == MOUSEBUTTONDOWN and event.button == 1:
@@ -175,6 +176,7 @@ def main():
                 if len(k) > 0:
                     i, j = k[0], k[1]
                     if  getType(mainBoard, i, j) == 1:
+                        house_built = True
                         mainBoard.citizens += mainBoard.map[i][j].moving(timer)
 
             if timer % PRODSTEP == 0:
@@ -193,10 +195,11 @@ def main():
             # Redraw the screen and wait a clock tick.
             pygame.display.update()
             FPSCLOCK.tick(FPS)
-
+            
             # Increase of the timer
-            timer += 1
-            timing = timer // FPS
+            if mainBoard.citizens != 0 or house_built:
+                timer += 1
+                timing = timer // FPS
 
             # Time remaining before defeat
             if danger:
@@ -219,6 +222,8 @@ def main():
             if timing_aux >= TIMELOST:
                 game = False
                 displayLosingMenu(DISPLAYSURF, FPSCLOCK, timer)
+            
+            house_built = False
 
 def init_buildings():
     global buildings, toBuild, toBuild_Selected, graphism, graphism_Selected
@@ -331,7 +336,6 @@ def priorize(mainBoard, building, order):
     if index + order >= 0 and index + order < len(mainBoard.priority):
         mainBoard.priority.remove(building)
         mainBoard.priority.insert(index + order, building)
-        print(mainBoard.priority)
 
 def happiness_calc(mainBoard, tax, timing):
     """ Calculates the happiness based on the number of inhabitants

@@ -60,13 +60,12 @@ def displayBeginningMenu(DISPLAYSURF, FPSCLOCK, font_title):
             DISPLAYSURF.blit(text, textposCredits)
             
         elif rules:
-            text = font_other.render("Rules (TBD)", 1, BLACK, WHITE)
-            textpos = text.get_rect(centerx = WINDOWWIDTH / 2,
-                                    centery = WINDOWHEIGHT / 2)
-            DISPLAYSURF.blit(text, textpos)
             back = pygame.image.load("2.Images/Return.png").convert()
             DISPLAYSURF.blit(back, (0, 0))
             posReturn = pygame.Rect(0, 0, 40, 40)
+            rules_file = pygame.image.load("2.Images/Rules.jpg").convert()
+            DISPLAYSURF.blit(rules_file, (WINDOWWIDTH//2 - 375, 
+                                          WINDOWHEIGHT//2 - 300))
             
         elif credits_game:
             to_display = "Credits goes to Noun Projet for the icons"
@@ -92,8 +91,6 @@ def displayBeginningMenu(DISPLAYSURF, FPSCLOCK, font_title):
             back = pygame.image.load("2.Images/Return.png").convert()
             DISPLAYSURF.blit(back, (0, 0))
             posReturn = pygame.Rect(0, 0, 40, 40)
-            
-            print(textposNewGame.height)
             
         elif leaderboard:
             scores = read_leaderboard(LEADERBOARDFILE)
